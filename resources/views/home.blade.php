@@ -1,5 +1,5 @@
 @extends('layouts.app')
 
 @section('content')
-    <home-page :tl="{{ $tl }}"></home-page>
+    <landing-page :tl="{{ $tl }}"></landing-page>
 @endsection

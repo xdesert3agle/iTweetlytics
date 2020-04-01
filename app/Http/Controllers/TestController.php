@@ -14,7 +14,7 @@ class TestController extends Controller {
         $tl = json_decode(json_encode($file));
 
         return view('home')->with([
-            'tl' => $tl
+            'tl' => $tl,
         ]);
     }
 }
