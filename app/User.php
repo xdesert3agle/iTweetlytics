@@ -15,7 +15,28 @@ class User extends Authenticatable {
      * @var array
      */
     protected $fillable = [
+        'id',
         'name',
+        'screen_name',
+        'location',
+        'description',
+        'protected',
+        'followers_count',
+        'friends_count',
+        'listed_count',
+        'favourites_count',
+        'time_zone',
+        'geo_enabled',
+        'verified',
+        'statuses_count',
+        'profile_background_color',
+        'profile_image_url',
+        'profile_banner_url',
+        'profile_link_color',
+        'lang',
+        'suspended',
+        'oauth_token',
+        'oauth_token_secret'
     ];
 
     /**
@@ -23,9 +44,7 @@ class User extends Authenticatable {
      *
      * @var array
      */
-    protected $hidden = [
-        'password', 'access_token',
-    ];
+    protected $hidden = [];
 
     /**
      * The attributes that should be cast to native types.

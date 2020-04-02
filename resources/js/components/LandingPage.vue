@@ -16,5 +16,7 @@
 </script>
 
 <style lang="scss" scoped>
-
+    * {
+        font-family: Raleway;
+    }
 </style>
