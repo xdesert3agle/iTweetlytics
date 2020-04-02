@@ -11,7 +11,7 @@ use Thujohn\Twitter\Facades\Twitter;
 
 class LoginWithTwitterController extends Controller {
     public function requestLogin() {
-        // your SIGN IN WITH TWITTER  button should point to this route
+        // your SIGN IN WITH TWITTER button should point to this route
         $sign_in_twitter = true;
         $force_login = false;
 
@@ -45,13 +45,13 @@ class LoginWithTwitterController extends Controller {
 
             $oauth_verifier = false;
 
-            if (Session::has('oauth_verifier')) {
-                $oauth_verifier = Request::get('oauth_verifier');
+            if (request()->has('oauth_verifier')) {
+                $oauth_verifier = request()->get('oauth_verifier');
                 // getAccessToken() will reset the token for you
-                $token = Twitter::getAccessToken($oauth_verifier);
+                $tokens = Twitter::getAccessToken($oauth_verifier);
             }
 
-            if (!isset($token['oauth_token_secret'])) {
+            if (!isset($tokens['oauth_token_secret'])) {
                 return Redirect::route('twitter.error')->with('flash_error', 'We could not log you in on Twitter.');
             }
 
@@ -65,20 +65,15 @@ class LoginWithTwitterController extends Controller {
 
                 // This is also the moment to log in your users if you're using Laravel's Auth class
                 // Auth::login($user) should do the trick.
-                Session::put('access_token', $token);
+                Session::put('access_token', $tokens);
 
-                $user = User::find($credentials->id_str);
+                $user = $this->handleUserLogin($credentials, $tokens);
+                Auth::login($user);
 
-                if (!$user) { // Si el usuario no existe se le registra en la bd y se le loguea
-                    $newUser = $this->createNewUserFromCredentials($credentials);
-                } else { // Si el usuario existe se le loguea
-                    Auth::login($user);
-                }
-
-                return Redirect::to('/')->with('user', $user);
+                return Redirect::to('/');
             }
 
-            return Redirect::route('twitter.error')->with('flash_error', 'Crab! Something went wrong while signing you up!');
+            return Redirect::route('twitter.error');
         }
     }
 
@@ -88,27 +83,40 @@ class LoginWithTwitterController extends Controller {
 
     public function logout() {
         Session::forget('access_token');
-        return Redirect::to('/')->with('flash_notice', 'You\'ve successfully logged out!');
+        Auth::logout();
+
+        return Redirect::to('/');
     }
 
-    public function createNewUserFromCredentials($credentials) {
-        $user = new User();
-
-        $user->id = $credentials->id_str;
-        $user->name = $credentials->name;
-        $user->screen_name = $credentials->screen_name;
-        $user->location = $credentials->location;
-        $user->description = $credentials->description;
-        $user->protected = $credentials->protected;
-        $user->followers_count = $credentials->followers_count;
-        $user->friends_count = $credentials->friends_count;
-        $user->listed_count = $credentials->listed_count;
-        $user->favourites_count = $credentials->favourites_count;
-        $user->time_zone = $credentials->time_zone;
-        $user->verified = $credentials->verified;
-        $user->lang = $credentials->lang;
-        $user->access_token = $credentials->access_token;
-
-        return $user;
+    public function handleUserLogin($credentials, $tokens) {
+        // Si el usuario que es está haciendo login ya existe en nuestra BBDD => Se recupera
+        // Si no existe en nuestra BBDD => Primero se inserta y luego se recupera
+        return User::firstOrCreate(
+            ['id' => $credentials->id_str],
+            [
+                'id' => $credentials->id,
+                'name'  => $credentials->name,
+                'screen_name'  => $credentials->screen_name,
+                'location' => $credentials->location,
+                'description' => $credentials->description,
+                'protected' => $credentials->protected,
+                'followers_count' => $credentials->followers_count,
+                'friends_count' => $credentials->friends_count,
+                'listed_count' => $credentials->listed_count,
+                'favourites_count' => $credentials->favourites_count,
+                'time_zone' => $credentials->time_zone,
+                'geo_enabled' => $credentials->geo_enabled,
+                'verified' => $credentials->verified,
+                'statuses_count' => $credentials->statuses_count,
+                'profile_background_color' => $credentials->profile_background_color,
+                'profile_image_url' => $credentials->profile_image_url,
+                'profile_banner_url' => $credentials->profile_banner_url,
+                'profile_link_color' => $credentials->profile_link_color,
+                'lang' => $credentials->lang,
+                'suspended' => $credentials->suspended,
+                'oauth_token' => $tokens['oauth_token'],
+                'oauth_token_secret' => $tokens['oauth_token_secret']
+            ]
+        );
     }
 }

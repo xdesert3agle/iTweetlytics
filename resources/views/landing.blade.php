@@ -5,7 +5,7 @@
     <div class="container">
         <div class="row">
             <div class="col">
-                {{ isset($user) ? $user : "No estás logueado" }}
+                {{ Auth::user() ? "Bienvenido " . Auth::user()->name : "No estás logueado" }}
             </div>
         </div>
     </div>
