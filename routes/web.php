@@ -17,7 +17,12 @@ use Thujohn\Twitter\Facades\Twitter;
 |
 */
 
-Route::get('/', 'LandingPageController@index');
+Route::get('/', 'LandingPageController@index')->middleware('guest');
+
+// Rutas para usuarios autenticados
+Route::group(['middleware' => 'auth'], function () {
+    Route::get('dashboard', 'DashboardController@index')->middleware('auth');
+});
 
 Route::get('twitter/login', ['as' => 'twitter.login', 'uses' => 'LoginWithTwitterController@requestLogin']);
 
