@@ -17,26 +17,9 @@ class User extends Authenticatable {
     protected $fillable = [
         'id',
         'name',
-        'screen_name',
-        'location',
-        'description',
-        'protected',
-        'followers_count',
-        'friends_count',
-        'listed_count',
-        'favourites_count',
-        'time_zone',
-        'geo_enabled',
-        'verified',
-        'statuses_count',
-        'profile_background_color',
-        'profile_image_url',
-        'profile_banner_url',
-        'profile_link_color',
-        'lang',
-        'suspended',
-        'oauth_token',
-        'oauth_token_secret'
+        'surname',
+        'email',
+        'password'
     ];
 
     /**
@@ -55,6 +38,7 @@ class User extends Authenticatable {
         'email_verified_at' => 'datetime',
     ];
 
-    public $incrementing = false;
-    protected $keyType = 'string';
+    public function twitter_profiles() {
+        return $this->hasMany('App\TwitterProfile');
+    }
 }

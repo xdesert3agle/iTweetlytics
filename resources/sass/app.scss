@@ -1,5 +1,10 @@
 // Variables
+@import 'buttons';
 @import 'variables';
 
 // Bootstrap
 @import '~bootstrap/scss/bootstrap';
+
+body {
+    font-family: "Product Sans", Helvetica, Arial, serif;
+}

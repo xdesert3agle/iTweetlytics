@@ -1,5 +1,5 @@
 @extends('layouts.app')
 
 @section('content')
-    <landing-page :tl="{{ $tl ?? '' }}"></landing-page>
+    <dashboard :user="{{ $user }}"></dashboard>
 @endsection

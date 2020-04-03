@@ -2,8 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Providers\RouteServiceProvider;
+use App\TwitterProfile;
 use App\User;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Session;
@@ -11,9 +12,11 @@ use Thujohn\Twitter\Facades\Twitter;
 
 class LoginWithTwitterController extends Controller {
     public function requestLogin() {
+        $this->logoutWithoutRedirect();
+
         // your SIGN IN WITH TWITTER button should point to this route
         $sign_in_twitter = true;
-        $force_login = false;
+        $force_login = true;
 
         // Make sure we make this request w/o tokens, overwrite the default values in case of login.
         Twitter::reconfig(['token' => '', 'secret' => '']);
@@ -67,10 +70,11 @@ class LoginWithTwitterController extends Controller {
                 // Auth::login($user) should do the trick.
                 Session::put('access_token', $tokens);
 
-                $user = $this->handleUserLogin($credentials, $tokens);
-                Auth::login($user);
+                if (!TwitterProfile::find($credentials->id)) {
+                    $this->assignTwitterProfileToUser($credentials, $tokens);
+                }
 
-                return Redirect::to('/');
+                return Redirect::to(RouteServiceProvider::DASHBOARD);
             }
 
             return Redirect::route('twitter.error');
@@ -83,40 +87,39 @@ class LoginWithTwitterController extends Controller {
 
     public function logout() {
         Session::forget('access_token');
-        Auth::logout();
 
         return Redirect::to('/');
     }
 
-    public function handleUserLogin($credentials, $tokens) {
-        // Si el usuario que es está haciendo login ya existe en nuestra BBDD => Se recupera
-        // Si no existe en nuestra BBDD => Primero se inserta y luego se recupera
-        return User::firstOrCreate(
-            ['id' => $credentials->id_str],
-            [
-                'id' => $credentials->id,
-                'name'  => $credentials->name,
-                'screen_name'  => $credentials->screen_name,
-                'location' => $credentials->location,
-                'description' => $credentials->description,
-                'protected' => $credentials->protected,
-                'followers_count' => $credentials->followers_count,
-                'friends_count' => $credentials->friends_count,
-                'listed_count' => $credentials->listed_count,
-                'favourites_count' => $credentials->favourites_count,
-                'time_zone' => $credentials->time_zone,
-                'geo_enabled' => $credentials->geo_enabled,
-                'verified' => $credentials->verified,
-                'statuses_count' => $credentials->statuses_count,
-                'profile_background_color' => $credentials->profile_background_color,
-                'profile_image_url' => $credentials->profile_image_url,
-                'profile_banner_url' => $credentials->profile_banner_url,
-                'profile_link_color' => $credentials->profile_link_color,
-                'lang' => $credentials->lang,
-                'suspended' => $credentials->suspended,
-                'oauth_token' => $tokens['oauth_token'],
-                'oauth_token_secret' => $tokens['oauth_token_secret']
-            ]
-        );
+    public function logoutWithoutRedirect() {
+        Session::forget('access_token');
+    }
+
+    public function assignTwitterProfileToUser($credentials, $tokens) {
+        $profile = TwitterProfile::create([
+            'id' => $credentials->id,
+            'user_id' => Auth::user()->id,
+            'name'  => $credentials->name,
+            'screen_name'  => $credentials->screen_name,
+            'location' => $credentials->location,
+            'description' => $credentials->description,
+            'protected' => $credentials->protected,
+            'followers_count' => $credentials->followers_count,
+            'friends_count' => $credentials->friends_count,
+            'listed_count' => $credentials->listed_count,
+            'favourites_count' => $credentials->favourites_count,
+            'time_zone' => $credentials->time_zone,
+            'geo_enabled' => $credentials->geo_enabled,
+            'verified' => $credentials->verified,
+            'statuses_count' => $credentials->statuses_count,
+            'profile_background_color' => $credentials->profile_background_color,
+            'profile_image_url' => $credentials->profile_image_url,
+            'profile_banner_url' => $credentials->profile_banner_url,
+            'profile_link_color' => $credentials->profile_link_color,
+            'lang' => $credentials->lang,
+            'suspended' => $credentials->suspended,
+            'oauth_token' => $tokens['oauth_token'],
+            'oauth_token_secret' => $tokens['oauth_token_secret']
+        ]);
     }
 }
