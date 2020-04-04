@@ -113,7 +113,7 @@ class LoginWithTwitterController extends Controller {
             'verified' => $credentials->verified,
             'statuses_count' => $credentials->statuses_count,
             'profile_background_color' => $credentials->profile_background_color,
-            'profile_image_url' => $credentials->profile_image_url,
+            'profile_image_url' => str_replace('_normal', '', $credentials->profile_image_url),
             'profile_banner_url' => $credentials->profile_banner_url,
             'profile_link_color' => $credentials->profile_link_color,
             'lang' => $credentials->lang,

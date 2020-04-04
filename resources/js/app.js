@@ -19,9 +19,14 @@ window.Vue = require('vue');
 // const files = require.context('./', true, /\.vue$/i)
 // files.keys().map(key => Vue.component(key.split('/').pop().split('.')[0], files(key).default))
 
+// Páginas
 Vue.component('HomePage', require('./components/HomePage.vue').default);
 Vue.component('LandingPage', require('./components/pages/LandingPage.vue').default);
 Vue.component('Dashboard', require('./components/pages/Dashboard.vue').default);
+Vue.component('Login', require('./components/pages/Login.vue').default);
+
+// Utility
+Vue.component('Csrf', require('./components/utility/Csrf.vue').default);
 
 /**
  * Next, we will create a fresh Vue application instance and attach it to

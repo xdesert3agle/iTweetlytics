@@ -6,11 +6,16 @@
                     <li>
                         <a href="/dashboard/profiles">Mis perfiles</a>
                     </li>
-                    <li>Cerrar sesión</li>
+                    <li>
+                        <form action="/logout" method="POST">
+                            <csrf></csrf>
+                            <button type="submit" class="btn btn-danger">Cerrar sesión</button>
+                        </form>
+                    </li>
                 </ul>
             </div>
             <div class="col">
-                <div v-if="user.twitter_profiles" class="dash-content">
+                <div v-if="user.twitter_profiles.length > 0" class="dash-content">
                     <div class="row">
                         <div class="col">
                             <form action="/twitter/login">
@@ -31,16 +36,16 @@
                                         <div class="col">
                                             <div class="row">
                                                 <div class="col profile-card-attribute">
-                                                    <h5>Tweets</h5>
                                                     <span>{{ profile.statuses_count }}</span>
+                                                    <h5 class="text-muted">Tweets</h5>
                                                 </div>
                                                 <div class="col profile-card-attribute">
-                                                    <h5>Siguiendo</h5>
                                                     <span>{{ profile.friends_count }}</span>
+                                                    <h5 class="text-muted">Siguiendo</h5>
                                                 </div>
                                                 <div class="col profile-card-attribute">
-                                                    <h5>Seguidores</h5>
                                                     <span>{{ profile.followers_count }}</span>
+                                                    <h5 class="text-muted">Seguidores</h5>
                                                 </div>
                                             </div>
                                         </div>
@@ -103,13 +108,16 @@
 
             .profile-card-attribute {
                 h5 {
+                    margin: 0;
                     text-transform: uppercase;
                     font-size: 10pt;
-                    font-weight: 600;
+                    font-weight: 500;
                 }
 
                 span {
-                    font-size: 14pt;
+                    font-size: 15pt;
+                    font-weight: 500;
+                    line-height: initial;
                 }
             }
         }

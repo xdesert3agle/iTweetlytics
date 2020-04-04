@@ -1,10 +1,15 @@
 // Variables
 @import 'buttons';
 @import 'variables';
+@import "~animate.css/animate.css";
 
 // Bootstrap
 @import '~bootstrap/scss/bootstrap';
 
 body {
     font-family: "Product Sans", Helvetica, Arial, serif;
+}
+
+.bold {
+    font-weight: bold;
 }

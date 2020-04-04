@@ -768,14 +768,14 @@ iframe {
 /*-----------------------------------
  * CARDS
  *-----------------------------------*/
-.card {
+/*.card {
   -webkit-transition: all 0.3s ease;
   -o-transition: all 0.3s ease;
   transition: all 0.3s ease; }
   .card:hover {
     margin-top: -5px;
     -webkit-box-shadow: 0 10px 40px rgba(0, 0, 0, 0.05);
-    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.05); }
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.05); }*/
 
 .stat-counter {
   color: #fff; }
@@ -829,10 +829,9 @@ iframe {
  * FORM
  *-----------------------------------*/
 .form-control {
-  height: 50px;
+  height: 45px;
   border-radius: 30px;
   padding: 5px 20px;
-  height: 55px;
   border-color: #ebebed;
   -webkit-box-shadow: 0 0 5px rgba(38, 38, 76, 0.05);
   box-shadow: 0 0 5px rgba(38, 38, 76, 0.05); }
