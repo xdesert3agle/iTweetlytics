@@ -2,14 +2,11 @@
     <div class="container-fluid login-container">
         <div class="container">
             <div class="row">
-                <div class="col-md-12">
+                <div class="col-md-5 col-12">
                     <div class="card">
                         <div class="card-body">
                             <div class="row">
-                                <div class="col form-left-side">
-
-                                </div>
-                                <div class="col-5 form-right-side">
+                                <div class="col form-right-side">
                                     <h3>Iniciar sesión</h3>
 
                                     <div class="form-group">
@@ -87,32 +84,28 @@
         background: url('/images/bg-login.jpg');
         background-size: cover;
 
-        & > * {
-            flex-grow: 1;
+        .container .row {
+            justify-content: center;
         }
+    }
 
-        .card {
-            margin-bottom: calc(33vh - 72px);
+    .card {
+        margin-bottom: calc(33vh - 72px);
 
-            .form-right-side {
-                h3 {
-                    margin-bottom: 0.7em;
-                    text-align: center;
-                }
+        .form-right-side {
+            h3 {
+                margin-bottom: 0.7em;
+                text-align: center;
             }
         }
+    }
 
-        input {
-            background-color: #f0f0f2;
-        }
+    .alert {
+        border: none;
+        border-left: 8px solid #cd2b2b;
 
-        .alert {
-            border: none;
-            border-left: 8px solid #cd2b2b;
-
-            i {
-                margin-right: 0.5em;
-            }
+        i {
+            margin-right: 0.5em;
         }
     }
 </style>
