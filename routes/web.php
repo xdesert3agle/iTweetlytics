@@ -21,6 +21,12 @@ Route::get('/', 'LandingPageController@index')->middleware('guest');
 
 // Rutas para usuarios autenticados
 Route::group(['middleware' => 'auth'], function () {
+    Route::prefix('ajax')->group(function () {
+        Route::prefix('user')->group(function () {
+            Route::get('refresh/{profileId}', 'UserController@refresh');
+        });
+    });
+
     Route::get('dashboard', 'DashboardController@index')->middleware('auth');
 });
 
