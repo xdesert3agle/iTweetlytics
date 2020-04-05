@@ -25,8 +25,31 @@ Vue.component('LandingPage', require('./components/pages/LandingPage.vue').defau
 Vue.component('Dashboard', require('./components/pages/Dashboard.vue').default);
 Vue.component('Login', require('./components/pages/Login.vue').default);
 
+// Elements
+Vue.component('TwitterProfileCard', require('./components/elements/TwitterProfileCard.vue').default);
+
 // Utility
 Vue.component('Csrf', require('./components/utility/Csrf.vue').default);
+
+import Toast from "vue-toastification";
+import "vue-toastification/dist/index.css";
+
+const options = {
+    position: "top-right",
+    timeout: 5000,
+    closeOnClick: true,
+    pauseOnFocusLoss: false,
+    pauseOnHover: true,
+    draggable: true,
+    draggablePercent: 0.6,
+    showCloseButtonOnHover: false,
+    hideProgressBar: true,
+    closeButton: "button",
+    icon: true,
+    rtl: false
+};
+
+Vue.use(Toast, options);
 
 /**
  * Next, we will create a fresh Vue application instance and attach it to

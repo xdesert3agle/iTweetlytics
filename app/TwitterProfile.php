@@ -2,9 +2,13 @@
 
 namespace App;
 
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 
 class TwitterProfile extends Model {
+    const REFRESH_COOLDOWN_SECS = 300;
+    const REFRESH_COOLDOWN_MINS = 5;
+
     protected $fillable = [
         'id',
         'user_id',
@@ -49,4 +53,34 @@ class TwitterProfile extends Model {
 
     public $incrementing = false;
     protected $keyType = 'string';
+
+    public function belongsToUser($userId) {
+        return $this->user_id == $userId;
+    }
+
+    public function secsSinceLastRefresh() {
+        $to = Carbon::createFromFormat('Y-m-d H:i:s', Carbon::now());
+        $from = Carbon::createFromFormat('Y-m-d H:i:s', $this->updated_at);
+
+        return $to->diffInSeconds($from);
+    }
+
+    public function secsUntilRefresh() {
+        return self::REFRESH_COOLDOWN_SECS - $this->secsSinceLastRefresh();
+    }
+
+    public function minsSinceLastRefresh() {
+        $to = Carbon::createFromFormat('Y-m-d H:i:s', Carbon::now());
+        $from = Carbon::createFromFormat('Y-m-d H:i:s', $this->updated_at);
+
+        return $to->diffInMinutes($from);
+    }
+
+    public function minsUntilRefresh() {
+        return self::REFRESH_COOLDOWN_MINS - $this->minsSinceLastRefresh();
+    }
+
+    public function canBeRefreshed() {
+        return $this->secsSinceLastRefresh() >= self::REFRESH_COOLDOWN_SECS;
+    }
 }

@@ -3,7 +3,9 @@ button {
     border-radius: 8px!important;
     font-weight: 500!important;
 
-    i {
-        margin-left: 0.4em;
+    &.btn-icon {
+        i {
+            margin-left: 0.4em;
+        }
     }
 }
