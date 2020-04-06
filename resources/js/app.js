@@ -22,7 +22,8 @@ window.Vue = require('vue');
 // Páginas
 Vue.component('HomePage', require('./components/HomePage.vue').default);
 Vue.component('LandingPage', require('./components/pages/LandingPage.vue').default);
-Vue.component('Dashboard', require('./components/pages/Dashboard.vue').default);
+Vue.component('Profiles', require('./components/pages/Profiles.vue').default);
+Vue.component('Stats', require('./components/pages/Stats.vue').default);
 Vue.component('Login', require('./components/pages/Login.vue').default);
 
 // Elements
@@ -50,6 +51,10 @@ const options = {
 };
 
 Vue.use(Toast, options);
+
+// Google Charts wrapper
+import VueGoogleCharts from 'vue-google-charts'
+Vue.use(VueGoogleCharts);
 
 /**
  * Next, we will create a fresh Vue application instance and attach it to

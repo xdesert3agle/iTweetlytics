@@ -63,7 +63,7 @@
                 this.loginError = false;
 
                 axios.post('login', this.user).then((data) => {
-                    window.location.href = 'dashboard';
+                    window.location.href = 'app';
 
                 }).catch((error) => {
                     this.loginError = true;

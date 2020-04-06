@@ -74,7 +74,7 @@ class LoginWithTwitterController extends Controller {
                     $this->assignTwitterProfileToUser($credentials, $tokens);
                 }
 
-                return Redirect::to(RouteServiceProvider::DASHBOARD);
+                return Redirect::to(RouteServiceProvider::APP);
             }
 
             return Redirect::route('twitter.error');

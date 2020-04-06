@@ -54,6 +54,13 @@ class TwitterProfile extends Model {
     public $incrementing = false;
     protected $keyType = 'string';
 
+
+    // ------------------------------------------------ MUTATORS ------------------------------------------------ //
+    public function getProfileImageUrlAttribute($value) {
+        return str_replace('_normal', '', $value);
+    }
+
+    // ------------------------------------------------ UTILITY ------------------------------------------------ //
     public function belongsToUser($userId) {
         return $this->user_id == $userId;
     }

@@ -1,20 +1,28 @@
 <template>
-    <div :class="colClass">
+    <div :class="cardClasses">
         <div class="card profile-card">
             <div class="banner-container">
                 <img class="card-img-top" :src="twitterProfile.profile_banner_url" :alt="'Banner del perfil ' + twitterProfile.screen_name">
-                <button @click="refreshProfile" class="btn btn-primary btn-refresh" data-toggle="tooltip" data-placement="top" title="Refrescar">
-                    <i class="fa fa-sync"></i>
-                </button>
+                <div class="banner-content-container">
+                    <button @click="refreshProfile" class="btn btn-primary btn-refresh" data-toggle="tooltip" data-placement="top" title="Refrescar">
+                        <i class="fa fa-sync"></i>
+                    </button>
+
+                    <div class="row no-gutters">
+                        <div class="col offset-3">
+                            <span class="profile-name">{{ twitterProfile.name }}</span>
+                        </div>
+                    </div>
+                </div>
             </div>
 
             <div class="profile-card-body">
-                <div class="row">
-                    <div class="col-auto">
+                <div class="row no-gutters">
+                    <div class="col-md-3 col-3 avatar-col">
                         <img class="profile-card-avatar" :src="twitterProfile.profile_image_url" :alt="'Avatar de ' + twitterProfile.screen_name">
                     </div>
                     <div class="col">
-                        <div class="row">
+                        <div class="row no-gutters">
                             <div class="col profile-card-attribute">
                                 <span>{{ twitterProfile.statuses_count }}</span>
                                 <h5 class="text-muted">Tweets</h5>
@@ -45,8 +53,8 @@
             this.activateTooltips();
         },
         computed: {
-            colClass: function() {
-                return 'col-' + (this.colSize ? this.colSize : 4);
+            cardClasses: function() {
+                return 'col-md-' + (this.colSize ? this.colSize : 4) + ' col-12 twitter-profile-card';
             },
             refreshProfileUrl() {
                 return '/ajax/user/refresh/' + this.twitterProfile.id;
@@ -57,6 +65,7 @@
                 axios.get(this.refreshProfileUrl).then((response) => {
                     if (response.data.status == 'success') {
                         this.twitterProfile = response.data.data;
+                        this.$toast.success(response.data.message);
                     } else {
                         this.$toast.error(response.data.message);
                     }
@@ -76,32 +85,67 @@
         border: none;
 
         .banner-container {
+            position: relative;
+
             .card-img-top {
                 border-top-left-radius: 10px;
                 border-top-right-radius: 10px;
             }
 
-            .btn-refresh {
+            .banner-content-container {
                 position: absolute;
-                top: 15px;
-                right: 15px;
-
-                width: 40px;
-                height: 40px;
+                top: 0;
+                width: 100%;
+                height: 100%;
+                padding-left: 15px;
 
                 display: flex;
+                align-items: flex-end;
                 justify-content: center;
-                border-radius: 50%!important;
+
+                box-shadow: inset 0 -55px 30px rgba(0, 0, 0, 0.5);
+                border-top-left-radius: 10px;
+                border-top-right-radius: 10px;
+
+                .row {
+                    width: 100%;
+                    padding: 10px 0;
+                }
+
+                .btn-refresh {
+                    position: absolute;
+                    top: 15px;
+                    right: 15px;
+
+                    width: 40px;
+                    height: 40px;
+
+                    display: flex;
+                    justify-content: center;
+                    border-radius: 50%!important;
+                }
+
+                .profile-name {
+                    line-height: initial;
+                    font-size: 16pt;
+                    color: white;
+                    margin-left: 12px;
+                }
             }
         }
 
         .profile-card-body {
             padding: 15px;
 
+            .avatar-col {
+                margin-right: 15px!important;
+            }
+
             .profile-card-avatar {
-                width: 110px;
+                width: 100%;
                 border-radius: 50%;
                 margin-top: -90px;
+                margin-right: 20px;
             }
 
             .profile-card-attribute {
@@ -118,6 +162,12 @@
                     line-height: initial;
                 }
             }
+        }
+    }
+
+    @media (max-width: 576px) {
+        .twitter-profile-card:not(:first-child) {
+            margin-top: 15px;
         }
     }
 </style>

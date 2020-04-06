@@ -25,6 +25,7 @@
     },
     "dependencies": {
         "animate.css": "^3.7.2",
+        "vue-google-charts": "^0.3.2",
         "vue-toastification": "^1.4.0"
     }
 }
