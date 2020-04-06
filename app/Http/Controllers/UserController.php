@@ -26,6 +26,7 @@ class UserController extends Controller {
 
             return [
                 'status' => 'success',
+                'message' => 'El perfil @' . $twProfile->screen_name . ' ha sido actualizado',
                 'data' => $twProfile
             ];
         } else {

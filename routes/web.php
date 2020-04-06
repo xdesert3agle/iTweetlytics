@@ -27,7 +27,7 @@ Route::group(['middleware' => 'auth'], function () {
         });
     });
 
-    Route::get('dashboard', 'DashboardController@index')->middleware('auth');
+    Route::get('app', 'AppController@index')->middleware('auth');
 });
 
 Route::get('twitter/login', ['as' => 'twitter.login', 'uses' => 'LoginWithTwitterController@requestLogin']);

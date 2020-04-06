@@ -4,8 +4,16 @@ button {
     font-weight: 500!important;
 
     &.btn-icon {
-        i {
+        i:first-child {
+            margin-right: 0.4em;
+        }
+
+        i:last-child {
             margin-left: 0.4em;
         }
     }
+}
+
+form > button:first-child {
+    margin-top: 1em;
 }

@@ -6,11 +6,11 @@ use App\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
-class DashboardController extends Controller {
+class AppController extends Controller {
     public function index() {
         $user = User::with('twitter_profiles')->find(Auth::id());
 
-        return view('dashboard')->with([
+        return view('app')->with([
             'user' => $user
         ]);
     }
