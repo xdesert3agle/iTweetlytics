@@ -22,6 +22,11 @@ window.Vue = require('vue');
 // Páginas
 Vue.component('HomePage', require('./components/HomePage.vue').default);
 Vue.component('LandingPage', require('./components/pages/LandingPage.vue').default);
+
+Vue.component('Dashboard', require('./components/pages/Dashboard/Dashboard.vue').default);
+    Vue.component('Timeline', require('./components/pages/Dashboard/Columns/Timeline/Timeline.vue').default);
+        Vue.component('Tweet', require('./components/pages/Dashboard/Columns/Timeline/Tweet.vue').default);
+
 Vue.component('Profiles', require('./components/pages/Profiles.vue').default);
 Vue.component('Stats', require('./components/pages/Stats.vue').default);
 Vue.component('Login', require('./components/pages/Login.vue').default);
