@@ -4,7 +4,7 @@
             <div class="banner-container">
                 <img class="card-img-top" :src="twitterProfile.profile_banner_url" :alt="'Banner del perfil ' + twitterProfile.screen_name">
                 <div class="banner-content-container">
-                    <button @click="refreshProfile" class="btn btn-primary btn-refresh" data-toggle="tooltip" data-placement="top" title="Refrescar">
+                    <button @click="refreshProfile" class="btn btn-primary btn-refresh" data-toggle="tooltip" data-placement="top" title="Actualizar perfil">
                         <i class="fa fa-sync"></i>
                     </button>
 
@@ -86,6 +86,7 @@
 
         .banner-container {
             position: relative;
+            height: 164px;
 
             .card-img-top {
                 border-top-left-radius: 10px;
@@ -103,7 +104,7 @@
                 align-items: flex-end;
                 justify-content: center;
 
-                box-shadow: inset 0 -55px 30px rgba(0, 0, 0, 0.5);
+                box-shadow: inset 0px -60px 50px -30px rgba(0, 0, 0, 0.5);
                 border-top-left-radius: 10px;
                 border-top-right-radius: 10px;
 

@@ -1,9 +1,9 @@
 @extends('layouts.app')
 
 @section('content')
-    <div class="container-fluid">
+    <div class="container-fluid app-container">
         <div class="row">
-            <div class="col-2">
+            <div class="col-md-auto col-12">
                 <ul class="nav flex-column nav-pills" id="pills-tab" role="tablist">
                     <li class="nav-item">
                         <a class="nav-link active" id="pills-home-tab" data-toggle="pill" href="#pills-home" role="tab" aria-controls="pills-home" aria-selected="true">Dashboard</a>
@@ -22,13 +22,13 @@
                     </li>
                 </ul>
             </div>
-            <div class="col">
+            <div class="col-md col-12">
                 <div class="tab-content" id="pills-tabContent">
                     <div class="tab-pane show active" id="pills-home" role="tabpanel" aria-labelledby="pills-home-tab">
-                        <stats></stats>
+                        <dashboard :timeline="{{ $timeline }}"></dashboard>
                     </div>
                     <div class="tab-pane" id="pills-stats" role="tabpanel" aria-labelledby="pills-stats-tab">
-                        Dashboard
+                        <stats></stats>
                     </div>
                     <div class="tab-pane" id="pills-profiles" role="tabpanel" aria-labelledby="pills-profiles-tab">
                         <profiles :user="{{ $user }}"></profiles>

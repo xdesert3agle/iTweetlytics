@@ -6,10 +6,28 @@
 // Bootstrap
 @import '~bootstrap/scss/bootstrap';
 
+header {
+    margin-bottom: 15px;
+}
+
 body {
     font-family: "Product Sans", Helvetica, Arial, serif;
+    background-color: #ebeef4 !important;
 }
 
 .bold {
     font-weight: bold;
+}
+
+.tab-content {
+    background-color: white;
+    padding: 0;
+}
+
+html, body {
+    height: 100%!important;
+}
+
+body {
+    overflow: hidden!important;
 }
