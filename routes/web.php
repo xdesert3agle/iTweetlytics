@@ -25,6 +25,19 @@ Route::group(['middleware' => 'auth'], function () {
         Route::prefix('user')->group(function () {
             Route::get('refresh/{profileId}', 'UserController@refresh');
         });
+
+        Route::prefix('tweets')->group(function () {
+            Route::prefix('retweet')->group(function () {
+                Route::post('/', 'AppController@retweetTweet');
+                Route::post('remove', 'AppController@removeRetweet');
+            });
+
+            Route::prefix('favorite')->group(function () {
+                Route::post('/', 'AppController@favoriteTweet');
+                Route::post('remove', 'AppController@removeFavorite');
+            });
+
+        });
     });
 
     Route::get('app', 'AppController@index')->middleware('auth');
