@@ -24,3 +24,12 @@ body {
     padding: 0;
 }
 
+:focus {
+    outline: 0!important;
+    border: 0!important;
+}
+
+html {
+    overflow: scroll;
+    overflow-x: hidden;
+}

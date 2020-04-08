@@ -86,7 +86,6 @@
 
         .banner-container {
             position: relative;
-            height: 164px;
 
             .card-img-top {
                 border-top-left-radius: 10px;
