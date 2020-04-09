@@ -32,8 +32,9 @@
         }
 
         ::-webkit-scrollbar {
-            width: 2px;  /* Remove scrollbar space */
+            width: 5px;  /* Remove scrollbar space */
             padding-left: 50px;
+            background-color: lighten(black, 85%);
             //background: transparent;  /* Optional: just make scrollbar invisible */
         }
 
