@@ -2,21 +2,60 @@
 
 namespace App\Http\Controllers;
 
+use App\TwitterProfile;
 use App\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Storage;
 use Thujohn\Twitter\Facades\Twitter;
 
 class AppController extends Controller {
     public function index() {
-        $timeline = Twitter::getHomeTimeline(['count' => 25, 'tweet_mode' => 'extended', 'format' => 'json']);
+        $timeline = Twitter::getHomeTimeline(['count' => 30, 'tweet_mode' => 'extended', 'format' => 'json']);
+        $mentions = Twitter::getMentionsTimeline(['tweet_mode' => 'extended', 'format' => 'json']);
+        $chats = $this->getParsedChats();
         $user = User::with('twitter_profiles')->find(Auth::id());
 
         return view('app')->with([
             'user' => $user,
-            'timeline' => $timeline
+            'timeline' => $timeline,
+            'mentions' => $mentions,
+            'chats' => $chats
         ]);
+    }
+
+    function getParsedChats() {
+        $dms = Twitter::getDms();
+        $messages = [];
+        $myId = "";
+
+        foreach ($dms->events as $dm) {
+            if (property_exists($dm->message_create, 'source_app_id')) {
+                $myId = $dm->message_create->sender_id;
+                break;
+            }
+        }
+
+        foreach ($dms->events as $dm) {
+            if ($dm->message_create->sender_id != $myId) {
+                $personId = $dm->message_create->sender_id;
+            } else {
+                $personId = $dm->message_create->target->recipient_id;
+            }
+
+            $messages[$personId][] = $dm;
+        }
+
+        $userProfiles = Twitter::getUsersLookup(['user_id' => array_keys($messages)]);
+
+        $chats = [];
+        foreach ($userProfiles as $i => $user) {
+            $chats[$i]['user'] = $user;
+            $chats[$i]['messages'] = $messages[$user->id];
+        }
+
+        return json_encode($chats);
     }
 
     public function retweetTweet(Request $r) {

@@ -25,7 +25,7 @@
             <div class="col-md col-12">
                 <div class="tab-content" id="pills-tabContent">
                     <div class="tab-pane show active" id="pills-home" role="tabpanel" aria-labelledby="pills-home-tab">
-                        <dashboard :timeline="{{ $timeline }}"></dashboard>
+                        <dashboard :timeline="{{ $timeline }}" :mentions="{{ $mentions }}" :chats="{{ $chats }}"></dashboard>
                     </div>
                     <div class="tab-pane" id="pills-stats" role="tabpanel" aria-labelledby="pills-stats-tab">
                         <stats></stats>
