@@ -4,6 +4,12 @@
             <div class="col-md-3 col-12">
                 <timeline :timeline="timeline"></timeline>
             </div>
+            <div class="col-md-3 col-12">
+                <mentions :mentions="mentions"></mentions>
+            </div>
+            <div class="col-md-3 col-12">
+                <dms :chats="chats"></dms>
+            </div>
         </div>
     </div>
 </template>
@@ -11,7 +17,9 @@
 <script>
     export default {
         props: [
-            'timeline'
+            'timeline',
+            'mentions',
+            'chats'
         ]
     }
 </script>

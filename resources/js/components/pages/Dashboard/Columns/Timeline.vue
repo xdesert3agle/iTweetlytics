@@ -8,7 +8,7 @@
             </div>
 
             <div class="row no-gutters">
-                <div class="col tl-container">
+                <div class="col tweet-list-container">
                     <tweet v-for="(tweet, i) in timeline" :tweet="tweet" :key="tweet.id"></tweet>
                 </div>
             </div>
@@ -25,7 +25,7 @@
             let dashHeight = $('.dash-container').height();
             let columnTitleHeight = $('.column-title').height();
 
-            $('.tl-container').height(dashHeight - columnTitleHeight - 15);
+            $('.tweet-list-container').height(dashHeight - columnTitleHeight - 15);
         }
     }
 </script>
@@ -36,7 +36,7 @@
     }
 
     .row {
-        .tl-container {
+        .tweet-list-container {
             overflow-x: hidden;
             overflow-y: scroll!important;
         }
