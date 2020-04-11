@@ -26,8 +26,10 @@ Vue.component('LandingPage', require('./components/pages/LandingPage.vue').defau
 Vue.component('Dashboard', require('./components/pages/Dashboard/Dashboard.vue').default);
     Vue.component('Timeline', require('./components/pages/Dashboard/Columns/Timeline.vue').default);
     Vue.component('Mentions', require('./components/pages/Dashboard/Columns/Mentions.vue').default);
-    Vue.component('Dms', require('./components/pages/Dashboard/Columns/Dms.vue').default);
-        Vue.component('Tweet', require('./components/pages/Dashboard/Columns/Tweet.vue').default);
+    Vue.component('Dms', require('./components/pages/Dashboard/Columns/Chats/Dms.vue').default);
+        Vue.component('Chat', require('./components/pages/Dashboard/Columns/Chats/Chat.vue').default);
+
+    Vue.component('Tweet', require('./components/pages/Dashboard/Columns/Tweet.vue').default);
 
 Vue.component('Profiles', require('./components/pages/Profiles.vue').default);
 Vue.component('Stats', require('./components/pages/Stats.vue').default);

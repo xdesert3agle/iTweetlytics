@@ -8,12 +8,12 @@
             </div>
 
             <div class="row no-gutters">
-                <div class="col tweet-list-container">
-                    <div v-for="(chat, i) in chats" class="card">
+                <div v-if="!clickedChat" class="col chat-list-container">
+                    <div v-for="(chat, i) in chats" @click="clickedChat = chat" class="card">
                         <div class="card-body">
                             <div class="row">
                                 <div class="col-2">
-                                    <img class="tweet-user-avatar" :src="chat.user.profile_image_url" :alt="'Imagen de perfil de @' + chat.user.screen_name">
+                                    <img class="chat-user-avatar" :src="chat.user.profile_image_url" :alt="'Imagen de perfil de @' + chat.user.screen_name">
                                 </div>
                                 <div class="col">
                                     <div class="row">
@@ -32,6 +32,7 @@
                         </div>
                     </div>
                 </div>
+                <chat v-else @back="goBack" class="col-12 animated slideInRight faster chat-elemen" :chat="clickedChat" :userId="user.twitter_profiles[0].id"></chat>
             </div>
         </div>
     </div>
@@ -40,13 +41,24 @@
 <script>
     export default {
         props: [
-            'chats'
+            'chats',
+            'user'
         ],
+        data() {
+            return {
+                clickedChat: null
+            }
+        },
         mounted() {
             let dashHeight = $('.dash-container').height();
             let columnTitleHeight = $('.column-title').height();
 
-            $('.tweet-list-container').height(dashHeight - columnTitleHeight - 15);
+            $('.chat-list-container').height(dashHeight - columnTitleHeight - 15);
+        },
+        methods: {
+            goBack() {
+                this.clickedChat = null;
+            }
         }
     }
 </script>
@@ -54,15 +66,19 @@
 <style lang="scss" scoped>
     $primaryColor: #7642FF;
 
-    .tweet-container {
-        .tweet-wrapper {
-            .tweet-card {
+    .column-title {
+        text-align: center;
+    }
+
+    .chat-container {
+        .chat-wrapper {
+            .chat-card {
                 border-radius: 0;
 
                 .card-body {
                     padding: 15px;
 
-                    .tweet-user-avatar {
+                    .chat-user-avatar {
                         border-radius: 50%;
                     }
 
@@ -78,10 +94,10 @@
 
                     }
 
-                    .tweet-options {
+                    .chat-options {
                         margin-top: 10px;
 
-                        .tweet-action {
+                        .chat-action {
                             cursor: pointer;
                             color: lighten(black, 65%);
                             transition: 200ms;
@@ -137,19 +153,19 @@
         }
 
         &:not(:first-child) {
-            .tweet-card {
+            .chat-card {
                 border-top: none;
             }
         }
 
         &:first-child {
-            .tweet-card {
+            .chat-card {
                 border-top-left-radius: 5px;
             }
         }
 
         &:last-child {
-            .tweet-card {
+            .chat-card {
                 border-bottom-left-radius: 5px;
             }
         }

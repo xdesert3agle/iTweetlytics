@@ -26,6 +26,10 @@ Route::group(['middleware' => 'auth'], function () {
             Route::get('refresh/{profileId}', 'UserController@refresh');
         });
 
+        Route::prefix('dm')->group(function () {
+            Route::post('send', 'UserController@sendDm');
+        });
+
         Route::prefix('tweets')->group(function () {
             Route::prefix('retweet')->group(function () {
                 Route::post('/', 'AppController@retweetTweet');
