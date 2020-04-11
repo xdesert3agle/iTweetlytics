@@ -1,6 +1,6 @@
 <template>
     <div class="container-fluid dash-container">
-        <div class="row dash-content">
+        <div class="row no-gutters dash-content">
             <div class="col-md-3 col-12">
                 <timeline :timeline="timeline"></timeline>
             </div>
@@ -8,7 +8,7 @@
                 <mentions :mentions="mentions"></mentions>
             </div>
             <div class="col-md-3 col-12">
-                <dms :chats="chats"></dms>
+                <dms :chats="chats" :user="user"></dms>
             </div>
         </div>
     </div>
@@ -17,6 +17,7 @@
 <script>
     export default {
         props: [
+            'user',
             'timeline',
             'mentions',
             'chats'
