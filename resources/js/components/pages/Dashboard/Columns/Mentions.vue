@@ -7,7 +7,7 @@
                 </div>
             </div>
 
-            <div class="row no-gutters">
+            <div class="row no-gutters tweet-list-row">
                 <div class="col tweet-list-container">
                     <tweet v-for="(tweet, i) in mentions" :tweet="tweet" :key="tweet.id"></tweet>
                 </div>
@@ -21,12 +21,6 @@
         props: [
             'mentions'
         ],
-        mounted() {
-            let dashHeight = $('.dash-container').height();
-            let columnTitleHeight = $('.column-title').height();
-
-            $('.tweet-list-container').height(dashHeight - columnTitleHeight - 15);
-        }
     }
 </script>
 
@@ -35,10 +29,13 @@
         text-align: center;
     }
 
-    .row {
+    .tweet-list-row {
         .tweet-list-container {
+            height: calc(100vh - 39.82px - 15px * 2 - 72.17px - 15px * 2 - 4px);
             overflow-x: hidden;
             overflow-y: scroll!important;
+
+            border-top: 1px solid rgba(0, 0, 0, 0.125);
         }
     }
 

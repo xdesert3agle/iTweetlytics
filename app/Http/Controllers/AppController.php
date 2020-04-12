@@ -24,7 +24,7 @@ class AppController extends Controller {
     }
 
     function getParsedChats() {
-        $dms = Twitter::getDms();
+        $dms = Twitter::getDms(['count' => 50]);
         $messages = [];
         $myId = "";
 
