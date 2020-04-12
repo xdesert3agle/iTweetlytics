@@ -6,8 +6,8 @@
                     <i class="fas fa-chevron-left" @click="$emit('back')"></i>
                 </div>
                 <div class="col">
-                    <span class="chat-title">{{ updatedChat.user.name }}</span>
-                    <span class="chat-subtitle text-muted">@{{ updatedChat.user.screen_name }}</span>
+                    <span class="chat-title">{{ dChat.user.name }}</span>
+                    <span class="chat-subtitle text-muted">@{{ dChat.user.screen_name }}</span>
                 </div>
             </div>
 
@@ -15,7 +15,7 @@
                 <div class="col">
                     <div class="chat">
                         <div class="message-list-container">
-                            <div v-for="(message, i) in reversedMessageList"
+                            <div v-for="(message, i) in dChat.messages"
                                  :class="{ 'mine': message.message_create.sender_id == userId, 'yours': message.message_create.sender_id != userId }"
                                  class="messages">
                                 <span class="message last">{{ message.message_create.message_data.text }}</span>
@@ -45,23 +45,22 @@
         ],
         data () {
             return {
-                updatedChat: this.chat,
+                dChat: this.chat,
                 text: null
             }
         },
-        computed : {
-            reversedMessageList() {
-                return this.updatedChat.messages.slice().reverse()
-            }
+        mounted() {
+            let element = $('.message-list-container');
+            element.scrollTop = element.scrollHeight;
         },
         methods: {
             sendMessage() {
                 axios.post('/ajax/dm/send', {
-                    'recipientId': this.updatedChat.user.id_str,
+                    'recipientId': this.dChat.user.id_str,
                     'text': this.text
                 }).then((response) => {
-                    console.log(response.data);
-                    this.updatedChat.messages.push(response.data.event);
+                    this.dChat.messages.unshift(response.data.event);
+                    this.text = null;
                 });
             }
         }
@@ -73,6 +72,7 @@
 
     .chat-container {
         .chat-title-row {
+            border: 1px solid rgba(0, 0, 0, 0.125);
             padding: 10px;
 
             .back-button-container {
@@ -118,13 +118,17 @@
         .chat {
             display: flex;
             flex-direction: column;
-
-            height: calc(100vh - 72px - 15px - 15px - 48px - 105px);
+            height: calc(100vh - 39.82px - 15px * 2 - 72.17px - 15px * 2 - 70.17px - 4.5px);
 
             .message-list-container {
+                display: flex;
+                flex-direction: column-reverse;
+
                 overflow-y: scroll;
                 overflow-x: hidden;
                 padding: 15px;
+                height: 100%;
+                border-left: 1px solid rgba(0, 0, 0, 0.125);
 
                 .messages {
                     display: flex;

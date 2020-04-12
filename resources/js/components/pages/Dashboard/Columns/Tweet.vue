@@ -125,6 +125,9 @@
         .tweet-wrapper {
             .tweet-card {
                 border-radius: 0;
+                border-left: 0;
+                border-right: 0;
+                border-top: none;
 
                 .card-body {
                     padding: 15px;
@@ -203,21 +206,9 @@
             }
         }
 
-        &:not(:first-child) {
-            .tweet-card {
-                border-top: none;
-            }
-        }
-
-        &:first-child {
-            .tweet-card {
-                border-top-left-radius: 5px;
-            }
-        }
-
         &:last-child {
             .tweet-card {
-                border-bottom-left-radius: 5px;
+                border-bottom: 1px solid rgba(0, 0, 0, 0.125);
             }
         }
     }

@@ -1,13 +1,13 @@
 <template>
     <div class="container-fluid dash-container">
         <div class="row no-gutters dash-content">
-            <div class="col-md-3 col-12">
+            <div class="col-md-3 col-12 twitter-column">
                 <timeline :timeline="timeline"></timeline>
             </div>
-            <div class="col-md-3 col-12">
+            <div class="col-md-3 col-12 twitter-column">
                 <mentions :mentions="mentions"></mentions>
             </div>
-            <div class="col-md-3 col-12">
+            <div class="col-md-3 col-12 twitter-column">
                 <dms :chats="chats" :user="user"></dms>
             </div>
         </div>
@@ -37,7 +37,11 @@
         .dash-content {
             max-height: 100% !important;
             flex: 1;
-            overflow: hidden
+            overflow: hidden;
+
+            .twitter-column {
+                overflow: hidden;
+            }
         }
 
         ::-webkit-scrollbar {
@@ -51,6 +55,16 @@
         ::-webkit-scrollbar-thumb {
             background: lighten($primaryColor, 8%);
             margin-left: 10px;
+        }
+    }
+
+    @media (max-width: 576px) {
+        .dash-container {
+            height: 100%;
+        }
+
+        .twitter-column:not(:first-child) {
+            margin-top: 2em;
         }
     }
 </style>
