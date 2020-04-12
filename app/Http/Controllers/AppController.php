@@ -10,7 +10,7 @@ use Thujohn\Twitter\Facades\Twitter;
 
 class AppController extends Controller {
     public function index() {
-        $timeline = Twitter::getHomeTimeline(['count' => 30, 'tweet_mode' => 'extended', 'format' => 'json']);
+        $timeline = Twitter::getHomeTimeline(['count' => 40, 'tweet_mode' => 'extended', 'format' => 'json']);
         $mentions = Twitter::getMentionsTimeline(['tweet_mode' => 'extended', 'format' => 'json']);
         $chats = $this->getParsedChats();
         $user = User::with('twitter_profiles')->find(Auth::id());

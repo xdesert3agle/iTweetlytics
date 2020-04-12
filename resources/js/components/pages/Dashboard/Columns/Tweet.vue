@@ -13,9 +13,10 @@
                     </div>
                     <div class="row">
                         <div class="col-2">
-                            <img :src="!updatedTweet.retweeted_status ? updatedTweet.user.profile_image_url : updatedTweet.retweeted_status.user.profile_image_url"
-                                 class="tweet-user-avatar"
-                                 :alt="'Imagen de perfil de @' + updatedTweet.user.screen_name">
+                            <img
+                                :src="!updatedTweet.retweeted_status ? updatedTweet.user.profile_image_url : updatedTweet.retweeted_status.user.profile_image_url"
+                                class="tweet-user-avatar"
+                                :alt="'Imagen de perfil de @' + updatedTweet.user.screen_name">
                         </div>
                         <div class="col">
                             <div class="row">
@@ -26,22 +27,27 @@
                             </div>
                             <div class="row">
                                 <div class="col">
-                                    <span class="tweet-text">{{ updatedTweet.retweeted_status ? updatedTweet.retweeted_status.full_text : updatedTweet.full_text }}</span>
+                                    <span class="tweet-text"
+                                          v-html="updatedTweet.retweeted_status ? linkifyEntities(updatedTweet.retweeted_status) : linkifyEntities(updatedTweet)"></span>
                                 </div>
                             </div>
-                            <div class="row tweet-options" :class="{'favorited-tweet': updatedTweet.favorited, 'retweeted-tweet': updatedTweet.retweeted }">
+                            <div class="row tweet-options"
+                                 :class="{'favorited-tweet': updatedTweet.favorited, 'retweeted-tweet': updatedTweet.retweeted }">
                                 <div class="col tweet-action action-comment">
                                     <i class="fa fa-comment"></i>
                                 </div>
 
-                                <div ref="actionRetweet" @click="toggleRetweet" class="col tweet-action action-retweet" :class="{'retweeted': updatedTweet.retweeted}">
+                                <div ref="actionRetweet" @click="toggleRetweet" class="col tweet-action action-retweet"
+                                     :class="{'retweeted': updatedTweet.retweeted}">
                                     <i class="fa fa-retweet"></i>
                                     <span v-if="updatedTweet.retweet_count > 0">{{ updatedTweet.retweet_count }}</span>
                                 </div>
 
-                                <div ref="actionFavorite" @click="toggleLike" class="col tweet-action action-like" :class="{'liked': updatedTweet.liked}">
+                                <div ref="actionFavorite" @click="toggleLike" class="col tweet-action action-like"
+                                     :class="{'liked': updatedTweet.liked}">
                                     <i class="fa fa-heart"></i>
-                                    <span v-if="updatedTweet.retweeted_status && updatedTweet.retweeted_status.favorite_count > 0">{{ updatedTweet.retweeted_status.favorite_count }}</span>
+                                    <span
+                                        v-if="updatedTweet.retweeted_status && updatedTweet.retweeted_status.favorite_count > 0">{{ updatedTweet.retweeted_status.favorite_count }}</span>
                                     <span v-else-if="!updatedTweet.retweeted_status && updatedTweet.favorite_count > 0">{{ updatedTweet.favorite_count }}</span>
                                 </div>
 
@@ -96,7 +102,7 @@
 
                 $(this.$refs.actionRetweet).toggleClass('retweeted');
 
-                axios.post(targetRoute, { id: targetId }).then((response) => {
+                axios.post(targetRoute, {id: targetId}).then((response) => {
                     this.updatedTweet = response.data;
                 });
             },
@@ -110,9 +116,163 @@
 
                 $(this.$refs.actionFavorite).toggleClass('liked');
 
-                axios.post(targetRoute, { id: this.updatedTweet.id_str }).then((response) => {
+                axios.post(targetRoute, {id: this.updatedTweet.id_str}).then((response) => {
                     this.updatedTweet = response.data;
                 });
+            },
+            /*escapeHTML(text) {
+                return $('<div/>').text(text).html()
+            },*/
+            linkify_entities(tweet) {
+                if (!(tweet.entities)) {
+                    return this.escapeHTML(tweet.full_text)
+                }
+
+                // This is very naive, should find a better way to parse this
+                var index_map = {};
+
+                $.each(tweet.entities.urls, (i, entry) => {
+                    index_map[entry.indices[0]] = [entry.indices[1], (text) => {
+                        return "<a href='" + this.escapeHTML(entry.url) + "'>" + this.escapeHTML(text) + "</a>"
+                    }]
+                });
+
+                $.each(tweet.entities.hashtags, (i, entry) => {
+                    index_map[entry.indices[0]] = [entry.indices[1], (text) => {
+                        return "<a href='http://twitter.com/search?q=" + escape("#" + entry.text) + "'>" + this.escapeHTML(text) + "</a>"
+                    }]
+                });
+
+                $.each(tweet.entities.user_mentions, (i, entry) => {
+                    index_map[entry.indices[0]] = [entry.indices[1], (text) => {
+                        return "<a title='" + this.escapeHTML(entry.name) + "' href='http://twitter.com/" + this.escapeHTML(entry.screen_name) + "'>" + "@" + entry.screen_name + "</a>"
+                    }]
+                });
+
+                var result = "";
+                var last_i = 0;
+                var i = 0;
+
+                // iterate through the string looking for matches in the index_map
+                for (i = 0; i < tweet.full_text.length; ++i) {
+                    var ind = index_map[i];
+                    if (ind) {
+                        var end = ind[0];
+                        var func = ind[1];
+                        if (i > last_i) {
+                            result += this.escapeHTML(tweet.full_text.substring(last_i, i))
+                        }
+                        result += func(tweet.full_text.substring(i, end));
+                        i = end - 1;
+                        last_i = end
+                    }
+                }
+
+                if (i > last_i) {
+                    result += this.escapeHTML(tweet.full_text.substring(last_i, i));
+                }
+
+                return result
+            },
+            escapeHTML(text) {
+                return $('<div/>').text(this.htmlCharsCorrect(text)).html();
+            },
+            htmlCharsCorrect(text) {
+                text = text.replace(/&amp;/g, '\u0026');
+                text = text.replace(/&gt;/g, '\u003E');
+                text = text.replace(/&lt;/g, '\u003C');
+                text = text.replace(/&(quot;|apos;)/g, '\u0022');
+                text = text.replace(/&#039;+/g, '\u0027');
+                return text;
+            },
+            linkifyEntities(tweet) {
+                var
+                    index_map = {},
+                    result = "",
+                    last_i = 0,
+                    i = 0,
+                    end,
+                    func,
+                    emoji;
+
+                var ranges = [
+                    '\ud83c[\udf00-\udfff]', // U+1F300 to U+1F3FF
+                    '\ud83d[\udc00-\ude4f]', // U+1F400 to U+1F64F
+                    '\ud83d[\ude80-\udeff]'  // U+1F680 to U+1F6FF
+                ];
+
+                var emojis = [];
+
+                console.log(tweet);
+
+                tweet.full_text = this.escapeHTML(tweet.full_text.replace(new RegExp(ranges.join('|'), 'g'), (match, offset, string) => {
+                    emojis.push({
+                        offset: offset,
+                        char: match
+                    });
+                    return '\u0091';
+                }));
+
+                if (!(tweet.entities)) {
+                    return this.escapeHTML(tweet.full_text);
+                }
+
+                if (tweet.entities.urls) {
+                    $.each(tweet.entities.urls,  (i, entry) => {
+                        index_map[entry.indices[0]] = [entry.indices[1], (text) => {
+                            return "<a href='" + this.escapeHTML(entry.url) + "'>" + this.escapeHTML(entry.display_url) + "</a>";
+                        }];
+                    });
+                }
+
+                if (tweet.entities.hashtags) {
+                    $.each(tweet.entities.hashtags, (i, entry) => {
+                        index_map[entry.indices[0]] = [entry.indices[1], (text) => {
+                            return "<a href='http://twitter.com/search?q=" + escape("#" + entry.text) + "'>" + this.escapeHTML(text) + "</a>";
+                        }];
+                    });
+                }
+
+                if (tweet.entities.user_mentions) {
+                    $.each(tweet.entities.user_mentions, (i, entry) => {
+                        index_map[entry.indices[0]] = [entry.indices[1], (text) => {
+                            return "<a title='" + this.escapeHTML(entry.name) + "' href='http://twitter.com/" + this.escapeHTML(entry.screen_name) + "'>" + this.escapeHTML(text) + "</a>";
+                        }];
+                    });
+                }
+
+                if (tweet.entities.hasOwnProperty('media')) {
+                    $.each(tweet.entities.media, (i, entry) => {
+                        index_map[entry.indices[0]] = [entry.indices[1], (text) => {
+                            return "<img src='" + this.escapeHTML(entry.media_url) + "' class='tweet-media-image'></img>";
+                        }];
+                    });
+                }
+
+                for (i = 0; i < tweet.full_text.length; ++i) {
+                    var ind = index_map[i];
+                    if (ind) {
+                        end = ind[0];
+                        func = ind[1];
+                        if (i > last_i) {
+                            result += this.escapeHTML(tweet.full_text.substring(last_i, i));
+                        }
+                        result += func(tweet.full_text.substring(i, end));
+                        i = end - 1;
+                        last_i = end;
+                    }
+                }
+
+                if (i > last_i) {
+                    result += this.escapeHTML(tweet.full_text.substring(last_i, i));
+                }
+
+                result = result.replace(/\u0091/g, (match, offset, string) => {
+                    emoji = emojis.shift();
+                    return '<span class="emoji">' + emoji.char + '</span>'
+                });
+
+                return result;
             }
         }
     }
@@ -146,6 +306,10 @@
 
                     .tweet-text {
 
+                    }
+
+                    .tweet-media-image {
+                        width: 100%!important;
                     }
 
                     .tweet-options {
