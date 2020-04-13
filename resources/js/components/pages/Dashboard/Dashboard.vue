@@ -8,6 +8,9 @@
                 <mentions :mentions="mentions"></mentions>
             </div>
             <div class="col-md-3 col-12 twitter-column">
+                <lists :lists="lists"></lists>
+            </div>
+            <div class="col-md-3 col-12 twitter-column">
                 <dms :chats="chats" :user="user"></dms>
             </div>
         </div>
@@ -20,7 +23,8 @@
             'user',
             'timeline',
             'mentions',
-            'chats'
+            'chats',
+            'lists'
         ]
     }
 </script>

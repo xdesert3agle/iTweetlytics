@@ -1,5 +1,5 @@
 <template>
-    <div class="row tweet-container">
+    <a :href="'https://twitter.com/' + updatedTweet.user.screen_name + '/status/' + updatedTweet.id_str" class="row tweet-container">
         <div class="col-md-12 tweet-wrapper">
             <div class="card tweet-card">
                 <div class="card-body">
@@ -46,17 +46,17 @@
                             </div>
                             <div class="row tweet-options"
                                  :class="{'favorited-tweet': updatedTweet.favorited, 'retweeted-tweet': updatedTweet.retweeted }">
-                                <div class="col tweet-action action-comment">
+                                <div ref="actionComment" class="col tweet-action action-comment">
                                     <i class="fa fa-comment"></i>
                                 </div>
 
-                                <div ref="actionRetweet" @click="toggleRetweet" class="col tweet-action action-retweet"
+                                <div ref="actionRetweet" @click.prevent="toggleRetweet" class="col tweet-action action-retweet"
                                      :class="{'retweeted': updatedTweet.retweeted}">
                                     <i class="fa fa-retweet"></i>
                                     <span v-if="updatedTweet.retweet_count > 0">{{ updatedTweet.retweet_count }}</span>
                                 </div>
 
-                                <div ref="actionFavorite" @click="toggleLike" class="col tweet-action action-like"
+                                <div ref="actionFavorite" @click.prevent="toggleLike" class="col tweet-action action-like"
                                      :class="{'liked': updatedTweet.liked}">
                                     <i class="fa fa-heart"></i>
                                     <span
@@ -73,7 +73,7 @@
                 </div>
             </div>
         </div>
-    </div>
+    </a>
 </template>
 
 <script>
@@ -103,22 +103,15 @@
             hasVideo() {
                 var hasVideo = false;
 
-                console.log("EMPIEZA: ----------------");
-
                 if (this.updatedTweet.extended_entities && this.updatedTweet.extended_entities.media) {
-                    console.log("Tiene " + this.updatedTweet.extended_entities.media.length + " extended_entities con media");
 
                     for (let i = 0; i < this.updatedTweet.extended_entities.media.length; i++) {
-                        console.log(this.updatedTweet.extended_entities.media[i]);
                         if (this.updatedTweet.extended_entities.media[i].type == "video") {
-                            console.log("Video found");
                             hasVideo = true;
                             break;
                         }
                     }
                 }
-
-                console.log("TERMINA: ----------------");
 
                 return hasVideo;
             }
@@ -264,6 +257,8 @@
     $textColor: #3E396B;
 
     .tweet-container {
+        color: inherit;
+
         .tweet-wrapper {
             .tweet-card {
                 border-radius: 0;
@@ -289,13 +284,9 @@
                     }
 
                     .tweet-text {
-
-                    }
-
-                    .expandable-image img {
-                        width: 100% !important;
-                        margin-top: 0.5em!important;
-                        border-radius: 4px!important;
+                        a {
+                            font-weight: 500!important;
+                        }
                     }
 
                     .tweet-options {
