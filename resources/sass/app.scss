@@ -33,3 +33,9 @@ html {
     overflow: scroll;
     overflow-x: hidden;
 }
+
+.expandable-image img {
+    width: 100% !important;
+    margin-top: 0.5em!important;
+    border-radius: 4px!important;
+}

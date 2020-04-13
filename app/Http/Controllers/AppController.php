@@ -13,13 +13,16 @@ class AppController extends Controller {
         $timeline = Twitter::getHomeTimeline(['count' => 40, 'tweet_mode' => 'extended', 'format' => 'json']);
         $mentions = Twitter::getMentionsTimeline(['tweet_mode' => 'extended', 'format' => 'json']);
         $chats = $this->getParsedChats();
+        $lists = $this->getParsedLists();
+
         $user = User::with('twitter_profiles')->find(Auth::id());
 
         return view('app')->with([
             'user' => $user,
             'timeline' => $timeline,
             'mentions' => $mentions,
-            'chats' => $chats
+            'chats' => $chats,
+            'lists' => json_encode($lists)
         ]);
     }
 
@@ -54,6 +57,16 @@ class AppController extends Controller {
         }
 
         return json_encode($chats);
+    }
+
+    function getParsedLists() {
+        $lists = Twitter::getLists();
+
+        foreach ($lists as $i => $list) {
+            $lists[$i]->tweets = Twitter::getListStatuses(['list_id' => $list->id_str, 'tweet_mode' => 'extended']);
+        }
+
+        return $lists;
     }
 
     public function retweetTweet(Request $r) {
