@@ -24,13 +24,21 @@
                                         </div>
                                         <div class="row no-gutters">
                                             <div class="col-1 list-creator-avatar-container">
-                                                <img class="list-creator-avatar" :src="list.user.profile_image_url" :alt="'Imagen de perfil de @' + list.user.screen_name">
+                                                <img class="list-creator-avatar" :src="list.user.profile_image_url"
+                                                     :alt="'Imagen de perfil de @' + list.user.screen_name">
                                             </div>
                                             <div class="col">
                                                 <div class="row">
                                                     <div class="col">
-                                                        <span class="name">{{ list.user.name }}</span>
-                                                        <span class="screen-name text-muted">@{{ list.user.screen_name }}</span>
+                                                        <a :href="'https://twitter.com/' + list.user.screen_name"
+                                                           class="list-author">
+                                                                <span class="name">
+                                                                    {{ list.user.name }}
+                                                                </span>
+                                                                <span class="screen-name text-muted">
+                                                                    @{{ list.user.screen_name }}
+                                                                </span>
+                                                        </a>
                                                     </div>
                                                 </div>
                                             </div>
@@ -71,6 +79,7 @@
 
 <style lang="scss" scoped>
     $primaryColor: #7642FF;
+    $textColor: #3E396B;
 
     .title-with-back-button {
         display: flex;
@@ -117,7 +126,7 @@
         .tweet-list-container {
             height: calc(100vh - 39.82px - 15px * 2 - 72.17px - 15px * 2 - 4px);
             overflow-x: hidden;
-            overflow-y: scroll!important;
+            overflow-y: scroll !important;
 
             border-left: 1px solid rgba(0, 0, 0, 0.125);
             border-top: 1px solid rgba(0, 0, 0, 0.125);
@@ -154,12 +163,22 @@
                             }
                         }
 
-                        .name {
-                            font-weight: bold;
-                        }
+                        .list-author {
+                            &:hover {
+                                .name {
+                                    text-decoration: underline;
+                                }
+                            }
 
-                        .screen-name {
-                            color: #a7a2ce;
+                            .name {
+                                font-weight: bold !important;
+                                color: $textColor;
+                            }
+
+                            .screen-name {
+                                font-weight: normal;
+                                color: #a7a2ce;
+                            }
                         }
 
                         .list-preview-message {
