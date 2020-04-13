@@ -65,6 +65,9 @@ Vue.use(Toast, options);
 import VueGoogleCharts from 'vue-google-charts'
 Vue.use(VueGoogleCharts);
 
+import VueExpandableImage from 'vue-expandable-image'
+Vue.use(VueExpandableImage);
+
 /**
  * Next, we will create a fresh Vue application instance and attach it to
  * the page. Then, you may begin adding components to this application

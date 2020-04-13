@@ -13,8 +13,7 @@
                     </div>
                     <div class="row">
                         <div class="col-2">
-                            <img
-                                :src="!updatedTweet.retweeted_status ? updatedTweet.user.profile_image_url : updatedTweet.retweeted_status.user.profile_image_url"
+                            <img :src="!updatedTweet.retweeted_status ? updatedTweet.user.profile_image_url : updatedTweet.retweeted_status.user.profile_image_url"
                                 class="tweet-user-avatar"
                                 :alt="'Imagen de perfil de @' + updatedTweet.user.screen_name">
                         </div>
@@ -29,6 +28,7 @@
                                 <div class="col">
                                     <span class="tweet-text"
                                           v-html="updatedTweet.retweeted_status ? linkifyEntities(updatedTweet.retweeted_status) : linkifyEntities(updatedTweet)"></span>
+                                    <expandable-image v-if="updatedTweet.entities.media" :src="updatedTweet.entities.media[0].media_url_https" closeOnBackgroundClick="true"></expandable-image>
                                 </div>
                             </div>
                             <div class="row tweet-options"
@@ -244,7 +244,8 @@
                 if (tweet.entities.hasOwnProperty('media')) {
                     $.each(tweet.entities.media, (i, entry) => {
                         index_map[entry.indices[0]] = [entry.indices[1], (text) => {
-                            return "<img src='" + this.escapeHTML(entry.media_url) + "' class='tweet-media-image'></img>";
+                            return "";
+                            //return "<img src='" + this.escapeHTML(entry.media_url) + "' class='tweet-media-image'></img>";
                         }];
                     });
                 }
@@ -309,7 +310,7 @@
                     }
 
                     .tweet-media-image {
-                        width: 100%!important;
+                        width: 100%;
                     }
 
                     .tweet-options {
