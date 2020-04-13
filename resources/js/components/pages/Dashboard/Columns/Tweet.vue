@@ -1,5 +1,6 @@
 <template>
-    <a :href="'https://twitter.com/' + updatedTweet.user.screen_name + '/status/' + updatedTweet.id_str" class="row tweet-container">
+    <a :href="'https://twitter.com/' + updatedTweet.user.screen_name + '/status/' + updatedTweet.id_str"
+       class="row tweet-container">
         <div class="col-md-12 tweet-wrapper">
             <div class="card tweet-card">
                 <div class="card-body">
@@ -13,32 +14,48 @@
                     </div>
                     <div class="row">
                         <div class="col-2">
-                            <img :src="!updatedTweet.retweeted_status ? updatedTweet.user.profile_image_url : updatedTweet.retweeted_status.user.profile_image_url"
+                            <img
+                                :src="!updatedTweet.retweeted_status ? updatedTweet.user.profile_image_url : updatedTweet.retweeted_status.user.profile_image_url"
                                 class="tweet-user-avatar"
                                 :alt="'Imagen de perfil de @' + updatedTweet.user.screen_name">
                         </div>
                         <div class="col-10">
                             <div class="row">
                                 <div class="col">
-                                    <a v-if="!updatedTweet.retweeted_status" :href="'https://twitter.com/' + updatedTweet.user.screen_name" class="name">
-                                        {{ updatedTweet.user.name }}
-                                        <span class="screen-name text-muted">@{{ updatedTweet.user.screen_name }}</span>
+                                    <a v-if="!updatedTweet.retweeted_status"
+                                       :href="'https://twitter.com/' + updatedTweet.user.screen_name"
+                                       class="tweet-author">
+                                        <span class="name">
+                                            {{ updatedTweet.user.name }}
+                                        </span>
+                                        <span class="screen-name text-muted">
+                                            @{{ updatedTweet.user.screen_name }}
+                                        </span>
                                     </a>
-                                    <a v-else :href="'https://twitter.com/' + updatedTweet.retweeted_status.user.screen_name" class="name">
-                                        {{ updatedTweet.retweeted_status.user.name }}
-                                        <span class="screen-name text-muted">@{{ updatedTweet.retweeted_status.user.screen_name }}</span>
+                                    <a v-else
+                                       :href="'https://twitter.com/' + updatedTweet.user.retweeted_status.screen_name"
+                                        class="tweet-author">
+                                        <span class="name">
+                                            {{ updatedTweet.retweeted_status.user.name }}
+                                            </span>
+                                        <span class="screen-name text-muted">
+                                            @{{ updatedTweet.retweeted_status.user.screen_name }}
+                                        </span>
                                     </a>
-
                                 </div>
                             </div>
                             <div class="row">
                                 <div class="col">
                                     <span class="tweet-text"
                                           v-html="updatedTweet.retweeted_status ? linkifyEntities(updatedTweet.retweeted_status) : linkifyEntities(updatedTweet)"></span>
-                                    <expandable-image class="tweet-media-image" v-if="updatedTweet.entities.media && !hasVideo" :src="updatedTweet.entities.media[0].media_url_https" closeOnBackgroundClick></expandable-image>
+                                    <expandable-image class="tweet-media-image"
+                                                      v-if="updatedTweet.entities.media && !hasVideo"
+                                                      :src="updatedTweet.entities.media[0].media_url_https"
+                                                      closeOnBackgroundClick></expandable-image>
                                     <vue-plyr v-if="hasVideo">
                                         <video>
-                                            <source :src="updatedTweet.extended_entities.media[0].video_info.variants[0].url">
+                                            <source
+                                                :src="updatedTweet.extended_entities.media[0].video_info.variants[0].url">
                                         </video>
                                     </vue-plyr>
 
@@ -50,13 +67,15 @@
                                     <i class="fa fa-comment"></i>
                                 </div>
 
-                                <div ref="actionRetweet" @click.prevent="toggleRetweet" class="col tweet-action action-retweet"
+                                <div ref="actionRetweet" @click.prevent="toggleRetweet"
+                                     class="col tweet-action action-retweet"
                                      :class="{'retweeted': updatedTweet.retweeted}">
                                     <i class="fa fa-retweet"></i>
                                     <span v-if="updatedTweet.retweet_count > 0">{{ updatedTweet.retweet_count }}</span>
                                 </div>
 
-                                <div ref="actionFavorite" @click.prevent="toggleLike" class="col tweet-action action-like"
+                                <div ref="actionFavorite" @click.prevent="toggleLike"
+                                     class="col tweet-action action-like"
                                      :class="{'liked': updatedTweet.liked}">
                                     <i class="fa fa-heart"></i>
                                     <span
@@ -190,7 +209,7 @@
                 }
 
                 if (tweet.entities.urls) {
-                    $.each(tweet.entities.urls,  (i, entry) => {
+                    $.each(tweet.entities.urls, (i, entry) => {
                         index_map[entry.indices[0]] = [entry.indices[1], (text) => {
                             return "<a href='" + this.escapeHTML(entry.url) + "'>" + this.escapeHTML(entry.display_url) + "</a>";
                         }];
@@ -273,9 +292,17 @@
                         border-radius: 50%;
                     }
 
-                    .name {
-                        font-weight: bold!important;
-                        color: $textColor;
+                    .tweet-author {
+                        &:hover {
+                            .name {
+                                text-decoration: underline;
+                            }
+                        }
+
+                        .name {
+                            font-weight: bold !important;
+                            color: $textColor;
+                        }
 
                         .screen-name {
                             font-weight: normal;
@@ -285,7 +312,7 @@
 
                     .tweet-text {
                         a {
-                            font-weight: 500!important;
+                            font-weight: 500 !important;
                         }
                     }
 
