@@ -68,6 +68,9 @@ Vue.use(VueGoogleCharts);
 import VueExpandableImage from 'vue-expandable-image'
 Vue.use(VueExpandableImage);
 
+import VuePlyr from 'vue-plyr'
+Vue.use(VuePlyr);
+
 /**
  * Next, we will create a fresh Vue application instance and attach it to
  * the page. Then, you may begin adding components to this application

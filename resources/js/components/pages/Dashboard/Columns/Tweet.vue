@@ -17,18 +17,31 @@
                                 class="tweet-user-avatar"
                                 :alt="'Imagen de perfil de @' + updatedTweet.user.screen_name">
                         </div>
-                        <div class="col">
+                        <div class="col-10">
                             <div class="row">
                                 <div class="col">
-                                    <span class="name">{{ !updatedTweet.retweeted_status ? updatedTweet.user.name : updatedTweet.retweeted_status.user.name }}</span>
-                                    <span class="screen-name text-muted">@{{ !updatedTweet.retweeted_status ? updatedTweet.user.screen_name : updatedTweet.retweeted_status.user.screen_name }}</span>
+                                    <a v-if="!updatedTweet.retweeted_status" :href="'https://twitter.com/' + updatedTweet.user.screen_name" class="name">
+                                        {{ updatedTweet.user.name }}
+                                        <span class="screen-name text-muted">@{{ updatedTweet.user.screen_name }}</span>
+                                    </a>
+                                    <a v-else :href="'https://twitter.com/' + updatedTweet.retweeted_status.user.screen_name" class="name">
+                                        {{ updatedTweet.retweeted_status.user.name }}
+                                        <span class="screen-name text-muted">@{{ updatedTweet.retweeted_status.user.screen_name }}</span>
+                                    </a>
+
                                 </div>
                             </div>
                             <div class="row">
                                 <div class="col">
                                     <span class="tweet-text"
                                           v-html="updatedTweet.retweeted_status ? linkifyEntities(updatedTweet.retweeted_status) : linkifyEntities(updatedTweet)"></span>
-                                    <expandable-image v-if="updatedTweet.entities.media" :src="updatedTweet.entities.media[0].media_url_https" closeOnBackgroundClick="true"></expandable-image>
+                                    <expandable-image class="tweet-media-image" v-if="updatedTweet.entities.media && !hasVideo" :src="updatedTweet.entities.media[0].media_url_https" closeOnBackgroundClick></expandable-image>
+                                    <vue-plyr v-if="hasVideo">
+                                        <video>
+                                            <source :src="updatedTweet.extended_entities.media[0].video_info.variants[0].url">
+                                        </video>
+                                    </vue-plyr>
+
                                 </div>
                             </div>
                             <div class="row tweet-options"
@@ -87,6 +100,28 @@
             removeLikeRoute() {
                 return '/ajax/tweets/favorite/remove';
             },
+            hasVideo() {
+                var hasVideo = false;
+
+                console.log("EMPIEZA: ----------------");
+
+                if (this.updatedTweet.extended_entities && this.updatedTweet.extended_entities.media) {
+                    console.log("Tiene " + this.updatedTweet.extended_entities.media.length + " extended_entities con media");
+
+                    for (let i = 0; i < this.updatedTweet.extended_entities.media.length; i++) {
+                        console.log(this.updatedTweet.extended_entities.media[i]);
+                        if (this.updatedTweet.extended_entities.media[i].type == "video") {
+                            console.log("Video found");
+                            hasVideo = true;
+                            break;
+                        }
+                    }
+                }
+
+                console.log("TERMINA: ----------------");
+
+                return hasVideo;
+            }
         },
         methods: {
             toggleRetweet() {
@@ -120,60 +155,6 @@
                     this.updatedTweet = response.data;
                 });
             },
-            /*escapeHTML(text) {
-                return $('<div/>').text(text).html()
-            },*/
-            linkify_entities(tweet) {
-                if (!(tweet.entities)) {
-                    return this.escapeHTML(tweet.full_text)
-                }
-
-                // This is very naive, should find a better way to parse this
-                var index_map = {};
-
-                $.each(tweet.entities.urls, (i, entry) => {
-                    index_map[entry.indices[0]] = [entry.indices[1], (text) => {
-                        return "<a href='" + this.escapeHTML(entry.url) + "'>" + this.escapeHTML(text) + "</a>"
-                    }]
-                });
-
-                $.each(tweet.entities.hashtags, (i, entry) => {
-                    index_map[entry.indices[0]] = [entry.indices[1], (text) => {
-                        return "<a href='http://twitter.com/search?q=" + escape("#" + entry.text) + "'>" + this.escapeHTML(text) + "</a>"
-                    }]
-                });
-
-                $.each(tweet.entities.user_mentions, (i, entry) => {
-                    index_map[entry.indices[0]] = [entry.indices[1], (text) => {
-                        return "<a title='" + this.escapeHTML(entry.name) + "' href='http://twitter.com/" + this.escapeHTML(entry.screen_name) + "'>" + "@" + entry.screen_name + "</a>"
-                    }]
-                });
-
-                var result = "";
-                var last_i = 0;
-                var i = 0;
-
-                // iterate through the string looking for matches in the index_map
-                for (i = 0; i < tweet.full_text.length; ++i) {
-                    var ind = index_map[i];
-                    if (ind) {
-                        var end = ind[0];
-                        var func = ind[1];
-                        if (i > last_i) {
-                            result += this.escapeHTML(tweet.full_text.substring(last_i, i))
-                        }
-                        result += func(tweet.full_text.substring(i, end));
-                        i = end - 1;
-                        last_i = end
-                    }
-                }
-
-                if (i > last_i) {
-                    result += this.escapeHTML(tweet.full_text.substring(last_i, i));
-                }
-
-                return result
-            },
             escapeHTML(text) {
                 return $('<div/>').text(this.htmlCharsCorrect(text)).html();
             },
@@ -202,8 +183,6 @@
                 ];
 
                 var emojis = [];
-
-                console.log(tweet);
 
                 tweet.full_text = this.escapeHTML(tweet.full_text.replace(new RegExp(ranges.join('|'), 'g'), (match, offset, string) => {
                     emojis.push({
@@ -270,6 +249,7 @@
 
                 result = result.replace(/\u0091/g, (match, offset, string) => {
                     emoji = emojis.shift();
+
                     return '<span class="emoji">' + emoji.char + '</span>'
                 });
 
@@ -281,6 +261,7 @@
 
 <style lang="scss" scoped>
     $primaryColor: #7642FF;
+    $textColor: #3E396B;
 
     .tweet-container {
         .tweet-wrapper {
@@ -298,19 +279,23 @@
                     }
 
                     .name {
-                        font-weight: bold;
-                    }
+                        font-weight: bold!important;
+                        color: $textColor;
 
-                    .screen-name {
-                        color: #a7a2ce;
+                        .screen-name {
+                            font-weight: normal;
+                            color: #a7a2ce;
+                        }
                     }
 
                     .tweet-text {
 
                     }
 
-                    .tweet-media-image {
-                        width: 100%;
+                    .expandable-image img {
+                        width: 100% !important;
+                        margin-top: 0.5em!important;
+                        border-radius: 4px!important;
                     }
 
                     .tweet-options {
