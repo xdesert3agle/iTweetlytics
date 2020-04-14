@@ -46,8 +46,8 @@
                             </div>
                             <div class="row">
                                 <div class="col">
-                                    <span class="tweet-text"
-                                          v-html="updatedTweet.retweeted_status ? linkifyEntities(updatedTweet.retweeted_status) : linkifyEntities(updatedTweet)"></span>
+                                    <div class="tweet-text"
+                                          v-html="updatedTweet.retweeted_status ? linkifyEntities(updatedTweet.retweeted_status) : linkifyEntities(updatedTweet)"></div>
 
                                     <expandable-image
                                         @click.native.prevent
@@ -108,9 +108,6 @@
                 updatedTweet: this.tweet,
                 response: []
             }
-        },
-        created() {
-            console.log(this.tweet.id);
         },
         computed: {
             retweetRoute() {
@@ -318,7 +315,7 @@
 
                     .tweet-text {
                         a {
-                            font-weight: 500 !important;
+                            font-weight: bold !important;
                         }
                     }
 
