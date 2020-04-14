@@ -33,7 +33,7 @@
                                         </span>
                                     </a>
                                     <a v-else
-                                       :href="'https://twitter.com/' + updatedTweet.user.retweeted_status.screen_name"
+                                       :href="'https://twitter.com/' + updatedTweet.retweeted_status.user.screen_name"
                                         class="tweet-author">
                                         <span class="name">
                                             {{ updatedTweet.retweeted_status.user.name }}
@@ -48,14 +48,17 @@
                                 <div class="col">
                                     <span class="tweet-text"
                                           v-html="updatedTweet.retweeted_status ? linkifyEntities(updatedTweet.retweeted_status) : linkifyEntities(updatedTweet)"></span>
-                                    <expandable-image class="tweet-media-image"
-                                                      v-if="updatedTweet.entities.media && !hasVideo"
-                                                      :src="updatedTweet.entities.media[0].media_url_https"
-                                                      closeOnBackgroundClick></expandable-image>
-                                    <vue-plyr v-if="hasVideo">
+
+                                    <expandable-image
+                                        @click.native.prevent
+                                        class="tweet-media-image"
+                                        v-if="updatedTweet.entities.media && !hasVideo"
+                                        :src="updatedTweet.entities.media[0].media_url_https"
+                                        closeOnBackgroundClick></expandable-image>
+
+                                    <vue-plyr v-if="hasVideo" @click.native.prevent>
                                         <video>
-                                            <source
-                                                :src="updatedTweet.extended_entities.media[0].video_info.variants[0].url">
+                                            <source :src="updatedTweet.extended_entities.media[0].video_info.variants[0].url">
                                         </video>
                                     </vue-plyr>
 
@@ -105,6 +108,9 @@
                 updatedTweet: this.tweet,
                 response: []
             }
+        },
+        created() {
+            console.log(this.tweet.id);
         },
         computed: {
             retweetRoute() {
