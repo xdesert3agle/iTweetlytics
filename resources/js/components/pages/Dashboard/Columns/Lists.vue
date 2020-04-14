@@ -49,10 +49,10 @@
                             </div>
                         </div>
                     </div>
-                    <div v-else class="row no-gutters animated slideInRight fastest tweet-list-row">
-                        <div class="col tweet-list-container">
-                            <tweet v-for="(tweet, i) in lists[clickedList].tweets" :tweet="tweet" :key="tweet.id"></tweet>
-                        </div>
+                </div>
+                <div v-if="showSpinner" class="spinner-container">
+                    <div class="spinner-border" role="status">
+                        <span class="sr-only">Loading...</span>
                     </div>
                 </div>
             </div>
@@ -68,7 +68,8 @@
         data() {
             return {
                 isChoosingList: true,
-                clickedList: null
+                clickedList: null,
+                showSpinner: false
             }
         },
         methods: {
@@ -76,6 +77,7 @@
                 this.clickedList = null;
             },
             fetchList(i) {
+                this.showSpinner = true;
                 this.clickedList = i;
 
                 if (!('tweets' in this.lists[this.clickedList])) {
@@ -152,6 +154,8 @@
     }
 
     .lists-column-container {
+        height: 100%;
+
         .lists-container {
             .list-preview-container {
                 cursor: pointer;
@@ -266,6 +270,19 @@
                     }
                 }
             }
+        }
+
+        .spinner-container {
+            position: absolute;
+            height: 100%;
+            width: 100%;
+
+            display: flex;
+            justify-content: center;
+            align-items: center;
+
+            background: #ff000029!important;
+            z-index: 1;
         }
 
         &:not(:first-child) {
