@@ -40,7 +40,10 @@ Route::group(['middleware' => 'auth'], function () {
                 Route::post('/', 'AppController@favoriteTweet');
                 Route::post('remove', 'AppController@removeFavorite');
             });
+        });
 
+        Route::prefix('list')->group(function () {
+                Route::get('fetch', 'ListController@fetchListTweets');
         });
     });
 

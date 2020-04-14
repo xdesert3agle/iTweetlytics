@@ -4,16 +4,17 @@
             <div class="row no-gutters">
                 <div class="col">
                     <div class="title-with-back-button">
-                        <i v-if="clickedList" @click="clickedList = null" class="fas fa-chevron-left"></i>
-                        <h4 class="column-title">{{ !clickedList ? "Listas" : clickedList.name }}</h4>
+                        <i v-if="!isChoosingList" @click="isChoosingList = true" class="fas fa-chevron-left"></i>
+                        <h4 class="column-title">{{ isChoosingList ? "Listas" : lists[clickedList].name }}</h4>
                     </div>
                 </div>
             </div>
 
             <div class="row no-gutters">
                 <div class="col lists-container">
-                    <div v-if="!clickedList" class="list-preview-container">
-                        <div v-for="(list, i) in lists" @click="clickedList = list" class="row list-preview-container">
+                    <div v-if="isChoosingList" class="list-preview-container">
+                        <div v-for="(list, i) in lists" @click="fetchList(i)"
+                             class="row list-preview-container">
                             <div class="col">
                                 <div class="card list-card">
                                     <div class="card-body">
@@ -32,12 +33,12 @@
                                                     <div class="col">
                                                         <a :href="'https://twitter.com/' + list.user.screen_name"
                                                            class="list-author">
-                                                                <span class="name">
-                                                                    {{ list.user.name }}
-                                                                </span>
-                                                                <span class="screen-name text-muted">
-                                                                    @{{ list.user.screen_name }}
-                                                                </span>
+                                                            <span class="name">
+                                                                {{ list.user.name }}
+                                                            </span>
+                                                            <span class="screen-name text-muted">
+                                                                @{{ list.user.screen_name }}
+                                                            </span>
                                                         </a>
                                                     </div>
                                                 </div>
@@ -50,7 +51,7 @@
                     </div>
                     <div v-else class="row no-gutters animated slideInRight fastest tweet-list-row">
                         <div class="col tweet-list-container">
-                            <tweet v-for="(tweet, i) in clickedList.tweets" :tweet="tweet" :key="tweet.id"></tweet>
+                            <tweet v-for="(tweet, i) in lists[clickedList].tweets" :tweet="tweet" :key="tweet.id"></tweet>
                         </div>
                     </div>
                 </div>
@@ -66,12 +67,29 @@
         ],
         data() {
             return {
+                isChoosingList: true,
                 clickedList: null
             }
         },
         methods: {
             goBack() {
                 this.clickedList = null;
+            },
+            fetchList(i) {
+                this.clickedList = i;
+
+                if (!('tweets' in this.lists[this.clickedList])) {
+                    axios.get('/ajax/list/fetch', {
+                        params: {
+                            'id_str': this.lists[i].id_str
+                        }
+                    }).then((response) => {
+                        this.lists[i].tweets = response.data;
+                        this.isChoosingList = false;
+                    });
+                } else {
+                    this.isChoosingList = false;
+                }
             }
         }
     }

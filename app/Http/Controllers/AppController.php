@@ -6,23 +6,28 @@ use App\TwitterProfile;
 use App\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Spatie\Async\Pool;
 use Thujohn\Twitter\Facades\Twitter;
 
 class AppController extends Controller {
     public function index() {
+        $starttime = microtime(true);
         $timeline = Twitter::getHomeTimeline(['count' => 40, 'tweet_mode' => 'extended', 'format' => 'json']);
         $mentions = Twitter::getMentionsTimeline(['tweet_mode' => 'extended', 'format' => 'json']);
         $chats = $this->getParsedChats();
-        $lists = $this->getParsedLists();
+        $lists = Twitter::getLists(['format' => 'json']);
 
         $user = User::with('twitter_profiles')->find(Auth::id());
+        $endtime = microtime(true);
+        $loadTime = $endtime - $starttime;
 
         return view('app')->with([
-            'user' => $user,
             'timeline' => $timeline,
             'mentions' => $mentions,
             'chats' => $chats,
-            'lists' => json_encode($lists)
+            'lists' => $lists,
+            'user' => $user,
+            'loadTime' => $loadTime
         ]);
     }
 

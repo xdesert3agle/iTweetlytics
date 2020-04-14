@@ -24,7 +24,8 @@
             'timeline',
             'mentions',
             'chats',
-            'lists'
+            'lists',
+            'loadtime'
         ]
     }
 </script>
