@@ -49,6 +49,11 @@
                             </div>
                         </div>
                     </div>
+                    <div v-else class="row no-gutters animated slideInRight fastest tweet-list-row">
+                        <div class="col tweet-list-container">
+                            <tweet v-for="(tweet, i) in lists[clickedList].tweets" :tweet="tweet" :key="tweet.id"></tweet>
+                        </div>
+                    </div>
                 </div>
                 <div v-if="showSpinner" class="spinner-container">
                     <div class="spinner-border" role="status">
@@ -77,10 +82,11 @@
                 this.clickedList = null;
             },
             fetchList(i) {
-                this.showSpinner = true;
                 this.clickedList = i;
 
                 if (!('tweets' in this.lists[this.clickedList])) {
+                    this.showSpinner = true;
+
                     axios.get('/ajax/list/fetch', {
                         params: {
                             'id_str': this.lists[i].id_str
@@ -88,6 +94,7 @@
                     }).then((response) => {
                         this.lists[i].tweets = response.data;
                         this.isChoosingList = false;
+                        this.showSpinner = false;
                     });
                 } else {
                     this.isChoosingList = false;
@@ -281,7 +288,7 @@
             justify-content: center;
             align-items: center;
 
-            background: #ff000029!important;
+            background: #ffffffd1!important;
             z-index: 1;
         }
 

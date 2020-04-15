@@ -214,7 +214,7 @@
                 if (tweet.entities.urls) {
                     $.each(tweet.entities.urls, (i, entry) => {
                         index_map[entry.indices[0]] = [entry.indices[1], (text) => {
-                            return "<a href='" + this.escapeHTML(entry.url) + "'>" + this.escapeHTML(entry.display_url) + "</a>";
+                            return "<a class='tweet-text-entity' href='" + this.escapeHTML(entry.url) + "'>" + this.escapeHTML(entry.display_url) + "</a>";
                         }];
                     });
                 }
@@ -222,7 +222,7 @@
                 if (tweet.entities.hashtags) {
                     $.each(tweet.entities.hashtags, (i, entry) => {
                         index_map[entry.indices[0]] = [entry.indices[1], (text) => {
-                            return "<a href='http://twitter.com/search?q=" + escape("#" + entry.text) + "'>" + this.escapeHTML(text) + "</a>";
+                            return "<a class='tweet-text-entity' href='http://twitter.com/search?q=" + escape("#" + entry.text) + "'>" + this.escapeHTML(text) + "</a>";
                         }];
                     });
                 }
@@ -230,7 +230,7 @@
                 if (tweet.entities.user_mentions) {
                     $.each(tweet.entities.user_mentions, (i, entry) => {
                         index_map[entry.indices[0]] = [entry.indices[1], (text) => {
-                            return "<a title='" + this.escapeHTML(entry.name) + "' href='http://twitter.com/" + this.escapeHTML(entry.screen_name) + "'>" + this.escapeHTML(text) + "</a>";
+                            return "<a class='tweet-text-entity' title='" + this.escapeHTML(entry.name) + "' href='http://twitter.com/" + this.escapeHTML(entry.screen_name) + "'>" + this.escapeHTML(text) + "</a>";
                         }];
                     });
                 }
@@ -239,7 +239,6 @@
                     $.each(tweet.entities.media, (i, entry) => {
                         index_map[entry.indices[0]] = [entry.indices[1], (text) => {
                             return "";
-                            //return "<img src='" + this.escapeHTML(entry.media_url) + "' class='tweet-media-image'></img>";
                         }];
                     });
                 }
@@ -314,8 +313,8 @@
                     }
 
                     .tweet-text {
-                        a {
-                            font-weight: bold !important;
+                        &-entity {
+                            font-weight: bold!important;
                         }
                     }
 
