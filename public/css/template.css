@@ -1061,12 +1061,18 @@ iframe {
  *-----------------------------------*/
 .form-control {
     height: 45px;
+    font-weight: 500;
+    background: white!important;
     border-radius: 30px;
     padding: 5px 20px;
     border-color: #ebebed;
     background-color: #f0f0f2;
     -webkit-box-shadow: 0 0 5px rgba(38, 38, 76, 0.05);
     box-shadow: 0 0 5px rgba(38, 38, 76, 0.05);
+}
+
+.form-control::placeholder {
+    font-weight: 500;
 }
 
 .btn-block {

@@ -1,5 +1,5 @@
 <template>
-    <div class="container-fluid">
+    <div class="container-fluid profiles-container">
         <div class="row">
             <div class="col-12">
                 <div v-if="user.twitter_profiles.length > 0" class="dash-content">
@@ -13,7 +13,7 @@
                     </div>
                 </div>
                 <div v-else class="first-profile-container">
-                    <p>No has agregado ningún perfil de Twitter a tu cuenta de iTweetlytics. Agrega uno para comenzar</p>
+                    <h5>No has agregado ningún perfil de Twitter a tu cuenta de iTweetlytics. Agrega uno para comenzar</h5>
                 </div>
 
                 <div class="row">
@@ -53,18 +53,7 @@
         margin-bottom: 1em;
     }
 
-    .dash-menu {
-        list-style-type: none;
-        padding: 0;
-
-        li {
-            padding: 10px 0;
-            text-transform: uppercase;
-            font-size: 11pt;
-
-            &:last-child {
-                color: red!important;
-            }
-        }
+    .profiles-container {
+        padding: 20px;
     }
 </style>

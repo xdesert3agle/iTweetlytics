@@ -6,10 +6,6 @@
 // Bootstrap
 @import '~bootstrap/scss/bootstrap';
 
-header {
-    margin-bottom: 15px;
-}
-
 body {
     font-family: "Product Sans", Helvetica, Arial, serif;
     background-color: #ebeef4 !important;
@@ -17,6 +13,11 @@ body {
 
 .bold {
     font-weight: bold;
+}
+
+.app-container {
+    overflow: hidden;
+    padding: 0;
 }
 
 .tab-content {
@@ -27,11 +28,6 @@ body {
 :focus {
     outline: 0!important;
     border: 0!important;
-}
-
-html {
-    overflow: scroll;
-    overflow-x: hidden;
 }
 
 .expandable-image img {

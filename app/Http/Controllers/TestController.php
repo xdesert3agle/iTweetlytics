@@ -8,13 +8,23 @@ use Thujohn\Twitter\Facades\Twitter;
 
 class TestController extends Controller {
     function test() {
-        //$tl = Twitter::getUserTimeline(['screen_name' => 'miguel_vb17', 'count' => 20, 'format' => 'json']);
+        $cursor = -1;
+        $api_path = "https://api.twitter.com/1.1/endpoint.json?screen_name=targetUser";
 
-        $file = Storage::get('tl.json');
-        $tl = json_decode(json_encode($file));
+        $followers = [];
+        $count = 0;
 
-        return view('home')->with([
-            'tl' => $tl,
+        Twitter::reconfig([
+            "token" => '722857467495854080-j5nsTXCs7OmQkQ80uNyNEaOV5nKzSQ9',
+            "secret" => 'VG7SzJed3TVtUj4U0uOtIUMj34cw8JVNF2bv5zI66a9VH',
         ]);
+
+        do {
+            $response = Twitter::getFollowersIds(['screen_name' => 'natiroman9', 'cursor' => $cursor]);
+            $followers[] = $response;
+            $cursor = $response->next_cursor;
+        } while ($cursor != 0 && ++$count <= 2);
+
+        dd($followers);
     }
 }

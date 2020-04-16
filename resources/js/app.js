@@ -23,12 +23,14 @@ window.Vue = require('vue');
 Vue.component('HomePage', require('./components/HomePage.vue').default);
 Vue.component('LandingPage', require('./components/pages/LandingPage.vue').default);
 
-Vue.component('Dashboard', require('./components/pages/Dashboard/Dashboard.vue').default);
-    Vue.component('Timeline', require('./components/pages/Dashboard/Columns/Timeline.vue').default);
-    Vue.component('Mentions', require('./components/pages/Dashboard/Columns/Mentions.vue').default);
-    Vue.component('Lists', require('./components/pages/Dashboard/Columns/Lists.vue').default);
-    Vue.component('Dms', require('./components/pages/Dashboard/Columns/Chats/Dms.vue').default);
-        Vue.component('Chat', require('./components/pages/Dashboard/Columns/Chats/Chat.vue').default);
+Vue.component('App', require('./components/pages/App.vue').default);
+    Vue.component('Dashboard', require('./components/pages/Dashboard/Dashboard.vue').default);
+        Vue.component('Timeline', require('./components/pages/Dashboard/Columns/Timeline/Timeline.vue').default);
+            Vue.component('ButtonNewTweet', require('./components/pages/Dashboard/Columns/Timeline/ButtonNewTweet.vue').default);
+        Vue.component('Mentions', require('./components/pages/Dashboard/Columns/Mentions.vue').default);
+        Vue.component('Lists', require('./components/pages/Dashboard/Columns/Lists.vue').default);
+        Vue.component('Dms', require('./components/pages/Dashboard/Columns/Chats/Dms.vue').default);
+            Vue.component('Chat', require('./components/pages/Dashboard/Columns/Chats/Chat.vue').default);
 
     Vue.component('Tweet', require('./components/pages/Dashboard/Columns/Tweet.vue').default);
 
