@@ -2,11 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use App\TwitterProfile;
 use App\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Spatie\Async\Pool;
 use Thujohn\Twitter\Facades\Twitter;
 
 class AppController extends Controller {
@@ -29,6 +27,15 @@ class AppController extends Controller {
             'user' => $user,
             'loadTime' => $loadTime
         ]);
+    }
+
+    public function postTweet(Request $r) {
+        Twitter::postTweet(['status' => $r->text]);
+
+        return [
+            'status' => 'success',
+            'message' => 'El tweet ha sido publicado.'
+        ];
     }
 
     function getParsedChats() {

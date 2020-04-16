@@ -18,6 +18,7 @@ use Thujohn\Twitter\Facades\Twitter;
 */
 
 Route::get('/', 'LandingPageController@index')->middleware('guest');
+Route::get('test', 'TestController@test')->middleware('guest');
 
 // Rutas para usuarios autenticados
 Route::group(['middleware' => 'auth'], function () {
@@ -31,6 +32,8 @@ Route::group(['middleware' => 'auth'], function () {
         });
 
         Route::prefix('tweets')->group(function () {
+            Route::post('/new', 'AppController@postTweet');
+
             Route::prefix('retweet')->group(function () {
                 Route::post('/', 'AppController@retweetTweet');
                 Route::post('remove', 'AppController@removeRetweet');

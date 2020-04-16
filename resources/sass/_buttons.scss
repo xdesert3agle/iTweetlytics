@@ -12,6 +12,14 @@ button {
             margin-left: 0.4em;
         }
     }
+
+    &.btn-small {
+        padding: 4px 10px!important;
+    }
+
+    &.btn-round {
+        border-radius: 20px!important;
+    }
 }
 
 form > button:first-child {

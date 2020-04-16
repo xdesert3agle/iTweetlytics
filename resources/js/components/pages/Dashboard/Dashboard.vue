@@ -2,7 +2,7 @@
     <div class="container-fluid dash-container">
         <div class="row no-gutters dash-content">
             <div class="col-md-3 col-12 twitter-column">
-                <timeline :timeline="timeline"></timeline>
+                <timeline :timeline="timeline" :user="user"></timeline>
             </div>
             <div class="col-md-3 col-12 twitter-column">
                 <mentions :mentions="mentions"></mentions>
@@ -36,7 +36,7 @@
     .dash-container {
         display: flex;
         flex-direction: column;
-        height: calc(100vh - 72px - 15px - 15px); // 72px (header) + 15px (padding header) + 15px (padding-bottom propio)
+        height: 100vh;
         padding: 15px;
 
         .dash-content {
