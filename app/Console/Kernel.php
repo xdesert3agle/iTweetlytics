@@ -7,6 +7,7 @@ use App\TwitterProfile;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 use Illuminate\Support\Facades\DB;
+use Thujohn\Twitter\Facades\Twitter;
 
 class Kernel extends ConsoleKernel {
     const REQUEST_WINDOW = 15;
@@ -28,7 +29,17 @@ class Kernel extends ConsoleKernel {
      * @return void
      */
     protected function schedule(Schedule $schedule) {
-        $allProfiles = TwitterProfile::all();
+        /*$profile = Twitter::getUsersLookup(['screen_name' => 'earcos']);
+
+        // Se calcula en número de peticiones necesarias para poder fetchear la lista completa de followers
+        $neededRequests = $profile[0]->followers_count / (self::MAX_CONSECUTIVE_REQUESTS * self::FOLLOWERS_PER_REQUEST);
+
+        // Se programan los jobs necesarios, con suficiente espacio entre ellos para no llegar al Rate Limit
+        for ($i = 0; $i < ceil($neededRequests); $i++) {
+            UpdateFollowersList::dispatch($profile[0])->delay(now()->addMinutes($i * self::REQUEST_WINDOW));
+        }*/
+
+        /*$allProfiles = TwitterProfile::all();
 
         foreach ($allProfiles as $profile) {
 
@@ -37,9 +48,9 @@ class Kernel extends ConsoleKernel {
 
             // Se programan los jobs necesarios, con suficiente espacio entre ellos para no llegar al Rate Limit
             for ($i = 0; $i < ceil($neededRequests); $i++) {
-                UpdateFollowersList::dispatch($podcast)->delay(now()->addMinutes($i * self::REQUEST_WINDOW));
+                UpdateFollowersList::dispatch($profile)->delay(now()->addMinutes($i * self::REQUEST_WINDOW));
             }
-        }
+        }*/
     }
 
     /**
