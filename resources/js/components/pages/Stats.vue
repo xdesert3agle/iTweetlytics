@@ -2,15 +2,26 @@
     <div class="container-fluid">
         <div class="row">
             <div class="col-12">
-                <h3>Column Chart</h3>
+                <h3>Estadísticas del perfil</h3>
+
+                <h4>Todos tus followers</h4>
+                <div class="row">
+                    <div class="col followers-container">
+                        <ul>
+                            <li v-for="(follower, i) in user.twitter_profiles[0].followers">{{ follower.twitter_user_id }}</li>
+                        </ul>
+                    </div>
+                    <div class="col">
+                        Gráfico de hace 7 días
+                    </div>
+                </div>
 
                 <GChart
                     :settings="{packages: ['bar']}"
                     :data="chartData"
                     :options="chartOptions"
                     :createChart="(el, google) => new google.charts.Bar(el)"
-                    @ready="onChartReady"
-                />
+                    @ready="onChartReady" />
             </div>
         </div>
     </div>
@@ -20,6 +31,9 @@
     import { GChart } from 'vue-google-charts'
 
     export default {
+        props: [
+            'user'
+        ],
         components: {
             GChart
         },
@@ -38,7 +52,7 @@
         },
         computed: {
             chartOptions () {
-                if (!this.chartsLib) return null
+                if (!this.chartsLib) return null;
                 return this.chartsLib.charts.Bar.convertOptions({
                     chart: {
                         title: 'Company Performance',
@@ -60,5 +74,8 @@
 </script>
 
 <style lang="scss" scoped>
-
+    .followers-container {
+        height: 80%;
+        overflow: scroll;
+    }
 </style>

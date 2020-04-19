@@ -32,7 +32,7 @@
                         <dashboard :user="user" :timeline="timeline" :mentions="mentions" :chats="chats" :lists="lists" :loadtime="loadtime"></dashboard>
                     </div>
                     <div v-if="user.twitter_profiles.length > 0" class="tab-pane" id="pills-stats" role="tabpanel" aria-labelledby="pills-stats-tab">
-                        <stats></stats>
+                        <stats :user="Object.freeze(user)"></stats>
                     </div>
                     <div class="tab-pane" :class="{'active': user.twitter_profiles.length == 0}" id="pills-profiles" role="tabpanel" aria-labelledby="pills-profiles-tab">
                         <profiles :user="user"></profiles>

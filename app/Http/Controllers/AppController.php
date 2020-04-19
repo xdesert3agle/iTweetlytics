@@ -9,13 +9,16 @@ use Thujohn\Twitter\Facades\Twitter;
 
 class AppController extends Controller {
     public function index() {
+        //dd(Twitter::getAppRateLimit());
         $starttime = microtime(true);
         $timeline = Twitter::getHomeTimeline(['count' => 40, 'tweet_mode' => 'extended', 'format' => 'json']);
         $mentions = Twitter::getMentionsTimeline(['tweet_mode' => 'extended', 'format' => 'json']);
         $chats = $this->getParsedChats();
         $lists = Twitter::getLists(['format' => 'json']);
+        $user = User::find(Auth::id())
+            ->with('twitter_profiles.followers')
+            ->first();
 
-        $user = User::with('twitter_profiles')->find(Auth::id());
         $endtime = microtime(true);
         $loadTime = $endtime - $starttime;
 
