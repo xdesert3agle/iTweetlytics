@@ -8,6 +8,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
+use Illuminate\Support\Facades\Storage;
 use Thujohn\Twitter\Facades\Twitter;
 
 class UpdateFollowersList implements ShouldQueue {
@@ -18,21 +19,12 @@ class UpdateFollowersList implements ShouldQueue {
 
     protected $profile;
 
-    /**
-     * Create a new job instance.
-     *
-     * @param $profile
-     */
     public function __construct($profile) {
         $this->profile = $profile;
     }
 
-    /**
-     * Execute the job.
-     *
-     * @return void
-     */
     public function handle() {
+        $dbFollowers = Follower::where('twitter_profile_id', $this->profile->id)->get();
         $cursor = $this->profile->next_followers_cursor;
         $count = 0;
 
@@ -46,18 +38,27 @@ class UpdateFollowersList implements ShouldQueue {
             $response = Twitter::getFollowersIds(['screen_name' => $this->profile->screen_name, 'cursor' => $cursor, 'count' => 5000]);
             $cursor = $response->next_cursor;
 
-            // Se inserta una entrada en la tabla de followers por cada ID recogida en la petición
             foreach ($response->ids as $id) {
-                $follower = new Follower;
-                $follower->twitter_profiles_id = $this->profile->id;
-                $follower->twitter_user_id = $id;
-                $follower->save();
+                $isFollower = $dbFollowers->firstWhere('twitter_user_id', $id) != null;
+
+                // Se inserta si la ID no está entre los followers
+                if (!$isFollower) {
+                    $follower = new Follower;
+                    $follower->twitter_profile_id = $this->profile->id;
+                    $follower->twitter_user_id = $id;
+                    $follower->save();
+                }
             }
 
         } while ($cursor != 0 && ++$count < self::MAX_CONSECUTIVE_REQUESTS); // Hasta que el cursor sea 0 o hasta límite de repeticiones
 
         // Se guarda el cursor si aún no se ha terminado de recorrer todas las páginas. Si no, se pone a -1
-        $this->profile->next_cursor = $cursor != 0 ? $cursor : -1;
+        $this->profile->next_followers_cursor = $cursor != 0 ? $cursor : -1;
         $this->profile->save();
+    }
+
+    protected function addToLog($string) {
+        $file = Storage::get('file.txt');
+        Storage::put('file.txt', $file . "$string\n");
     }
 }

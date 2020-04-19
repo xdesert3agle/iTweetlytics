@@ -54,6 +54,10 @@ class TwitterProfile extends Model {
     public $incrementing = false;
     protected $keyType = 'string';
 
+    // ---------------------------------------------- RELATIONSHIPS --------------------------------------------- //
+    public function followers() {
+        return $this->hasMany('App\Follower');
+    }
 
     // ------------------------------------------------ MUTATORS ------------------------------------------------ //
     public function getProfileImageUrlAttribute($value) {
