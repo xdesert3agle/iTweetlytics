@@ -2,7 +2,7 @@
 
 namespace App\Console\Commands;
 
-use App\Jobs\UpdateFollowersList;
+use App\Jobs\UpdateFollowersAndUnfollowers;
 use App\TwitterProfile;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Storage;
@@ -58,7 +58,7 @@ class UpdateFollowers extends Command {
 
             // Se mandan los jobs necesarios, con suficiente espacio entre ellos para no llegar al Rate Limit
             for ($j = 0; $j < ceil($neededJobs); $j++) {
-                UpdateFollowersList::dispatch($profile)->delay(now()->addMinutes($j * self::REQUEST_WINDOW)->addSeconds(10));
+                UpdateFollowersAndUnfollowers::dispatch($profile)->delay(now()->addMinutes($j * self::REQUEST_WINDOW)->addSeconds(10));
             }
         }
     }
