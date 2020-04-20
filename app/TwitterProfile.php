@@ -59,6 +59,10 @@ class TwitterProfile extends Model {
         return $this->hasMany('App\Follower');
     }
 
+    public function reports() {
+        return $this->hasMany('App\Report');
+    }
+
     // ------------------------------------------------ MUTATORS ------------------------------------------------ //
     public function getProfileImageUrlAttribute($value) {
         return str_replace('_normal', '', $value);

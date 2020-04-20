@@ -4,6 +4,6 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Unfollower extends Model {
-
+class Report extends Model {
+    //
 }

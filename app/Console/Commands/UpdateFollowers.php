@@ -24,7 +24,7 @@ class UpdateFollowers extends Command {
      *
      * @var string
      */
-    protected $description = 'Recopila la lista de followers de todos los perfiles de la web para el día actual.';
+    protected $description = 'Registra y gestiona los cambios en los followers de los perfiles de Twitter.';
 
     /**
      * Create a new command instance.
@@ -41,30 +41,19 @@ class UpdateFollowers extends Command {
      * @return mixed
      */
     public function handle() {
-        $this->addToLog('Comenzando el fetcheo');
-
         $allProfiles = TwitterProfile::all();
-
-        $this->addToLog('Recogidos todos los twitter profiles');
+        $isLast = false;
 
         foreach ($allProfiles as $i => $profile) {
 
-            $this->addToLog("$i: $profile->screen_name");
-
             // Se calcula el número de peticiones necesarias para poder fetchear la lista completa de followers del perfil
-            $neededJobs = $profile->followers_count / (self::MAX_CONSECUTIVE_REQUESTS * self::FOLLOWERS_PER_REQUEST);
-
-            $this->addToLog("Se van a necesitar " . ceil($neededJobs) . " jobs.");
+            $neededJobs = ceil($profile->followers_count / (self::MAX_CONSECUTIVE_REQUESTS * self::FOLLOWERS_PER_REQUEST));
 
             // Se mandan los jobs necesarios, con suficiente espacio entre ellos para no llegar al Rate Limit
-            for ($j = 0; $j < ceil($neededJobs); $j++) {
-                UpdateFollowersAndUnfollowers::dispatch($profile)->delay(now()->addMinutes($j * self::REQUEST_WINDOW)->addSeconds(10));
+            for ($j = 0; $j < $neededJobs; $j++) {
+                $isLast = $j == ($neededJobs - 1) ? true : false;
+                UpdateFollowersAndUnfollowers::dispatch($profile, $isLast)->delay(now()->addMinutes($j * self::REQUEST_WINDOW)->addSeconds(10));
             }
         }
-    }
-
-    protected function addToLog($string) {
-        $file = Storage::get('file.txt');
-        Storage::put('file.txt', $file . "$string\n");
     }
 }
