@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Report;
 use App\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -16,7 +17,7 @@ class AppController extends Controller {
         $chats = $this->getParsedChats();
         $lists = Twitter::getLists(['format' => 'json']);
         $user = User::find(Auth::id())
-            ->with('twitter_profiles.followers')
+            ->with('twitter_profiles.reports')
             ->first();
 
         $endtime = microtime(true);

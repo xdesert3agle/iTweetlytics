@@ -3,13 +3,14 @@
 namespace App\Jobs;
 
 use App\Follower;
-use App\Unfollower;
+use App\ProfileChange;
+use App\Report;
+use Carbon\Carbon;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
-use Illuminate\Support\Facades\Storage;
 use Thujohn\Twitter\Facades\Twitter;
 
 class UpdateFollowersAndUnfollowers implements ShouldQueue {
@@ -18,13 +19,19 @@ class UpdateFollowersAndUnfollowers implements ShouldQueue {
     const MAX_CONSECUTIVE_REQUESTS = 15;
     const FOLLOWERS_PER_REQUEST = 5000;
 
-    protected $profile;
+    const ACTION_FOLLOW = 'follow';
+    const ACTION_UNFOLLOW = 'unfollow';
 
-    public function __construct($profile) {
+    protected $profile;
+    protected $isLast;
+
+    public function __construct($profile, $isLast) {
         $this->profile = $profile;
+        $this->isLast = $isLast;
     }
 
     public function handle() {
+        $dbFollowers = Follower::where('twitter_profile_id', $this->profile->id)->get()->pluck('twitter_user_id')->toArray();
         $fetchedFollowers = [];
 
         $cursor = $this->profile->next_followers_cursor;
@@ -36,6 +43,7 @@ class UpdateFollowersAndUnfollowers implements ShouldQueue {
             "secret" => $this->profile->oauth_token_secret,
         ]);
 
+        // Se fetchean los seguidores
         do {
             $response = Twitter::getFollowersIds(['screen_name' => $this->profile->screen_name, 'cursor' => $cursor, 'count' => 5000, 'stringify_ids' => 'true']);
             $cursor = $response->next_cursor;
@@ -47,37 +55,70 @@ class UpdateFollowersAndUnfollowers implements ShouldQueue {
         $this->profile->next_followers_cursor = $cursor != 0 ? $cursor : -1;
         $this->profile->save();
 
-        $dbFollowers = Follower::where('twitter_profile_id', $this->profile->id)->get()->pluck('twitter_user_id')->toArray();
+        $this->manageFollows($dbFollowers, $fetchedFollowers);
+        $this->manageUnfollows($dbFollowers, $fetchedFollowers);
 
-        $newUnfollowers = $this->getNewUnfollowers($dbFollowers, $fetchedFollowers);
+        if ($this->isLast) {
+            $this->generateDailyReport();
+        }
+    }
+
+    protected function generateDailyReport() {
+        $profileChanges = ProfileChange::where([
+            ['twitter_profile_id', $this->profile->id],
+        ])->whereDate('created_at', Carbon::today())->get();
+
+        $report = new Report;
+        $report->twitter_profile_id = $this->profile->id;
+        $report->follows = count($profileChanges->where('action', self::ACTION_FOLLOW));
+        $report->unfollows = count($profileChanges->where('action', self::ACTION_UNFOLLOW));
+        $report->followers_variation = $report->follows - $report->unfollows;
+        $report->profile_total_followers = Follower::where('twitter_profile_id', $this->profile->id)->get()->count();
+
+        $report->save();
+    }
+
+    protected function manageFollows($dbFollowers, $fetchedFollowers) {
+        $newFollowers = array_diff($fetchedFollowers, $dbFollowers);
+
+        foreach ($newFollowers as $followerId) {
+
+            // Nuevo follower a la lista
+            $follower = new Follower;
+            $follower->twitter_profile_id = $this->profile->id;
+            $follower->twitter_user_id = $followerId;
+            $follower->save();
+
+            // Se registra el cambio
+            $profileChange = new ProfileChange;
+            $profileChange->twitter_profile_id = $this->profile->id;
+            $profileChange->twitter_user_id = $followerId;
+            $profileChange->action = self::ACTION_FOLLOW;
+            $profileChange->save();
+        }
+    }
+
+    protected function manageUnfollows($dbFollowers, $fetchedFollowers) {
+        $newUnfollowers = array_diff($dbFollowers, $fetchedFollowers);
+
         foreach ($newUnfollowers as $unfollowerId) {
-            $unfollower = new Unfollower;
-            $unfollower->twitter_profile_id = $this->profile->id;
-            $unfollower->twitter_user_id = $unfollowerId;
-            $unfollower->save();
+            // Se registra el cambio
+            $profileChange = new ProfileChange;
+            $profileChange->twitter_profile_id = $this->profile->id;
+            $profileChange->twitter_user_id = $unfollowerId;
+            $profileChange->action = self::ACTION_UNFOLLOW;
+            $profileChange->save();
 
+            // Se elimina el usuario de la lista de followers
             Follower::where([
                 ['twitter_profile_id', $this->profile->id],
                 ['twitter_user_id', $unfollowerId]
             ])->delete();
         }
-
-        $newFollowers = $this->getNewFollowers($dbFollowers, $fetchedFollowers);
-        foreach ($newFollowers as $followerId) {
-            $follower = new Follower;
-            $follower->twitter_profile_id = $this->profile->id;
-            $follower->twitter_user_id = $followerId;
-            $follower->save();
-        }
     }
 
-    protected function getNewUnfollowers($dbFollowers, $fetchedFollowers) {
-        print_r($dbFollowers);
-        print_r($fetchedFollowers);
-        return array_diff($dbFollowers, $fetchedFollowers);
-    }
-
-    protected function getNewFollowers($dbFollowers, $fetchedFollowers) {
-        return array_diff($fetchedFollowers, $dbFollowers);
+    protected function addToLog($string) {
+        $file = Storage::get('file.txt');
+        Storage::put('file.txt', $file . "$string\n");
     }
 }

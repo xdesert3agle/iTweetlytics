@@ -4,18 +4,18 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateDailyReports extends Migration
-{
+class CreateReports extends Migration {
     /**
      * Run the migrations.
      *
      * @return void
      */
-    public function up()
-    {
-        Schema::create('daily_reports', function (Blueprint $table) {
+    public function up() {
+        Schema::create('reports', function (Blueprint $table) {
             $table->id();
             $table->string('twitter_profile_id', 20)->nullable();
+            $table->integer('followers')->nullable();
+            $table->integer('unfollowers')->nullable();
             $table->integer('followers_variation')->nullable();
             $table->timestamps();
 
@@ -28,8 +28,7 @@ class CreateDailyReports extends Migration
      *
      * @return void
      */
-    public function down()
-    {
-        Schema::dropIfExists('daily_reports');
+    public function down() {
+        Schema::dropIfExists('reports');
     }
 }
