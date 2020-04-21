@@ -4,20 +4,40 @@
             <div class="col-12">
                 <h3>Estadísticas del perfil</h3>
 
-                <h4>Followers</h4>
                 <div class="row">
                     <div class="col followers-container">
-                        <ul>
-                            <li v-for="(follower, i) in user.twitter_profiles[0].reports.profile_total_followers">{{ follower.twitter_user_id }}</li>
-                        </ul>
+                        <h4>Followers</h4>
+                        <div v-for="(follower, i) in user.twitter_profiles[0].followers">
+                            <div class="col follower">
+                                <span class="name">
+                                    {{ follower.name }}
+                                </span>
+                                <span class="screen-name text-muted">
+                                    @{{ follower.screen_name }}
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col followers-container">
+                        <h4>Unfollowers recientes</h4>
+                        <div v-for="(change, i) in user.twitter_profiles[0].profile_changes">
+                            <div v-if="change.action == 'unfollow'" class="col follower">
+                                <span class="name">
+                                    {{ change.name }}
+                                </span>
+                                <span class="screen-name text-muted">
+                                    @{{ change.screen_name }}
+                                </span>
+                            </div>
+                        </div>
                     </div>
                     <div class="col">
                         <GChart
-                            :settings="{packages: ['bar']}"
+                            :settings="{packages: ['line']}"
                             :data="chartData"
                             :options="chartOptions"
-                            :createChart="(el, google) => new google.charts.Bar(el)"
-                            @ready="onChartReady" />
+                            :createChart="(el, google) => new google.charts.Line(el)"
+                            @ready="onChartReady"/>
                     </div>
                 </div>
             </div>
@@ -26,7 +46,7 @@
 </template>
 
 <script>
-    import { GChart } from 'vue-google-charts'
+    import {GChart} from 'vue-google-charts'
 
     export default {
         props: [
@@ -50,40 +70,70 @@
             }
         },
         computed: {
-            chartOptions () {
+            chartOptions() {
                 if (!this.chartsLib) return null;
-                return this.chartsLib.charts.Bar.convertOptions({
+                return this.chartsLib.charts.Line.convertOptions({
                     chart: {
                         title: 'Seguidores totales',
                         subtitle: 'Variación de los seguidores totales de los últimos 30 días'
                     },
-                    bars: 'vertical', // Required for Material Bar Charts.
-                    hAxis: { format: 'decimal' },
+                    width: 600,
                     height: 400,
-                    colors: ['#1b9e77', '#d95f02', '#7570b3']
+                    colors: ['#7570b3']
                 })
             }
         },
         created() {
             this.chartData = [
-                ['Year', 'Seguidores'],
+                ['Fecha', 'Seguidores'],
             ];
 
             for (let i = 0; i < this.user.twitter_profiles[0].reports.length; i++) {
-                this.chartData.push([this.user.twitter_profiles[0].reports[i].created_at, this.user.twitter_profiles[0].reports[i].profile_total_followers]);
+                this.chartData.push([this.parseISOString(this.user.twitter_profiles[0].reports[i].created_at), this.user.twitter_profiles[0].reports[i].profile_total_followers]);
             }
         },
         methods: {
-            onChartReady (chart, google) {
+            onChartReady(chart, google) {
                 this.chartsLib = google
+            },
+            parseISOString(s) {
+                let date = new Date(s);
+                let year = date.getFullYear();
+                let month = date.getMonth() + 1;
+                let dt = date.getDate();
+
+                if (dt < 10) {
+                    dt = '0' + dt;
+                }
+
+                if (month < 10) {
+                    month = '0' + month;
+                }
+
+                return dt + '-' + month + '-' + year;
             }
         }
     }
 </script>
 
 <style lang="scss" scoped>
+    $primaryColor: #7642FF;
+    $textColor: #3E396B;
+
     .followers-container {
-        height: 80%;
+        height: 800px;
         overflow: scroll;
+
+        .follower {
+            .name {
+                font-weight: bold !important;
+                color: $textColor;
+            }
+
+            .screen-name {
+                font-weight: normal;
+                color: #a7a2ce;
+            }
+        }
     }
 </style>

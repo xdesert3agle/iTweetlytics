@@ -11,13 +11,16 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
+use Illuminate\Support\Facades\Storage;
 use Thujohn\Twitter\Facades\Twitter;
 
 class UpdateFollowersAndUnfollowers implements ShouldQueue {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
-    const MAX_CONSECUTIVE_REQUESTS = 15;
-    const FOLLOWERS_PER_REQUEST = 5000;
+    const FOLLOWER_IDS_MAX_CONSECUTIVE_REQUESTS = 15;
+
+    const FOLLOWERS_USERS_LOOKUP_MAX_CONSECUTIVE_REQUESTS = 900;
+    const FOLLOWERS_USERS_LOOKUP_AMOUNT_PER_REQUEST = 100;
 
     const ACTION_FOLLOW = 'follow';
     const ACTION_UNFOLLOW = 'unfollow';
@@ -31,7 +34,7 @@ class UpdateFollowersAndUnfollowers implements ShouldQueue {
     }
 
     public function handle() {
-        $dbFollowers = Follower::where('twitter_profile_id', $this->profile->id)->get()->pluck('twitter_user_id')->toArray();
+        $dbFollowers = Follower::where('twitter_profile_id', $this->profile->id)->get()->pluck('id_str')->toArray();
         $fetchedFollowers = [];
 
         $cursor = $this->profile->next_followers_cursor;
@@ -45,11 +48,11 @@ class UpdateFollowersAndUnfollowers implements ShouldQueue {
 
         // Se fetchean los seguidores
         do {
-            $response = Twitter::getFollowersIds(['screen_name' => $this->profile->screen_name, 'cursor' => $cursor, 'count' => 5000, 'stringify_ids' => 'true']);
-            $cursor = $response->next_cursor;
+            $followers = Twitter::getFollowersIds(['screen_name' => $this->profile->screen_name, 'cursor' => $cursor, 'count' => 5000, 'stringify_ids' => 'true']);
+            $cursor = $followers->next_cursor;
 
-            $fetchedFollowers = array_merge($fetchedFollowers, $response->ids);
-        } while ($cursor != 0 && ++$count < self::MAX_CONSECUTIVE_REQUESTS); // Hasta que el cursor sea 0 o hasta límite de repeticiones
+            $fetchedFollowers = array_merge($fetchedFollowers, $followers->ids);
+        } while ($cursor != 0 && ++$count < self::FOLLOWER_IDS_MAX_CONSECUTIVE_REQUESTS); // Hasta que el cursor sea 0 o hasta límite de repeticiones
 
         // Se guarda el cursor si aún no se ha terminado de recorrer todas las páginas. Si no, se pone a -1
         $this->profile->next_followers_cursor = $cursor != 0 ? $cursor : -1;
@@ -80,41 +83,65 @@ class UpdateFollowersAndUnfollowers implements ShouldQueue {
 
     protected function manageFollows($dbFollowers, $fetchedFollowers) {
         $newFollowers = array_diff($fetchedFollowers, $dbFollowers);
+        $fetchedUsersLookup = $this->getFetchedUsersLookup($newFollowers);
 
-        foreach ($newFollowers as $followerId) {
+        foreach ($fetchedUsersLookup as $user) {
 
             // Nuevo follower a la lista
             $follower = new Follower;
             $follower->twitter_profile_id = $this->profile->id;
-            $follower->twitter_user_id = $followerId;
+            $follower->id_str = $user->id_str;
+            $follower->name = $user->name;
+            $follower->screen_name = $user->screen_name;
+            $follower->profile_image_url = $user->profile_image_url;
+            $follower->followers_count = $user->followers_count;
+            $follower->location = $user->location;
             $follower->save();
 
             // Se registra el cambio
             $profileChange = new ProfileChange;
             $profileChange->twitter_profile_id = $this->profile->id;
-            $profileChange->twitter_user_id = $followerId;
             $profileChange->action = self::ACTION_FOLLOW;
+            $profileChange->id_str = $user->id_str;
+            $profileChange->name = $user->name;
+            $profileChange->screen_name = $user->screen_name;
+            $profileChange->profile_image_url = $user->profile_image_url;
             $profileChange->save();
         }
     }
 
     protected function manageUnfollows($dbFollowers, $fetchedFollowers) {
         $newUnfollowers = array_diff($dbFollowers, $fetchedFollowers);
+        $fetchedUsersLookup = $this->getFetchedUsersLookup($newUnfollowers);
 
-        foreach ($newUnfollowers as $unfollowerId) {
+        foreach ($fetchedUsersLookup as $user) {
             // Se registra el cambio
             $profileChange = new ProfileChange;
             $profileChange->twitter_profile_id = $this->profile->id;
-            $profileChange->twitter_user_id = $unfollowerId;
             $profileChange->action = self::ACTION_UNFOLLOW;
+            $profileChange->id_str = $user->id_str;
+            $profileChange->name = $user->name;
+            $profileChange->screen_name = $user->screen_name;
+            $profileChange->profile_image_url = $user->profile_image_url;
             $profileChange->save();
 
             // Se elimina el usuario de la lista de followers
             Follower::where([
                 ['twitter_profile_id', $this->profile->id],
-                ['twitter_user_id', $unfollowerId]
+                ['id_str', $user->id_str]
             ])->delete();
         }
+    }
+
+    protected function getFetchedUsersLookup($newFollowers) {
+        $fetchedUsersLookup = [];
+        $neededNamesReqCount = count($newFollowers) / self::FOLLOWERS_USERS_LOOKUP_AMOUNT_PER_REQUEST;
+
+        if ($neededNamesReqCount > 0)
+            for ($i = 0; $i < ceil($neededNamesReqCount); $i++)
+                $fetchedUsersLookup = array_merge($fetchedUsersLookup, Twitter::getUsersLookup(['user_id' => array_slice($newFollowers, $i * self::FOLLOWERS_USERS_LOOKUP_AMOUNT_PER_REQUEST, self::FOLLOWERS_USERS_LOOKUP_AMOUNT_PER_REQUEST)]));
+
+        return $fetchedUsersLookup;
     }
 
     protected function addToLog($string) {

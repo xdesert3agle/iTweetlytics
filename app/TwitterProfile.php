@@ -59,6 +59,10 @@ class TwitterProfile extends Model {
         return $this->hasMany('App\Follower');
     }
 
+    public function profile_changes() {
+        return $this->hasMany('App\ProfileChange');
+    }
+
     public function reports() {
         return $this->hasMany('App\Report');
     }
