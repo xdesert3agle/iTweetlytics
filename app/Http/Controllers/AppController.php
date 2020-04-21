@@ -17,6 +17,8 @@ class AppController extends Controller {
         $chats = $this->getParsedChats();
         $lists = Twitter::getLists(['format' => 'json']);
         $user = User::find(Auth::id())
+            ->with('twitter_profiles.followers')
+            ->with('twitter_profiles.profile_changes')
             ->with('twitter_profiles.reports')
             ->first();
 
