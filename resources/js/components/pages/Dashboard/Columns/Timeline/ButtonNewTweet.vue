@@ -20,7 +20,7 @@
                     <div class="modal-body">
                         <div class="row no-gutters">
                             <div class="col-2 user-profile-img-container">
-                                <img :src="user.twitter_profiles[0].profile_image_url" class="user-profile-img"
+                                <img :src="user.twitter_profiles.profile_image_url" class="user-profile-img"
                                      alt="Tu imagen de perfil">
                             </div>
                             <div class="col">

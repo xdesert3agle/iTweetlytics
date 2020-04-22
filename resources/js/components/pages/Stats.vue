@@ -5,29 +5,69 @@
                 <h3>Estadísticas del perfil</h3>
 
                 <div class="row">
-                    <div class="col followers-container">
-                        <h4>Followers</h4>
-                        <div v-for="(follower, i) in user.twitter_profiles[0].followers">
-                            <div class="col follower">
-                                <span class="name">
-                                    {{ follower.name }}
-                                </span>
-                                <span class="screen-name text-muted">
-                                    @{{ follower.screen_name }}
-                                </span>
+                    <div class="col-auto">
+                        <div class="row">
+                            <div class="col">
+                                <h4>Todos tus followers</h4>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col full-column">
+                                <ul>
+                                    <li v-for="(follower, i) in user.current_twitter_profile[0].followers">
+                                        <a :href="'https://twitter.com/' + follower.screen_name" class="profile-link">
+                                            <span class="name">{{ follower.name }}</span>
+                                            <span class="screen-name text-muted">@{{ follower.screen_name }}</span>
+                                        </a>
+                                    </li>
+                                </ul>
                             </div>
                         </div>
                     </div>
-                    <div class="col followers-container">
-                        <h4>Unfollowers recientes</h4>
-                        <div v-for="(change, i) in user.twitter_profiles[0].profile_changes">
-                            <div v-if="change.action == 'unfollow'" class="col follower">
-                                <span class="name">
-                                    {{ change.name }}
-                                </span>
-                                <span class="screen-name text-muted">
-                                    @{{ change.screen_name }}
-                                </span>
+                    <div class="col">
+                        <div class="row">
+                            <div class="col">
+                                <div class="row">
+                                    <div class="col">
+                                        <h4>Nuevos followers</h4>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col half-column">
+                                        <ul>
+                                            <li v-for="(follower, i) in user.current_twitter_profile[0].follows">
+                                                <a :href="'https://twitter.com/' + follower.screen_name" class="profile-link">
+                                                    <span class="name">{{ follower.name }}</span>
+                                                    <span class="screen-name text-muted">@{{ follower.screen_name }}</span>
+                                                </a>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col">
+                                <div class="row">
+                                    <div class="col">
+                                        <h4>Unfollowers</h4>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col half-column">
+                                        <ul>
+                                            <li v-for="(unfollower, i) in user.current_twitter_profile[0].unfollows">
+                                                <a :href="'https://twitter.com/' + unfollower.screen_name" class="profile-link">
+                                                    <span class="name">{{ unfollower.name }}</span>
+                                                    <span class="screen-name text-muted">@{{ unfollower.screen_name }}</span>
+                                                </a>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                    <div class="col">
+
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -77,8 +117,6 @@
                         title: 'Seguidores totales',
                         subtitle: 'Variación de los seguidores totales de los últimos 30 días'
                     },
-                    width: 600,
-                    height: 400,
                     colors: ['#7570b3']
                 })
             }
@@ -88,8 +126,8 @@
                 ['Fecha', 'Seguidores'],
             ];
 
-            for (let i = 0; i < this.user.twitter_profiles[0].reports.length; i++) {
-                this.chartData.push([this.parseISOString(this.user.twitter_profiles[0].reports[i].created_at), this.user.twitter_profiles[0].reports[i].profile_total_followers]);
+            for (let i = 0; i < this.user.current_twitter_profile[0].reports.length; i++) {
+                this.chartData.push([this.parseISOString(this.user.current_twitter_profile[0].reports[i].created_at), this.user.current_twitter_profile[0].reports[i].profile_total_followers]);
             }
         },
         methods: {
@@ -120,20 +158,49 @@
     $primaryColor: #7642FF;
     $textColor: #3E396B;
 
-    .followers-container {
-        height: 800px;
+    ::-webkit-scrollbar {
+        width: 5px;  /* Remove scrollbar space */
+        padding-left: 50px;
+        background-color: lighten(black, 85%);
+        //background: transparent;  /* Optional: just make scrollbar invisible */
+    }
+
+    /* Optional: show position indicator in red */
+    ::-webkit-scrollbar-thumb {
+        background: lighten($primaryColor, 8%);
+        margin-left: 10px;
+    }
+
+    .full-column {
+        height: calc(100vh - 39.82px - 15px * 2 - 4px);
         overflow: scroll;
+    }
 
-        .follower {
+    .half-column {
+        height: calc((100vh - 39.82px - 15px * 2 - 4px) / 2);
+        overflow: scroll;
+    }
+
+    ul {
+        list-style: none;
+        padding: 0;
+    }
+
+    .profile-link {
+        &:hover {
             .name {
-                font-weight: bold !important;
-                color: $textColor;
+                text-decoration: underline;
             }
+        }
 
-            .screen-name {
-                font-weight: normal;
-                color: #a7a2ce;
-            }
+        .name {
+            font-weight: bold !important;
+            color: $textColor;
+        }
+
+        .screen-name {
+            font-weight: normal;
+            color: #a7a2ce;
         }
     }
 </style>

@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 
 use App\Follower;
-use App\ProfileChange;
+use App\Follow;
 use App\Report;
 use App\TwitterProfile;
 use Carbon\Carbon;
@@ -61,7 +61,7 @@ class TestController extends Controller {
     }
 
     protected function generateDailyReport() {
-        $profileChanges = ProfileChange::where([
+        $profileChanges = Follow::where([
             ['twitter_profile_id', $this->profile->id],
         ])->whereDate('created_at', Carbon::today())->get();
 
@@ -94,7 +94,7 @@ class TestController extends Controller {
             $follower->save();
 
             // Se registra el cambio
-            $profileChange = new ProfileChange;
+            $profileChange = new Follow;
             $profileChange->twitter_profile_id = $this->profile->id;
             $profileChange->action = self::ACTION_FOLLOW;
             $profileChange->id_str = $user->id_str;
@@ -111,7 +111,7 @@ class TestController extends Controller {
 
         foreach ($fetchedUsersLookup as $user) {
             // Se registra el cambio
-            $profileChange = new ProfileChange;
+            $profileChange = new Follow;
             $profileChange->twitter_profile_id = $this->profile->id;
             $profileChange->action = self::ACTION_UNFOLLOW;
             $profileChange->id_str = $user->id_str;

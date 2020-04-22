@@ -2,7 +2,7 @@
     <div class="container-fluid profiles-container">
         <div class="row">
             <div class="col-12">
-                <div v-if="user.twitter_profiles.length > 0" class="dash-content">
+                <div v-if="user.twitter_profiles != null" class="dash-content">
                     <div class="row">
                         <div class="col">
                             <h3>Perfiles sincronizados <small>- {{ user.twitter_profiles.length }} perfiles</small></h3>

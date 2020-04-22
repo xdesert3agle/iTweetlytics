@@ -2,25 +2,42 @@
 
 namespace App\Http\Controllers;
 
+use App\Follow;
 use App\Report;
 use App\User;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Thujohn\Twitter\Facades\Twitter;
 
 class AppController extends Controller {
-    public function index() {
-        //dd(Twitter::getAppRateLimit());
+    public function index($selectedProfile) {
+        //$parsedFollows = $this->getParsedFollows($twitterProfile);
         $starttime = microtime(true);
+
+        $user = User::find(Auth::id())
+            ->with('twitter_profiles')
+            ->with(['current_twitter_profile' => function ($query) use ($selectedProfile) {
+                $query->with('followers')
+                    ->with('follows')
+                    ->with('unfollows')
+                    ->with('reports')
+                    ->skip($selectedProfile)->take(1);
+            }])
+            ->first();
+
+        // Se reconfigura la API para realizar las peticiones con el perfil activo
+        Twitter::reconfig([
+            "token" => $user->current_twitter_profile[0]->oauth_token,
+            "secret" => $user->current_twitter_profile[0]->oauth_token_secret,
+        ]);
+
+        // Se realizan las peticiones de la timeline, las menciones, los dms y las listas del perfil
         $timeline = Twitter::getHomeTimeline(['count' => 40, 'tweet_mode' => 'extended', 'format' => 'json']);
         $mentions = Twitter::getMentionsTimeline(['tweet_mode' => 'extended', 'format' => 'json']);
         $chats = $this->getParsedChats();
         $lists = Twitter::getLists(['format' => 'json']);
-        $user = User::find(Auth::id())
-            ->with('twitter_profiles.followers')
-            ->with('twitter_profiles.profile_changes')
-            ->with('twitter_profiles.reports')
-            ->first();
 
         $endtime = microtime(true);
         $loadTime = $endtime - $starttime;
@@ -33,6 +50,30 @@ class AppController extends Controller {
             'user' => $user,
             'loadTime' => $loadTime
         ]);
+    }
+
+    public function getParsedFollows() {
+        $yearAgo = Carbon::now()->subWeek()->startOfDay(); // or ->format(..)
+        $monthAgo = Carbon::now()->subWeek()->startOfDay(); // or ->format(..)
+        $weekAgo = Carbon::now()->subWeek()->startOfDay(); // or ->format(..)
+        $now = Carbon::now();
+
+        $follows['weekly'] = Follow::whereBetween('created_at', [$weekAgo, $now])
+            ->orderBy('created_at')
+            ->get()
+            ->toArray();
+
+        $follows['monthly'] = Follow::whereBetween('created_at', [$monthAgo, $now])
+            ->orderBy('created_at')
+            ->get()
+            ->toArray();
+
+        $follows['yearly'] = Follow::whereBetween('created_at', [$yearAgo, $now])
+            ->orderBy('created_at')
+            ->get()
+            ->toArray();
+
+        return $follows;
     }
 
     public function postTweet(Request $r) {
