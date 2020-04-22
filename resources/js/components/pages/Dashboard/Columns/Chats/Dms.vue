@@ -36,7 +36,7 @@
                         </div>
                     </div>
                 </div>
-                <chat v-else @back="goBack" class="col-12 animated slideInRight fastest" :chat="clickedChat" :userId="user.twitter_profiles[0].id"></chat>
+                <chat v-else @back="goBack" class="col-12 animated slideInRight fastest" :chat="clickedChat" :userId="user.twitter_profiles.id"></chat>
             </div>
         </div>
     </div>

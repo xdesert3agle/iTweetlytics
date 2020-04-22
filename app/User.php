@@ -41,4 +41,8 @@ class User extends Authenticatable {
     public function twitter_profiles() {
         return $this->hasMany('App\TwitterProfile');
     }
+
+    public function current_twitter_profile() {
+        return $this->hasMany('App\TwitterProfile');
+    }
 }

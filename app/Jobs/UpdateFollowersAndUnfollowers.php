@@ -3,8 +3,9 @@
 namespace App\Jobs;
 
 use App\Follower;
-use App\ProfileChange;
+use App\Follow;
 use App\Report;
+use App\Unfollow;
 use Carbon\Carbon;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -21,9 +22,6 @@ class UpdateFollowersAndUnfollowers implements ShouldQueue {
 
     const FOLLOWERS_USERS_LOOKUP_MAX_CONSECUTIVE_REQUESTS = 900;
     const FOLLOWERS_USERS_LOOKUP_AMOUNT_PER_REQUEST = 100;
-
-    const ACTION_FOLLOW = 'follow';
-    const ACTION_UNFOLLOW = 'unfollow';
 
     protected $profile;
     protected $isLast;
@@ -67,14 +65,18 @@ class UpdateFollowersAndUnfollowers implements ShouldQueue {
     }
 
     protected function generateDailyReport() {
-        $profileChanges = ProfileChange::where([
+        $follows = Follow::where([
+            ['twitter_profile_id', $this->profile->id],
+        ])->whereDate('created_at', Carbon::today())->get();
+
+        $unfollows = Unfollow::where([
             ['twitter_profile_id', $this->profile->id],
         ])->whereDate('created_at', Carbon::today())->get();
 
         $report = new Report;
         $report->twitter_profile_id = $this->profile->id;
-        $report->follows = count($profileChanges->where('action', self::ACTION_FOLLOW));
-        $report->unfollows = count($profileChanges->where('action', self::ACTION_UNFOLLOW));
+        $report->follows = count($follows);
+        $report->unfollows = count($unfollows);
         $report->followers_variation = $report->follows - $report->unfollows;
         $report->profile_total_followers = Follower::where('twitter_profile_id', $this->profile->id)->get()->count();
 
@@ -87,6 +89,15 @@ class UpdateFollowersAndUnfollowers implements ShouldQueue {
 
         foreach ($fetchedUsersLookup as $user) {
 
+            // Se registra el cambio
+            $follow = new Follow;
+            $follow->twitter_profile_id = $this->profile->id;
+            $follow->id_str = $user->id_str;
+            $follow->name = $user->name;
+            $follow->screen_name = $user->screen_name;
+            $follow->profile_image_url = $user->profile_image_url;
+            $follow->save();
+
             // Nuevo follower a la lista
             $follower = new Follower;
             $follower->twitter_profile_id = $this->profile->id;
@@ -97,16 +108,6 @@ class UpdateFollowersAndUnfollowers implements ShouldQueue {
             $follower->followers_count = $user->followers_count;
             $follower->location = $user->location;
             $follower->save();
-
-            // Se registra el cambio
-            $profileChange = new ProfileChange;
-            $profileChange->twitter_profile_id = $this->profile->id;
-            $profileChange->action = self::ACTION_FOLLOW;
-            $profileChange->id_str = $user->id_str;
-            $profileChange->name = $user->name;
-            $profileChange->screen_name = $user->screen_name;
-            $profileChange->profile_image_url = $user->profile_image_url;
-            $profileChange->save();
         }
     }
 
@@ -115,15 +116,15 @@ class UpdateFollowersAndUnfollowers implements ShouldQueue {
         $fetchedUsersLookup = $this->getFetchedUsersLookup($newUnfollowers);
 
         foreach ($fetchedUsersLookup as $user) {
-            // Se registra el cambio
-            $profileChange = new ProfileChange;
-            $profileChange->twitter_profile_id = $this->profile->id;
-            $profileChange->action = self::ACTION_UNFOLLOW;
-            $profileChange->id_str = $user->id_str;
-            $profileChange->name = $user->name;
-            $profileChange->screen_name = $user->screen_name;
-            $profileChange->profile_image_url = $user->profile_image_url;
-            $profileChange->save();
+
+            // Se registra el unfollow
+            $unfollow = new Unfollow;
+            $unfollow->twitter_profile_id = $this->profile->id;
+            $unfollow->id_str = $user->id_str;
+            $unfollow->name = $user->name;
+            $unfollow->screen_name = $user->screen_name;
+            $unfollow->profile_image_url = $user->profile_image_url;
+            $unfollow->save();
 
             // Se elimina el usuario de la lista de followers
             Follower::where([
