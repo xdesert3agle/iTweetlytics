@@ -25,7 +25,7 @@
                                     <h1>HOLA</h1>
                                 </div>
                                 <div class="col">
-                                    <textarea class="js-autoresize" v-model="newTweetText" maxlength="280"
+                                    <textarea class="" v-model="newTweetText" maxlength="280"
                                               placeholder="¿Qué está pasando?"></textarea>
                                 </div>
                             </div>

@@ -25,7 +25,7 @@ Vue.component('LandingPage', require('./components/pages/LandingPage.vue').defau
 
 Vue.component('App', require('./components/pages/App.vue').default);
     Vue.component('Dashboard', require('./components/pages/Dashboard/Dashboard.vue').default);
-        Vue.component('Timeline', require('./components/pages/Dashboard/Columns/Timeline/Timeline.vue').default);
+        Vue.component('Tl', require('./components/pages/Dashboard/Columns/Timeline/Tl.vue').default);
             Vue.component('ButtonNewTweet', require('./components/pages/Dashboard/Columns/Timeline/ButtonNewTweet.vue').default);
         Vue.component('Mentions', require('./components/pages/Dashboard/Columns/Mentions.vue').default);
         Vue.component('Lists', require('./components/pages/Dashboard/Columns/Lists.vue').default);
@@ -73,6 +73,10 @@ Vue.use(VueExpandableImage);
 
 import VuePlyr from 'vue-plyr'
 Vue.use(VuePlyr);
+
+import Chartkick from 'vue-chartkick'
+import Chart from 'chart.js'
+Vue.use(Chartkick.use(Chart));
 
 /**
  * Next, we will create a fresh Vue application instance and attach it to

@@ -2,7 +2,7 @@
     <div class="container-fluid dash-container">
         <div class="row no-gutters dash-content">
             <div class="col-md-3 col-12 twitter-column">
-                <timeline :timeline="timeline" :user="user"></timeline>
+                <tl :timeline="timeline" :user="user"></tl>
             </div>
             <div class="col-md-3 col-12 twitter-column">
                 <mentions :mentions="mentions"></mentions>
@@ -53,7 +53,6 @@
             width: 5px;  /* Remove scrollbar space */
             padding-left: 50px;
             background-color: lighten(black, 85%);
-            //background: transparent;  /* Optional: just make scrollbar invisible */
         }
 
         /* Optional: show position indicator in red */

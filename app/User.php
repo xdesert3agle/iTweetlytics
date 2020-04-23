@@ -5,6 +5,7 @@ namespace App;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Thujohn\Twitter\Twitter;
 
 class User extends Authenticatable {
     use Notifiable;
@@ -44,5 +45,9 @@ class User extends Authenticatable {
 
     public function current_twitter_profile() {
         return $this->hasMany('App\TwitterProfile');
+    }
+
+    public function ownsProfile($profileId) {
+        return User::where('twitter_profile_id', );
     }
 }

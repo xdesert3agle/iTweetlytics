@@ -25,7 +25,9 @@
     },
     "dependencies": {
         "animate.css": "^3.7.2",
+        "chart.js": "^2.9.3",
         "plyr": "^3.5.10",
+        "vue-chartkick": "^0.6.0",
         "vue-expandable-image": "^0.1.0",
         "vue-google-charts": "^0.3.2",
         "vue-plyr": "^6.0.4",
