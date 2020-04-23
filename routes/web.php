@@ -48,9 +48,15 @@ Route::group(['middleware' => 'auth'], function () {
         Route::prefix('list')->group(function () {
                 Route::get('fetch', 'ListController@fetchListTweets');
         });
+
+
+        Route::prefix('profile/{profileId}/stats')->group(function () {
+            Route::get('{stat}/{timeInterval}', 'AppController@getReportStat');
+        });
+
     });
 
-    Route::get('app/{selectedProfile}', 'AppController@index')->middleware('auth');
+    Route::get('app/{selectedProfileIndex}', 'AppController@index')->middleware('auth');
 });
 
 Route::get('twitter/login', ['as' => 'twitter.login', 'uses' => 'LoginWithTwitterController@requestLogin']);

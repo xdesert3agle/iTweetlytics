@@ -277,6 +277,10 @@
     $primaryColor: #7642FF;
     $textColor: #3E396B;
 
+    a:hover {
+        text-decoration: none;
+    }
+
     .tweet-container {
         color: inherit;
 

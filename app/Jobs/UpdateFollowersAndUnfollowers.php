@@ -19,8 +19,6 @@ class UpdateFollowersAndUnfollowers implements ShouldQueue {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
     const FOLLOWER_IDS_MAX_CONSECUTIVE_REQUESTS = 15;
-
-    const FOLLOWERS_USERS_LOOKUP_MAX_CONSECUTIVE_REQUESTS = 900;
     const FOLLOWERS_USERS_LOOKUP_AMOUNT_PER_REQUEST = 100;
 
     protected $profile;
@@ -56,34 +54,14 @@ class UpdateFollowersAndUnfollowers implements ShouldQueue {
         $this->profile->next_followers_cursor = $cursor != 0 ? $cursor : -1;
         $this->profile->save();
 
-        $this->manageFollows($dbFollowers, $fetchedFollowers);
-        $this->manageUnfollows($dbFollowers, $fetchedFollowers);
+        $this->registerFollows($dbFollowers, $fetchedFollowers);
+        $this->registerUnfollows($dbFollowers, $fetchedFollowers);
 
-        if ($this->isLast) {
-            $this->generateDailyReport();
-        }
+        if ($this->isLast)
+            Report::generateDailyReport($this->profile);
     }
 
-    protected function generateDailyReport() {
-        $follows = Follow::where([
-            ['twitter_profile_id', $this->profile->id],
-        ])->whereDate('created_at', Carbon::today())->get();
-
-        $unfollows = Unfollow::where([
-            ['twitter_profile_id', $this->profile->id],
-        ])->whereDate('created_at', Carbon::today())->get();
-
-        $report = new Report;
-        $report->twitter_profile_id = $this->profile->id;
-        $report->follows = count($follows);
-        $report->unfollows = count($unfollows);
-        $report->followers_variation = $report->follows - $report->unfollows;
-        $report->profile_total_followers = Follower::where('twitter_profile_id', $this->profile->id)->get()->count();
-
-        $report->save();
-    }
-
-    protected function manageFollows($dbFollowers, $fetchedFollowers) {
+    protected function registerFollows($dbFollowers, $fetchedFollowers) {
         $newFollowers = array_diff($fetchedFollowers, $dbFollowers);
         $fetchedUsersLookup = $this->getFetchedUsersLookup($newFollowers);
 
@@ -111,7 +89,7 @@ class UpdateFollowersAndUnfollowers implements ShouldQueue {
         }
     }
 
-    protected function manageUnfollows($dbFollowers, $fetchedFollowers) {
+    protected function registerUnfollows($dbFollowers, $fetchedFollowers) {
         $newUnfollowers = array_diff($dbFollowers, $fetchedFollowers);
         $fetchedUsersLookup = $this->getFetchedUsersLookup($newUnfollowers);
 
@@ -143,10 +121,5 @@ class UpdateFollowersAndUnfollowers implements ShouldQueue {
                 $fetchedUsersLookup = array_merge($fetchedUsersLookup, Twitter::getUsersLookup(['user_id' => array_slice($newFollowers, $i * self::FOLLOWERS_USERS_LOOKUP_AMOUNT_PER_REQUEST, self::FOLLOWERS_USERS_LOOKUP_AMOUNT_PER_REQUEST)]));
 
         return $fetchedUsersLookup;
-    }
-
-    protected function addToLog($string) {
-        $file = Storage::get('file.txt');
-        Storage::put('file.txt', $file . "$string\n");
     }
 }
