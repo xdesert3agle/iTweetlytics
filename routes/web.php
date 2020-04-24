@@ -51,7 +51,7 @@ Route::group(['middleware' => 'auth'], function () {
 
 
         Route::prefix('profile/{profileId}/stats')->group(function () {
-            Route::get('{stat}/{timeInterval}', 'AppController@getReportStat');
+            Route::get('{stat}/{timeInterval}', 'StatsController@getReportStat');
         });
 
     });

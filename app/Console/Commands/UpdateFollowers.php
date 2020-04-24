@@ -3,6 +3,7 @@
 namespace App\Console\Commands;
 
 use App\Jobs\UpdateFollowersAndUnfollowers;
+use App\Jobs\UpdateFriends;
 use App\TwitterProfile;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Storage;
@@ -42,17 +43,25 @@ class UpdateFollowers extends Command {
      */
     public function handle() {
         $allProfiles = TwitterProfile::all();
-        $isLast = false;
 
         foreach ($allProfiles as $i => $profile) {
 
             // Se calcula el número de peticiones necesarias para poder fetchear la lista completa de followers del perfil
-            $neededJobs = ceil($profile->followers_count / (self::MAX_CONSECUTIVE_REQUESTS * self::FOLLOWERS_PER_REQUEST));
+            $neededFollowersJobs = ceil($profile->followers_count / (self::MAX_CONSECUTIVE_REQUESTS * self::FOLLOWERS_PER_REQUEST));
 
             // Se mandan los jobs necesarios, con suficiente espacio entre ellos para no llegar al Rate Limit
-            for ($j = 0; $j < $neededJobs; $j++) {
-                $isLast = $j == ($neededJobs - 1) ? true : false;
-                UpdateFollowersAndUnfollowers::dispatch($profile, $isLast)->delay(now()->addMinutes($j * self::REQUEST_WINDOW)->addSeconds(10));
+            for ($j = 0; $j < $neededFollowersJobs; $j++) {
+                $followersDelay = $j * self::REQUEST_WINDOW;
+                UpdateFollowersAndUnfollowers::dispatch($profile)->delay(now()->addMinutes($followersDelay));
+            }
+
+            // Número de peticiones necesarias para poder fetchear la lista completa de seguidos del perfil
+            $neededFriendsJobs = ceil($profile->friends_count / (self::MAX_CONSECUTIVE_REQUESTS * self::FOLLOWERS_PER_REQUEST));
+
+            for ($k = 0; $k < $neededFriendsJobs; $k++) {
+                $delay = $k * self::REQUEST_WINDOW;
+                $isLastJob = $k == ($neededFriendsJobs - 1) ? true : false;
+                UpdateFriends::dispatch($profile, $isLastJob)->delay(now()->addMinutes($delay));
             }
         }
     }
