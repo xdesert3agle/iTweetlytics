@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Follow;
+use App\Helpers\ApiHelper;
 use App\Report;
 use App\TwitterProfile;
 use App\Unfollow;
@@ -26,20 +27,15 @@ class AppController extends Controller {
             }])
             ->first();
 
-        //$user->current_twitter_profile[0]['follows'] = $this->getParsedFollows($user->current_twitter_profile[0]);
-        //$user->current_twitter_profile[0]['unfollows'] = $this->getParsedUnfollows($user->current_twitter_profile[0]);
-
         // Se reconfigura la API para realizar las peticiones con el perfil activo
-        Twitter::reconfig([
-            "token" => $user->current_twitter_profile[0]->oauth_token,
-            "secret" => $user->current_twitter_profile[0]->oauth_token_secret,
-        ]);
+        ApiHelper::reconfig($user->current_twitter_profile[0]);
 
         // Se realizan las peticiones de la timeline, las menciones, los dms y las listas del perfil
         $timeline = Twitter::getHomeTimeline(['count' => 40, 'tweet_mode' => 'extended', 'format' => 'json']);
         $mentions = Twitter::getMentionsTimeline(['tweet_mode' => 'extended', 'format' => 'json']);
         $chats = $this->getParsedChats();
         $lists = Twitter::getLists(['format' => 'json']);
+        $stats =
 
         $endtime = microtime(true);
         $loadTime = $endtime - $starttime;
@@ -52,68 +48,6 @@ class AppController extends Controller {
             'user' => $user,
             'loadTime' => $loadTime
         ]);
-    }
-
-    public function getReportStat($profileId, $stat, $timeInterval) {
-        $now = Carbon::now();
-        $weekAgo = Carbon::now()->subWeek()->startOfDay();
-        $monthAgo = Carbon::now()->subMonth()->startOfDay();
-        $yearAgo = Carbon::now()->subYear()->startOfDay();
-
-        $isUserOwnerOfProfile = TwitterProfile::find($profileId)->belongsToUser(Auth::id());
-
-        $reports = [];
-
-        if ($isUserOwnerOfProfile) {
-            switch ($stat) {
-                case 'followers':
-                    $attr = 'profile_total_followers';
-                    break;
-
-                case 'unfollows':
-                    $attr = 'unfollows';
-                    break;
-            }
-
-            switch ($timeInterval) {
-                case 'weekly':
-                    $reports = Report::whereBetween('created_at', [$weekAgo, $now])
-                        ->where('twitter_profile_id', $profileId)
-                        ->get()
-                        ->groupBy(function ($val) {
-                            return Carbon::parse($val->created_at)->format('d-m');
-                        });
-                    break;
-
-                case 'monthly':
-                    $reports = Report::whereBetween('created_at', [$monthAgo, $now])
-                        ->where('twitter_profile_id', $profileId)
-                        ->get()
-                        ->groupBy(function ($val) {
-                            return Carbon::parse($val->created_at)->format('d-m');
-                        });
-
-                    break;
-
-                case 'yearly':
-                    $reports = Report::whereBetween('created_at', [$yearAgo, $now])
-                        ->where('twitter_profile_id', $profileId)
-                        ->get()
-                        ->groupBy(function ($val) {
-                            return Carbon::parse($val->created_at)->format('d-m');
-                        });
-
-                    break;
-            }
-
-            $formatted = [];
-
-            foreach ($reports as $i => $report) {
-                $formatted[$i] = $report[0]->$attr;
-            }
-        }
-
-        return $formatted;
     }
 
     public function getParsedFollows($profile) {

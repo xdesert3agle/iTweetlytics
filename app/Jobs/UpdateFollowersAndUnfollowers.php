@@ -4,6 +4,9 @@ namespace App\Jobs;
 
 use App\Follower;
 use App\Follow;
+use App\Friend;
+use App\Helpers\ApiHelper;
+use App\Helpers\UtilHelper;
 use App\Report;
 use App\Unfollow;
 use Carbon\Carbon;
@@ -22,25 +25,19 @@ class UpdateFollowersAndUnfollowers implements ShouldQueue {
     const FOLLOWERS_USERS_LOOKUP_AMOUNT_PER_REQUEST = 100;
 
     protected $profile;
-    protected $isLast;
 
-    public function __construct($profile, $isLast) {
+    public function __construct($profile) {
         $this->profile = $profile;
-        $this->isLast = $isLast;
     }
 
     public function handle() {
         $dbFollowers = Follower::where('twitter_profile_id', $this->profile->id)->get()->pluck('id_str')->toArray();
-        $fetchedFollowers = [];
-
         $cursor = $this->profile->next_followers_cursor;
         $count = 0;
+        $fetchedFollowers = [];
 
         // Se reconfigura la API de Twitter con los tokens de acceso del perfil
-        Twitter::reconfig([
-            "token" => $this->profile->oauth_token,
-            "secret" => $this->profile->oauth_token_secret,
-        ]);
+        ApiHelper::reconfig($this->profile);
 
         // Se fetchean los seguidores
         do {
@@ -56,9 +53,35 @@ class UpdateFollowersAndUnfollowers implements ShouldQueue {
 
         $this->registerFollows($dbFollowers, $fetchedFollowers);
         $this->registerUnfollows($dbFollowers, $fetchedFollowers);
+    }
 
-        if ($this->isLast)
-            Report::generateDailyReport($this->profile);
+    protected function processFollows() {
+
+    }
+
+    protected function processFriends() {
+        $dbFriends = Friend::where('twitter_profile_id', $this->profile->id)->get()->pluck('id_str')->toArray();
+        $cursor = $this->profile->next_followers_cursor;
+        $count = 0;
+        $fetchedFriends = [];
+
+        // Se reconfigura la API de Twitter con los tokens de acceso del perfil
+        ApiHelper::reconfig($this->profile);
+
+        // Se fetchean los seguidores
+        do {
+            $followers = Twitter::getFollowersIds(['screen_name' => $this->profile->screen_name, 'cursor' => $cursor, 'count' => 5000, 'stringify_ids' => 'true']);
+            $cursor = $followers->next_cursor;
+
+            $fetchedFriends = array_merge($fetchedFriends, $followers->ids);
+        } while ($cursor != 0 && ++$count < self::FOLLOWER_IDS_MAX_CONSECUTIVE_REQUESTS); // Hasta que el cursor sea 0 o hasta límite de repeticiones
+
+        // Se guarda el cursor si aún no se ha terminado de recorrer todas las páginas. Si no, se pone a -1
+        $this->profile->next_followers_cursor = $cursor != 0 ? $cursor : -1;
+        $this->profile->save();
+
+        $this->registerFollows($dbFriends, $fetchedFriends);
+        $this->registerUnfollows($dbFriends, $fetchedFriends);
     }
 
     protected function registerFollows($dbFollowers, $fetchedFollowers) {
@@ -75,6 +98,7 @@ class UpdateFollowersAndUnfollowers implements ShouldQueue {
             $follow->screen_name = $user->screen_name;
             $follow->profile_image_url = $user->profile_image_url;
             $follow->save();
+
 
             // Nuevo follower a la lista
             $follower = new Follower;

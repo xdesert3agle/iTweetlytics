@@ -37,7 +37,6 @@
                     <div class="tab-pane" :class="{'active': user.twitter_profiles.length == 0}" id="pills-profiles" role="tabpanel" aria-labelledby="pills-profiles-tab">
                         <profiles :user="user"></profiles>
                     </div>
-                    <div class="tab-pane" id="pills-contact" role="tabpanel" aria-labelledby="pills-contact-tab">3</div>
                 </div>
             </div>
         </div>
@@ -63,6 +62,14 @@
 </script>
 
 <style lang="scss" scoped>
+    .app-container {
+        height: 100vh;
+
+        .row {
+            height: 100%;
+        }
+    }
+
     .no-profiles {
         margin: 15px;
     }
