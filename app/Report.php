@@ -34,11 +34,6 @@ class Report extends Model {
 
         $usersNotFollowingCount = count(array_diff($friendsIds, $dbFollowers));
 
-        self::addToLog('Total: ' . count($friendsIds));
-        self::addToLog('NotFollowing: ' . array_diff($friendsIds, $dbFollowers));
-        self::addToLog('Calc: ' . (100 - ($usersNotFollowingCount / count($friendsIds)) * 100));
-
-
         return 100 - ($usersNotFollowingCount / count($friendsIds)) * 100;
     }
 

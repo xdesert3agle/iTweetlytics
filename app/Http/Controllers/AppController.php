@@ -23,6 +23,7 @@ class AppController extends Controller {
             ->with(['current_twitter_profile' => function ($query) use ($selectedProfileIndex) {
                 $query->with('followers')
                     ->with('reports')
+                    ->orderBy('created_at')
                     ->skip($selectedProfileIndex)->take(1);
             }])
             ->first();

@@ -86,7 +86,7 @@ class UpdateFollowersAndUnfollowers implements ShouldQueue {
 
     protected function registerFollows($dbFollowers, $fetchedFollowers) {
         $newFollowers = array_diff($fetchedFollowers, $dbFollowers);
-        $fetchedUsersLookup = $this->getFetchedUsersLookup($newFollowers);
+        $fetchedUsersLookup = array_reverse($this->getFetchedUsersLookup($newFollowers));
 
         foreach ($fetchedUsersLookup as $user) {
 
@@ -98,7 +98,6 @@ class UpdateFollowersAndUnfollowers implements ShouldQueue {
             $follow->screen_name = $user->screen_name;
             $follow->profile_image_url = $user->profile_image_url;
             $follow->save();
-
 
             // Nuevo follower a la lista
             $follower = new Follower;
