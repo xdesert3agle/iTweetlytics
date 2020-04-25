@@ -2,6 +2,7 @@
 
 namespace App\Jobs;
 
+use App\Follower;
 use App\Friend;
 use App\Follow;
 use App\Helpers\ApiHelper;
@@ -52,8 +53,10 @@ class UpdateFriends implements ShouldQueue {
 
         $this->insertNewFriends($dbFriends, $fetchedFriends);
 
+        $dbFollowers = Follower::where('twitter_profile_id', $this->profile->id)->get()->pluck('id_str')->toArray();
+
         if ($this->isLast)
-            Report::generateDailyReport($this->profile, $dbFriends);
+            Report::generateDailyReport($this->profile, $dbFollowers);
     }
 
     protected function insertNewFriends($dbFriends, $fetchedFriendsIds) {

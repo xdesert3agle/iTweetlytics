@@ -63,7 +63,6 @@
 
 <style lang="scss" scoped>
     .app-container {
-        height: 100vh;
 
         .row {
             height: 100%;
