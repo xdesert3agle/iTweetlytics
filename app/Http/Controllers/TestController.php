@@ -8,20 +8,55 @@ use App\Follow;
 use App\Friend;
 use App\Report;
 use App\TwitterProfile;
+use App\User;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Thujohn\Twitter\Facades\Twitter;
 
 class TestController extends Controller {
 
     public function test() {
-        $friendsIds = Friend::where('twitter_profile_id', 286561116)->get()->pluck('id_str')->toArray();
-        $dbFollowers = Follower::where('twitter_profile_id', 286561116)->get()->pluck('id_str')->toArray();
+        /*$now = Carbon::now();
+        $weekAgo = Carbon::now()->subWeek()->startOfDay();
+        $twoWeeksAgo = Carbon::now()->subWeeks(2)->startOfDay();
+        $monthAgo = Carbon::now()->subMonth()->startOfDay();
+        $yearAgo = Carbon::now()->subYear()->startOfDay();
 
-        $usersNotFollowingCount = count(array_diff($friendsIds, $dbFollowers));
+        $fromTime = "";
+        $stats = json_decode('{}');
 
-        $percent = 100 - ($usersNotFollowingCount / count($friendsIds)) * 100;
+        switch ($r->timeInterval) {
+            case 'weekly':
+                $fromTime = $weekAgo;
+                break;
 
-        dd(round($percent, 2) . "%");
+            case 'biweekly':
+                $fromTime = $twoWeeksAgo;
+                break;
+
+            case 'monthly':
+                $fromTime = $monthAgo;
+                break;
+
+            case 'yearly':
+                $fromTime = $yearAgo;
+                break;
+        }
+
+        $user = User::find(Auth::id())
+            ->with('twitter_profiles')
+            ->with(['current_twitter_profile' => function ($query) use ($selectedProfileIndex, $fromTime, $now) {
+                $query->with('followers')
+                    ->with('reports')
+                    ->with('follows')
+                    ->with('unfollows')
+                    ->whereBetween('created_at', [$fromTime, $now])
+                    ->orderBy('created_at')
+                    ->skip($selectedProfileIndex)->take(1);
+            }])
+            ->first();
+
+        dd($user);*/
     }
 }

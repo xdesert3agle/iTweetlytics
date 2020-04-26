@@ -3400,7 +3400,6 @@ __webpack_require__.r(__webpack_exports__);
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var vue_google_charts__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! vue-google-charts */ "./node_modules/vue-google-charts/index.js");
 //
 //
 //
@@ -3554,24 +3553,61 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   props: ['user'],
   data: function data() {
     return {
-      isInFollowers: true,
-      isInFriends: false
+      d_user: this.user
     };
   },
   methods: {
-    changeScreenTo: function changeScreenTo(page) {
-      switch (page) {
-        case 'followers':
-          break;
+    changeTimeInterval: function changeTimeInterval(timeInterval) {
+      var _this = this;
 
-        case 'friends':
-          break;
-      }
+      axios.get('/ajax/user/get', {
+        params: {
+          timeInterval: timeInterval,
+          profileIndex: this.d_user.profile_index
+        }
+      }).then(function (response) {
+        console.log(response.data);
+        _this.d_user = response.data;
+      });
     }
   }
 });
@@ -26961,7 +26997,7 @@ exports = module.exports = __webpack_require__(/*! ../../../../node_modules/css-
 
 
 // module
-exports.push([module.i, ".btn-add-tw-profile[data-v-12c7aa80] {\n  margin-bottom: 1em;\n}\n.profiles-container[data-v-12c7aa80] {\n  padding: 20px;\n}", ""]);
+exports.push([module.i, ".btn-add-tw-profile[data-v-12c7aa80] {\n  margin-bottom: 1em;\n}", ""]);
 
 // exports
 
@@ -26980,7 +27016,7 @@ exports = module.exports = __webpack_require__(/*! ../../../../node_modules/css-
 
 
 // module
-exports.push([module.i, ".tab-content .active[data-v-7a0ce10e] {\n  display: flex;\n}\n.stat-list-container[data-v-7a0ce10e] {\n  padding-bottom: 1em;\n}\n.stat-list-container .stat-list[data-v-7a0ce10e] {\n  border: 0;\n}\n.stat-list-container .stat-list li[data-v-7a0ce10e]:not(:first-child) {\n  margin-left: 10px !important;\n}\n.stat-list-container .stat-list li button[data-v-7a0ce10e] {\n  padding: 6px 20px !important;\n  background-color: #e6e6e6 !important;\n  border: 1px solid #d7d7d7 !important;\n  color: #444 !important;\n  transition: 200ms !important;\n}\n.stat-list-container .stat-list li button[data-v-7a0ce10e]:hover {\n  background-color: #d7d7d7 !important;\n}\n.page-title[data-v-7a0ce10e] {\n  margin-top: 1em;\n  margin-bottom: 0.75em;\n  font-size: 18pt;\n}\n.profile-stats-container div[class*=col][data-v-7a0ce10e] {\n  display: flex;\n  flex-direction: column;\n}\n.profile-stats-container div[class*=col][data-v-7a0ce10e]:not(:first-child) {\n  padding-left: 10px;\n}\n.profile-stats-container .card-row[data-v-7a0ce10e] {\n  flex: 1;\n}\n.profile-stats-container .card-row .card[data-v-7a0ce10e] {\n  height: 100%;\n}\n.profile-stats-container .card-row .card .card-body[data-v-7a0ce10e] {\n  display: flex;\n  flex-direction: column;\n  max-height: 100vh;\n  overflow: hidden;\n}\n.profile-stats-container .card-row .card .card-body .card-title[data-v-7a0ce10e] {\n  font-size: 16pt;\n}\n.profile-stats-container .card-row .card .card-body .stat-amount[data-v-7a0ce10e] {\n  font-size: 32pt;\n  font-weight: bold;\n  color: #7642FF;\n  line-height: initial;\n  display: flex;\n  flex: 1;\n  flex-direction: column-reverse;\n}\n.profile-stats-container .card-row[data-v-7a0ce10e]:not(:first-child) {\n  margin-top: 10px;\n}\n[data-v-7a0ce10e]::-webkit-scrollbar {\n  width: 5px;\n  /* Remove scrollbar space */\n  padding-left: 50px;\n  background-color: #d9d9d9;\n}\n\n/* Optional: show position indicator in red */\n[data-v-7a0ce10e]::-webkit-scrollbar-thumb {\n  background: #946bff;\n  margin-left: 10px;\n}\n.full-column[data-v-7a0ce10e] {\n  height: calc(100vh - 39.82px - 15px * 2 - 4px);\n  overflow: scroll;\n}\n.half-column[data-v-7a0ce10e] {\n  height: calc((100vh - 39.82px - 15px * 2 - 4px) / 2);\n  overflow: scroll;\n  overflow-x: hidden;\n}\nul[data-v-7a0ce10e] {\n  list-style: none;\n  padding: 0;\n}\n.profile-link:hover .name[data-v-7a0ce10e] {\n  text-decoration: underline;\n}\n.profile-link .name[data-v-7a0ce10e] {\n  font-weight: bold !important;\n  color: #3E396B;\n}\n.profile-link .screen-name[data-v-7a0ce10e] {\n  font-weight: normal;\n  color: #a7a2ce;\n}", ""]);
+exports.push([module.i, ".tab-content .active[data-v-7a0ce10e] {\n  display: flex;\n}\n.stat-list-container[data-v-7a0ce10e] {\n  padding-bottom: 1em;\n}\n.stat-list-container .stat-list[data-v-7a0ce10e] {\n  border: 0;\n}\n.stat-list-container .stat-list li[data-v-7a0ce10e]:not(:first-child) {\n  margin-left: 10px !important;\n}\n.stat-list-container .stat-list li button[data-v-7a0ce10e] {\n  padding: 6px 20px !important;\n  background-color: #e6e6e6 !important;\n  border: 1px solid #d7d7d7 !important;\n  color: #444 !important;\n  transition: 200ms !important;\n}\n.stat-list-container .stat-list li button[data-v-7a0ce10e]:hover {\n  background-color: #d7d7d7 !important;\n}\n.profile-stats-container div[class*=col][data-v-7a0ce10e] {\n  display: flex;\n  flex-direction: column;\n}\n.profile-stats-container div[class*=col][data-v-7a0ce10e]:not(:first-child) {\n  padding-left: 10px;\n}\n.profile-stats-container .card-row .card .card-body[data-v-7a0ce10e] {\n  display: flex;\n  flex-direction: column;\n  max-height: 100vh;\n  overflow: hidden;\n}\n.profile-stats-container .card-row .card .card-body .card-title[data-v-7a0ce10e] {\n  font-size: 16pt;\n}\n.profile-stats-container .card-row .card .card-body .recent-followers-container[data-v-7a0ce10e] {\n  max-height: 300px;\n  overflow-y: scroll;\n}\n.profile-stats-container .card-row .card .card-body .stat-amount[data-v-7a0ce10e] {\n  font-size: 32pt;\n  font-weight: bold;\n  color: #7642FF;\n  line-height: initial;\n  display: flex;\n  flex: 1;\n  flex-direction: column-reverse;\n}\n.profile-stats-container .card-row[data-v-7a0ce10e]:not(:first-child) {\n  margin-top: 10px;\n}\n[data-v-7a0ce10e]::-webkit-scrollbar {\n  width: 5px;\n  /* Remove scrollbar space */\n  padding-left: 50px;\n  background-color: #d9d9d9;\n}\n\n/* Optional: show position indicator in red */\n[data-v-7a0ce10e]::-webkit-scrollbar-thumb {\n  background: #946bff;\n  margin-left: 10px;\n}\n.full-column[data-v-7a0ce10e] {\n  height: calc(100vh - 39.82px - 15px * 2 - 4px);\n  overflow: scroll;\n}\n.half-column[data-v-7a0ce10e] {\n  height: calc((100vh - 39.82px - 15px * 2 - 4px) / 2);\n  overflow: scroll;\n  overflow-x: hidden;\n}\nul[data-v-7a0ce10e] {\n  list-style: none;\n  padding: 0;\n  margin: 0;\n}\n.profile-link:hover .name[data-v-7a0ce10e] {\n  text-decoration: underline;\n}\n.profile-link .name[data-v-7a0ce10e] {\n  font-weight: bold !important;\n  color: #3E396B;\n}\n.profile-link .screen-name[data-v-7a0ce10e] {\n  font-weight: normal;\n  color: #a7a2ce;\n}", ""]);
 
 // exports
 
@@ -80704,14 +80740,14 @@ var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _c("div", { staticClass: "container-fluid profiles-container" }, [
+  return _c("div", { staticClass: "container-fluid" }, [
     _c("div", { staticClass: "row" }, [
       _c("div", { staticClass: "col-12" }, [
         _vm.user.twitter_profiles != null
           ? _c("div", { staticClass: "dash-content" }, [
               _c("div", { staticClass: "row" }, [
                 _c("div", { staticClass: "col" }, [
-                  _c("h3", [
+                  _c("h3", { staticClass: "page-title" }, [
                     _vm._v("Perfiles sincronizados "),
                     _c("small", [
                       _vm._v(
@@ -80800,7 +80836,74 @@ var render = function() {
       _c("div", { staticClass: "col-12" }, [
         _vm._m(0),
         _vm._v(" "),
-        _vm._m(1),
+        _c("div", { staticClass: "row stat-list-container" }, [
+          _c("div", { staticClass: "col" }, [
+            _c(
+              "ul",
+              {
+                staticClass: "nav nav-tabs stat-list",
+                attrs: { id: "myTab", role: "tablist" }
+              },
+              [
+                _vm._m(1),
+                _vm._v(" "),
+                _vm._m(2),
+                _vm._v(" "),
+                _c("li", { staticClass: "nav-item" }, [
+                  _c(
+                    "select",
+                    {
+                      directives: [
+                        {
+                          name: "model",
+                          rawName: "v-model",
+                          value: _vm.timeInterval,
+                          expression: "timeInterval"
+                        }
+                      ],
+                      staticClass: "form-control",
+                      on: {
+                        input: function($event) {
+                          return _vm.changeTimeInterval($event.target.value)
+                        },
+                        change: function($event) {
+                          var $$selectedVal = Array.prototype.filter
+                            .call($event.target.options, function(o) {
+                              return o.selected
+                            })
+                            .map(function(o) {
+                              var val = "_value" in o ? o._value : o.value
+                              return val
+                            })
+                          _vm.timeInterval = $event.target.multiple
+                            ? $$selectedVal
+                            : $$selectedVal[0]
+                        }
+                      }
+                    },
+                    [
+                      _c("option", { attrs: { value: "weekly" } }, [
+                        _vm._v("7 días")
+                      ]),
+                      _vm._v(" "),
+                      _c("option", { attrs: { value: "biweekly" } }, [
+                        _vm._v("14 días")
+                      ]),
+                      _vm._v(" "),
+                      _c("option", { attrs: { value: "monthly" } }, [
+                        _vm._v("30 días")
+                      ]),
+                      _vm._v(" "),
+                      _c("option", { attrs: { value: "yearly" } }, [
+                        _vm._v("1 año")
+                      ])
+                    ]
+                  )
+                ])
+              ]
+            )
+          ])
+        ]),
         _vm._v(" "),
         _c("div", { staticClass: "row no-gutters" }, [
           _c("div", { staticClass: "col" }, [
@@ -80820,19 +80923,21 @@ var render = function() {
                     }
                   },
                   [
-                    _c("div", { staticClass: "col-3" }, [
+                    _c("div", { staticClass: "col-auto" }, [
                       _c("div", { staticClass: "row card-row" }, [
                         _c("div", { staticClass: "col" }, [
                           _c("div", { staticClass: "card" }, [
                             _c("div", { staticClass: "card-body" }, [
                               _c("h4", { staticClass: "card-title" }, [
-                                _vm._v("Todos tus followers")
+                                _vm._v("Tus followers")
                               ]),
                               _vm._v(" "),
                               _c(
                                 "ul",
+                                { staticClass: "profiles-list" },
                                 _vm._l(
-                                  _vm.user.current_twitter_profile[0].followers,
+                                  _vm.d_user.current_twitter_profile[0]
+                                    .followers,
                                   function(follower, i) {
                                     return _c("li", [
                                       _c(
@@ -80881,27 +80986,98 @@ var render = function() {
                         _c("div", { staticClass: "col" }, [
                           _c("div", { staticClass: "card" }, [
                             _c("div", { staticClass: "card-body" }, [
-                              _vm._m(2),
-                              _vm._v(" "),
                               _c("div", { staticClass: "row" }, [
-                                _c(
-                                  "div",
-                                  { staticClass: "col" },
-                                  [
-                                    _c("line-chart", {
-                                      attrs: {
-                                        data:
-                                          "/ajax/profile/" +
-                                          _vm.user.current_twitter_profile[0]
-                                            .id +
-                                          "/stats/followers/weekly/",
-                                        discrete: true,
-                                        width: "100%"
-                                      }
-                                    })
-                                  ],
-                                  1
-                                )
+                                _c("div", { staticClass: "col" }, [
+                                  _vm._m(3),
+                                  _vm._v(" "),
+                                  _c("div", { staticClass: "row" }, [
+                                    _c(
+                                      "div",
+                                      { staticClass: "col" },
+                                      [
+                                        _c("line-chart", {
+                                          attrs: {
+                                            data:
+                                              "/ajax/profile/" +
+                                              _vm.d_user
+                                                .current_twitter_profile[0].id +
+                                              "/stats/followers/weekly/",
+                                            discrete: true,
+                                            width: "100%"
+                                          }
+                                        })
+                                      ],
+                                      1
+                                    )
+                                  ])
+                                ]),
+                                _vm._v(" "),
+                                _c("div", { staticClass: "col" }, [
+                                  _vm._m(4),
+                                  _vm._v(" "),
+                                  _c("div", { staticClass: "row" }, [
+                                    _c(
+                                      "div",
+                                      {
+                                        staticClass:
+                                          "col recent-followers-container"
+                                      },
+                                      [
+                                        _c(
+                                          "ul",
+                                          _vm._l(
+                                            _vm.d_user
+                                              .current_twitter_profile[0]
+                                              .follows,
+                                            function(follower, i) {
+                                              return _c("li", [
+                                                _c(
+                                                  "a",
+                                                  {
+                                                    staticClass: "profile-link",
+                                                    attrs: {
+                                                      href:
+                                                        "https://twitter.com/" +
+                                                        follower.screen_name
+                                                    }
+                                                  },
+                                                  [
+                                                    _c(
+                                                      "span",
+                                                      { staticClass: "name" },
+                                                      [
+                                                        _vm._v(
+                                                          _vm._s(follower.name)
+                                                        )
+                                                      ]
+                                                    ),
+                                                    _vm._v(" "),
+                                                    _c(
+                                                      "span",
+                                                      {
+                                                        staticClass:
+                                                          "screen-name text-muted"
+                                                      },
+                                                      [
+                                                        _vm._v(
+                                                          "@" +
+                                                            _vm._s(
+                                                              follower.screen_name
+                                                            )
+                                                        )
+                                                      ]
+                                                    )
+                                                  ]
+                                                )
+                                              ])
+                                            }
+                                          ),
+                                          0
+                                        )
+                                      ]
+                                    )
+                                  ])
+                                ])
                               ])
                             ])
                           ])
@@ -80912,27 +81088,112 @@ var render = function() {
                         _c("div", { staticClass: "col" }, [
                           _c("div", { staticClass: "card" }, [
                             _c("div", { staticClass: "card-body" }, [
-                              _vm._m(3),
-                              _vm._v(" "),
                               _c("div", { staticClass: "row" }, [
-                                _c(
-                                  "div",
-                                  { staticClass: "col" },
-                                  [
-                                    _c("line-chart", {
-                                      attrs: {
-                                        data:
-                                          "/ajax/profile/" +
-                                          _vm.user.current_twitter_profile[0]
-                                            .id +
-                                          "/stats/unfollows/weekly/",
-                                        width: "100%",
-                                        discrete: true
-                                      }
-                                    })
-                                  ],
-                                  1
-                                )
+                                _c("div", { staticClass: "col" }, [
+                                  _vm._m(5),
+                                  _vm._v(" "),
+                                  _c("div", { staticClass: "row" }, [
+                                    _c(
+                                      "div",
+                                      { staticClass: "col" },
+                                      [
+                                        _c("line-chart", {
+                                          attrs: {
+                                            data:
+                                              "/ajax/profile/" +
+                                              _vm.d_user
+                                                .current_twitter_profile[0].id +
+                                              "/stats/unfollows/weekly/",
+                                            discrete: true,
+                                            width: "100%"
+                                          }
+                                        })
+                                      ],
+                                      1
+                                    )
+                                  ])
+                                ]),
+                                _vm._v(" "),
+                                _c("div", { staticClass: "col" }, [
+                                  _vm._m(6),
+                                  _vm._v(" "),
+                                  _c("div", { staticClass: "row" }, [
+                                    _vm.d_user.current_twitter_profile[0]
+                                      .unfollows.length > 0
+                                      ? _c(
+                                          "div",
+                                          {
+                                            staticClass:
+                                              "col recent-followers-container"
+                                          },
+                                          [
+                                            _c(
+                                              "ul",
+                                              _vm._l(
+                                                _vm.d_user
+                                                  .current_twitter_profile[0]
+                                                  .unfollows,
+                                                function(unfollower, i) {
+                                                  return _c("li", [
+                                                    _c(
+                                                      "a",
+                                                      {
+                                                        staticClass:
+                                                          "profile-link",
+                                                        attrs: {
+                                                          href:
+                                                            "https://twitter.com/" +
+                                                            unfollower.screen_name
+                                                        }
+                                                      },
+                                                      [
+                                                        _c(
+                                                          "span",
+                                                          {
+                                                            staticClass: "name"
+                                                          },
+                                                          [
+                                                            _vm._v(
+                                                              _vm._s(
+                                                                unfollower.name
+                                                              )
+                                                            )
+                                                          ]
+                                                        ),
+                                                        _vm._v(" "),
+                                                        _c(
+                                                          "span",
+                                                          {
+                                                            staticClass:
+                                                              "screen-name text-muted"
+                                                          },
+                                                          [
+                                                            _vm._v(
+                                                              "@" +
+                                                                _vm._s(
+                                                                  unfollower.screen_name
+                                                                )
+                                                            )
+                                                          ]
+                                                        )
+                                                      ]
+                                                    )
+                                                  ])
+                                                }
+                                              ),
+                                              0
+                                            )
+                                          ]
+                                        )
+                                      : _c("div", { staticClass: "col" }, [
+                                          _c("span", [
+                                            _vm._v(
+                                              "No se ha encontrado ningún unfollow reciente."
+                                            )
+                                          ])
+                                        ])
+                                  ])
+                                ])
                               ])
                             ])
                           ])
@@ -80952,83 +81213,8 @@ var render = function() {
                               _c("span", { staticClass: "stat-amount" }, [
                                 _vm._v(
                                   _vm._s(
-                                    _vm.user.current_twitter_profile[0].reports[
-                                      _vm.user.current_twitter_profile[0]
-                                        .reports.length - 1
-                                    ].followback_percent
-                                      .toString()
-                                      .replace(".", ",")
-                                  ) + "%"
-                                )
-                              ])
-                            ])
-                          ])
-                        ])
-                      ]),
-                      _vm._v(" "),
-                      _c("div", { staticClass: "row card-row" }, [
-                        _c("div", { staticClass: "col" }, [
-                          _c("div", { staticClass: "card" }, [
-                            _c("div", { staticClass: "card-body" }, [
-                              _c("h4", { staticClass: "card-title" }, [
-                                _vm._v("Porcentaje de follow-back")
-                              ]),
-                              _vm._v(" "),
-                              _c("span", { staticClass: "stat-amount" }, [
-                                _vm._v(
-                                  _vm._s(
-                                    _vm.user.current_twitter_profile[0].reports[
-                                      _vm.user.current_twitter_profile[0]
-                                        .reports.length - 1
-                                    ].followback_percent
-                                      .toString()
-                                      .replace(".", ",")
-                                  ) + "%"
-                                )
-                              ])
-                            ])
-                          ])
-                        ])
-                      ]),
-                      _vm._v(" "),
-                      _c("div", { staticClass: "row card-row" }, [
-                        _c("div", { staticClass: "col" }, [
-                          _c("div", { staticClass: "card" }, [
-                            _c("div", { staticClass: "card-body" }, [
-                              _c("h4", { staticClass: "card-title" }, [
-                                _vm._v("Porcentaje de follow-back")
-                              ]),
-                              _vm._v(" "),
-                              _c("span", { staticClass: "stat-amount" }, [
-                                _vm._v(
-                                  _vm._s(
-                                    _vm.user.current_twitter_profile[0].reports[
-                                      _vm.user.current_twitter_profile[0]
-                                        .reports.length - 1
-                                    ].followback_percent
-                                      .toString()
-                                      .replace(".", ",")
-                                  ) + "%"
-                                )
-                              ])
-                            ])
-                          ])
-                        ])
-                      ]),
-                      _vm._v(" "),
-                      _c("div", { staticClass: "row card-row" }, [
-                        _c("div", { staticClass: "col" }, [
-                          _c("div", { staticClass: "card" }, [
-                            _c("div", { staticClass: "card-body" }, [
-                              _c("h4", { staticClass: "card-title" }, [
-                                _vm._v("Porcentaje de follow-back")
-                              ]),
-                              _vm._v(" "),
-                              _c("span", { staticClass: "stat-amount" }, [
-                                _vm._v(
-                                  _vm._s(
-                                    _vm.user.current_twitter_profile[0].reports[
-                                      _vm.user.current_twitter_profile[0]
+                                    _vm.d_user.current_twitter_profile[0].reports[
+                                      _vm.d_user.current_twitter_profile[0]
                                         .reports.length - 1
                                     ].followback_percent
                                       .toString()
@@ -81044,7 +81230,7 @@ var render = function() {
                   ]
                 ),
                 _vm._v(" "),
-                _vm._m(4)
+                _vm._m(7)
               ]
             )
           ])
@@ -81070,52 +81256,53 @@ var staticRenderFns = [
     var _vm = this
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "row stat-list-container" }, [
+    return _c("li", { staticClass: "nav-item" }, [
+      _c(
+        "button",
+        {
+          staticClass: "btn active",
+          attrs: {
+            id: "follower-stats-tab",
+            "data-toggle": "tab",
+            href: "#follower-stats",
+            role: "tab",
+            "aria-controls": "follower-stats",
+            "aria-selected": "true"
+          }
+        },
+        [_vm._v("Seguidores\n                            ")]
+      )
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("li", { staticClass: "nav-item" }, [
+      _c(
+        "button",
+        {
+          staticClass: "btn",
+          attrs: {
+            id: "friends-stats-tab",
+            "data-toggle": "tab",
+            href: "#friends-stats",
+            role: "tab",
+            "aria-controls": "friends-stats",
+            "aria-selected": "false"
+          }
+        },
+        [_vm._v("Seguidos\n                            ")]
+      )
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "row" }, [
       _c("div", { staticClass: "col" }, [
-        _c(
-          "ul",
-          {
-            staticClass: "nav nav-tabs stat-list",
-            attrs: { id: "myTab", role: "tablist" }
-          },
-          [
-            _c("li", { staticClass: "nav-item" }, [
-              _c(
-                "button",
-                {
-                  staticClass: "btn active",
-                  attrs: {
-                    id: "follower-stats-tab",
-                    "data-toggle": "tab",
-                    href: "#follower-stats",
-                    role: "tab",
-                    "aria-controls": "follower-stats",
-                    "aria-selected": "true"
-                  }
-                },
-                [_vm._v("Seguidores\n                            ")]
-              )
-            ]),
-            _vm._v(" "),
-            _c("li", { staticClass: "nav-item" }, [
-              _c(
-                "button",
-                {
-                  staticClass: "btn",
-                  attrs: {
-                    id: "friends-stats-tab",
-                    "data-toggle": "tab",
-                    href: "#friends-stats",
-                    role: "tab",
-                    "aria-controls": "friends-stats",
-                    "aria-selected": "false"
-                  }
-                },
-                [_vm._v("Seguidos\n                            ")]
-              )
-            ])
-          ]
-        )
+        _c("h4", { staticClass: "card-title" }, [_vm._v("Followers")])
       ])
     ])
   },
@@ -81125,7 +81312,7 @@ var staticRenderFns = [
     var _c = _vm._self._c || _h
     return _c("div", { staticClass: "row" }, [
       _c("div", { staticClass: "col" }, [
-        _c("h4", [_vm._v("Nuevos followers")])
+        _c("h4", { staticClass: "card-title" }, [_vm._v("Followers recientes")])
       ])
     ])
   },
@@ -81134,7 +81321,21 @@ var staticRenderFns = [
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
     return _c("div", { staticClass: "row" }, [
-      _c("div", { staticClass: "col" }, [_c("h4", [_vm._v("Unfollowers")])])
+      _c("div", { staticClass: "col" }, [
+        _c("h4", { staticClass: "card-title" }, [_vm._v("Unfollowers")])
+      ])
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "row" }, [
+      _c("div", { staticClass: "col" }, [
+        _c("h4", { staticClass: "card-title" }, [
+          _vm._v("Unfollowers recientes")
+        ])
+      ])
     ])
   },
   function() {

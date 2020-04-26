@@ -22,6 +22,15 @@
                                         role="tab" aria-controls="friends-stats" aria-selected="false">Seguidos
                                 </button>
                             </li>
+                            <li class="nav-item">
+                                <select class="form-control" v-model="timeInterval"
+                                        @input="changeTimeInterval($event.target.value)">
+                                    <option value="weekly">7 días</option>
+                                    <option value="biweekly">14 días</option>
+                                    <option value="monthly">30 días</option>
+                                    <option value="yearly">1 año</option>
+                                </select>
+                            </li>
                         </ul>
                     </div>
                 </div>
@@ -32,14 +41,14 @@
                             <div class="row no-gutters profile-stats-container tab-pane fade show active"
                                  id="follower-stats"
                                  role="tabpanel" aria-labelledby="follower-stats-tab">
-                                <div class="col-3">
+                                <div class="col-auto">
                                     <div class="row card-row">
                                         <div class="col">
                                             <div class="card">
                                                 <div class="card-body">
-                                                    <h4 class="card-title">Todos tus followers</h4>
-                                                    <ul>
-                                                        <li v-for="(follower, i) in user.current_twitter_profile[0].followers">
+                                                    <h4 class="card-title">Tus followers</h4>
+                                                    <ul class="profiles-list">
+                                                        <li v-for="(follower, i) in d_user.current_twitter_profile[0].followers">
                                                             <a :href="'https://twitter.com/' + follower.screen_name"
                                                                class="profile-link">
                                                                 <span class="name">{{ follower.name }}</span>
@@ -60,14 +69,40 @@
                                                 <div class="card-body">
                                                     <div class="row">
                                                         <div class="col">
-                                                            <h4>Nuevos followers</h4>
+                                                            <div class="row">
+                                                                <div class="col">
+                                                                    <h4 class="card-title">Followers</h4>
+                                                                </div>
+                                                            </div>
+                                                            <div class="row">
+                                                                <div class="col">
+                                                                    <line-chart
+                                                                        :data="'/ajax/profile/' + d_user.current_twitter_profile[0].id + '/stats/followers/weekly/'"
+                                                                        :discrete="true" width="100%"></line-chart>
+                                                                </div>
+                                                            </div>
                                                         </div>
-                                                    </div>
-                                                    <div class="row">
                                                         <div class="col">
-                                                            <line-chart
-                                                                :data="'/ajax/profile/' + user.current_twitter_profile[0].id + '/stats/followers/weekly/'"
-                                                                :discrete="true" width="100%"></line-chart>
+                                                            <div class="row">
+                                                                <div class="col">
+                                                                    <h4 class="card-title">Followers recientes</h4>
+                                                                </div>
+                                                            </div>
+                                                            <div class="row">
+                                                                <div class="col recent-followers-container">
+                                                                    <ul>
+                                                                        <li v-for="(follower, i) in d_user.current_twitter_profile[0].follows">
+                                                                            <a :href="'https://twitter.com/' + follower.screen_name"
+                                                                               class="profile-link">
+                                                                                <span
+                                                                                    class="name">{{ follower.name }}</span>
+                                                                                <span
+                                                                                    class="screen-name text-muted">@{{ follower.screen_name }}</span>
+                                                                            </a>
+                                                                        </li>
+                                                                    </ul>
+                                                                </div>
+                                                            </div>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -80,14 +115,43 @@
                                                 <div class="card-body">
                                                     <div class="row">
                                                         <div class="col">
-                                                            <h4>Unfollowers</h4>
+                                                            <div class="row">
+                                                                <div class="col">
+                                                                    <h4 class="card-title">Unfollowers</h4>
+                                                                </div>
+                                                            </div>
+                                                            <div class="row">
+                                                                <div class="col">
+                                                                    <line-chart
+                                                                        :data="'/ajax/profile/' + d_user.current_twitter_profile[0].id + '/stats/unfollows/weekly/'"
+                                                                        :discrete="true" width="100%"></line-chart>
+                                                                </div>
+                                                            </div>
                                                         </div>
-                                                    </div>
-                                                    <div class="row">
                                                         <div class="col">
-                                                            <line-chart
-                                                                :data="'/ajax/profile/' + user.current_twitter_profile[0].id + '/stats/unfollows/weekly/'"
-                                                                width="100%" :discrete="true"></line-chart>
+                                                            <div class="row">
+                                                                <div class="col">
+                                                                    <h4 class="card-title">Unfollowers recientes</h4>
+                                                                </div>
+                                                            </div>
+                                                            <div class="row">
+                                                                <div v-if="d_user.current_twitter_profile[0].unfollows.length > 0" class="col recent-followers-container">
+                                                                    <ul>
+                                                                        <li v-for="(unfollower, i) in d_user.current_twitter_profile[0].unfollows">
+                                                                            <a :href="'https://twitter.com/' + unfollower.screen_name"
+                                                                               class="profile-link">
+                                                                                <span
+                                                                                    class="name">{{ unfollower.name }}</span>
+                                                                                <span
+                                                                                    class="screen-name text-muted">@{{ unfollower.screen_name }}</span>
+                                                                            </a>
+                                                                        </li>
+                                                                    </ul>
+                                                                </div>
+                                                                <div v-else class="col">
+                                                                    <span>No se ha encontrado ningún unfollow reciente.</span>
+                                                                </div>
+                                                            </div>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -101,41 +165,12 @@
                                             <div class="card">
                                                 <div class="card-body">
                                                     <h4 class="card-title">Porcentaje de follow-back</h4>
-                                                    <span class="stat-amount">{{ user.current_twitter_profile[0].reports[user.current_twitter_profile[0].reports.length - 1].followback_percent.toString().replace('.', ',') }}%</span>
+                                                    <span class="stat-amount">{{ d_user.current_twitter_profile[0].reports[d_user.current_twitter_profile[0].reports.length - 1].followback_percent.toString().replace('.', ',') }}%</span>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="row card-row">
-                                        <div class="col">
-                                            <div class="card">
-                                                <div class="card-body">
-                                                    <h4 class="card-title">Porcentaje de follow-back</h4>
-                                                    <span class="stat-amount">{{ user.current_twitter_profile[0].reports[user.current_twitter_profile[0].reports.length - 1].followback_percent.toString().replace('.', ',') }}%</span>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="row card-row">
-                                        <div class="col">
-                                            <div class="card">
-                                                <div class="card-body">
-                                                    <h4 class="card-title">Porcentaje de follow-back</h4>
-                                                    <span class="stat-amount">{{ user.current_twitter_profile[0].reports[user.current_twitter_profile[0].reports.length - 1].followback_percent.toString().replace('.', ',') }}%</span>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="row card-row">
-                                        <div class="col">
-                                            <div class="card">
-                                                <div class="card-body">
-                                                    <h4 class="card-title">Porcentaje de follow-back</h4>
-                                                    <span class="stat-amount">{{ user.current_twitter_profile[0].reports[user.current_twitter_profile[0].reports.length - 1].followback_percent.toString().replace('.', ',') }}%</span>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
+
                                 </div>
                             </div>
                             <div class="row no-gutters profile-stats-container tab-pane fade" id="friends-stats"
@@ -152,29 +187,26 @@
 </template>
 
 <script>
-    import {GChart} from 'vue-google-charts'
-
     export default {
         props: [
             'user'
         ],
         data() {
             return {
-                isInFollowers: true,
-                isInFriends: false,
+                d_user: this.user,
             }
         },
         methods: {
-            changeScreenTo(page) {
-                switch (page) {
-                    case 'followers':
-
-                        break;
-
-                    case 'friends':
-
-                        break;
-                }
+            changeTimeInterval(timeInterval) {
+                axios.get('/ajax/user/get', {
+                    params: {
+                        timeInterval: timeInterval,
+                        profileIndex: this.d_user.profile_index
+                    }
+                }).then((response) => {
+                    console.log(response.data);
+                    this.d_user = response.data;
+                });
             }
         }
     }
@@ -216,12 +248,6 @@
         }
     }
 
-    .page-title {
-        margin-top: 1em;
-        margin-bottom: 0.75em;
-        font-size: 18pt;
-    }
-
     .profile-stats-container {
 
         div[class*="col"] {
@@ -234,10 +260,10 @@
         }
 
         .card-row {
-            flex: 1;
+            //flex: 1;
 
             .card {
-                height: 100%;
+                //height: 100%;
 
                 .card-body {
                     display: flex;
@@ -247,6 +273,11 @@
 
                     .card-title {
                         font-size: 16pt;
+                    }
+
+                    .recent-followers-container {
+                        max-height: 300px;
+                        overflow-y: scroll;
                     }
 
                     .stat-amount {
@@ -295,6 +326,7 @@
     ul {
         list-style: none;
         padding: 0;
+        margin: 0;
     }
 
     .profile-link {
