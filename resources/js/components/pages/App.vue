@@ -1,7 +1,7 @@
 <template>
     <div class="container-fluid app-container">
-        <div class="row">
-            <div class="col-md-auto col-12">
+        <div class="row no-gutters app-wrapper">
+            <aside id="sidebar" class="col-md-auto col-12">
                 <ul class="nav flex-column nav-pills" id="pills-tab" role="tablist">
                     <li v-if="user.twitter_profiles != null" class="nav-item">
                         <a :class="{'active': user.twitter_profiles != null}" class="nav-link" id="pills-home-tab" data-toggle="pill" href="#pills-home" role="tab" aria-controls="pills-home" aria-selected="true">
@@ -19,13 +19,15 @@
                         </a>
                     </li>
                     <li class="nav-item">
-                        <form action="/logout" method="POST">
+                        <a class="nav-link" href="#" @click="$refs.logoutForm.submit()">
+                            <i class="fas fa-lg fa-sign-out-alt"></i>
+                        </a>
+                        <form id="logout-form" ref="logoutForm" action="/logout" method="POST">
                             <csrf></csrf>
-                            <button type="submit" class="btn btn-danger">Cerrar sesión</button>
                         </form>
-                    </li>
+                    </li>>
                 </ul>
-            </div>
+            </aside>
             <div class="col-md col-12">
                 <div class="tab-content" id="pills-tabContent" :class="{'no-profiles': user.twitter_profiles.length == 0}">
                     <div v-if="user.twitter_profiles != null" class="tab-pane show" :class="{'active': user.twitter_profiles != null}" id="pills-home" role="tabpanel" aria-labelledby="pills-home-tab">
@@ -63,13 +65,34 @@
 
 <style lang="scss" scoped>
     .app-container {
-
-        .row {
+        .app-wrapper {
             height: 100%;
+            min-height: 100vh;
         }
     }
 
     .no-profiles {
         margin: 15px;
+    }
+
+    #sidebar {
+        background-color: #0f233c;
+
+        .nav {
+            .nav-link {
+                color: #64707e;
+                border-radius: 0;
+                transition: 75ms;
+
+                &.active {
+                    background-color: #21435a;
+                    color: #e4e7ea;
+                }
+
+                &:hover {
+                    color: #e4e7ea;
+                }
+            }
+        }
     }
 </style>
