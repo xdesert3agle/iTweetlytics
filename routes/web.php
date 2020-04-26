@@ -25,6 +25,8 @@ Route::group(['middleware' => 'auth'], function () {
     Route::prefix('ajax')->group(function () {
         Route::prefix('user')->group(function () {
             Route::get('refresh/{profileId}', 'UserController@refresh');
+
+            Route::get('get', 'UserController@getFromRequest');
         });
 
         Route::prefix('dm')->group(function () {
@@ -49,11 +51,11 @@ Route::group(['middleware' => 'auth'], function () {
                 Route::get('fetch', 'ListController@fetchListTweets');
         });
 
-
-        Route::prefix('profile/{profileId}/stats')->group(function () {
-            Route::get('{stat}/{timeInterval}', 'StatsController@getReportStat');
+        Route::prefix('profile')->group(function () {
+            Route::prefix('{profileId}/stats')->group(function () {
+                Route::get('{stat}/{timeInterval}', 'StatsController@getReportStat');
+            });
         });
-
     });
 
     Route::get('app/{selectedProfileIndex}', 'AppController@index')->middleware('auth')->name('app');

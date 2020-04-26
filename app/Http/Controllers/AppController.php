@@ -11,22 +11,14 @@ use App\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\DB;
 use Thujohn\Twitter\Facades\Twitter;
-
 class AppController extends Controller {
     public function index($selectedProfileIndex) {
-        $starttime = microtime(true);
+        $startTime = microtime(true);
 
-        $user = User::find(Auth::id())
-            ->with('twitter_profiles')
-            ->with(['current_twitter_profile' => function ($query) use ($selectedProfileIndex) {
-                $query->with('followers')
-                    ->with('reports')
-                    ->orderBy('created_at')
-                    ->skip($selectedProfileIndex)->take(1);
-            }])
-            ->first();
+        $user = UserController::get(null, $selectedProfileIndex);
+
+        $user->profile_index = $selectedProfileIndex;
 
         // Se reconfigura la API para realizar las peticiones con el perfil activo
         ApiHelper::reconfig($user->current_twitter_profile[0]);
@@ -36,10 +28,9 @@ class AppController extends Controller {
         $mentions = Twitter::getMentionsTimeline(['tweet_mode' => 'extended', 'format' => 'json']);
         $chats = $this->getParsedChats();
         $lists = Twitter::getLists(['format' => 'json']);
-        $stats =
 
-        $endtime = microtime(true);
-        $loadTime = $endtime - $starttime;
+        $endTime = microtime(true);
+        $loadTime = $endTime - $startTime;
 
         return view('app')->with([
             'timeline' => $timeline,
