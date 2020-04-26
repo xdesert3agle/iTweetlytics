@@ -56,7 +56,10 @@ Route::group(['middleware' => 'auth'], function () {
 
     });
 
-    Route::get('app/{selectedProfileIndex}', 'AppController@index')->middleware('auth');
+    Route::get('app/{selectedProfileIndex}', 'AppController@index')->middleware('auth')->name('app');
+    Route::get('app', function () {
+        return redirect('app/0');
+    })->middleware('auth');
 });
 
 Route::get('twitter/login', ['as' => 'twitter.login', 'uses' => 'LoginWithTwitterController@requestLogin']);
