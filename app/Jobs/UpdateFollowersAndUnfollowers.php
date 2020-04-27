@@ -55,35 +55,6 @@ class UpdateFollowersAndUnfollowers implements ShouldQueue {
         $this->registerUnfollows($dbFollowers, $fetchedFollowers);
     }
 
-    protected function processFollows() {
-
-    }
-
-    protected function processFriends() {
-        $dbFriends = Friend::where('twitter_profile_id', $this->profile->id)->get()->pluck('id_str')->toArray();
-        $cursor = $this->profile->next_followers_cursor;
-        $count = 0;
-        $fetchedFriends = [];
-
-        // Se reconfigura la API de Twitter con los tokens de acceso del perfil
-        ApiHelper::reconfig($this->profile);
-
-        // Se fetchean los seguidores
-        do {
-            $followers = Twitter::getFollowersIds(['screen_name' => $this->profile->screen_name, 'cursor' => $cursor, 'count' => 5000, 'stringify_ids' => 'true']);
-            $cursor = $followers->next_cursor;
-
-            $fetchedFriends = array_merge($fetchedFriends, $followers->ids);
-        } while ($cursor != 0 && ++$count < self::FOLLOWER_IDS_MAX_CONSECUTIVE_REQUESTS); // Hasta que el cursor sea 0 o hasta límite de repeticiones
-
-        // Se guarda el cursor si aún no se ha terminado de recorrer todas las páginas. Si no, se pone a -1
-        $this->profile->next_followers_cursor = $cursor != 0 ? $cursor : -1;
-        $this->profile->save();
-
-        $this->registerFollows($dbFriends, $fetchedFriends);
-        $this->registerUnfollows($dbFriends, $fetchedFriends);
-    }
-
     protected function registerFollows($dbFollowers, $fetchedFollowers) {
         $newFollowers = array_diff($fetchedFollowers, $dbFollowers);
         $fetchedUsersLookup = array_reverse($this->getFetchedUsersLookup($newFollowers));
@@ -109,6 +80,16 @@ class UpdateFollowersAndUnfollowers implements ShouldQueue {
             $follower->followers_count = $user->followers_count;
             $follower->location = $user->location;
             $follower->save();
+
+            $friend = Friend::where([
+                ['twitter_profile_id', $this->profile->id],
+                ['id_str', $user->id_str]
+            ])->first();
+
+            if ($friend) {
+                $friend->follows_you = true;
+                $friend->save();
+            }
         }
     }
 

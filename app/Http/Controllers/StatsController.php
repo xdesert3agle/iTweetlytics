@@ -73,7 +73,8 @@ class StatsController extends Controller {
             $formatted = [];
 
             foreach ($reports as $i => $report) {
-                $formatted[$i] = $report[0]->$attr;
+                $lastReportId = count($report) - 1;
+                $formatted[$i] = $report[$lastReportId]->$attr;
             }
         }
 

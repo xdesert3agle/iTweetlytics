@@ -286,7 +286,7 @@
 
                 setTimeout(function(){
                     $('i[data-toggle="tooltip"]').tooltip('hide');
-                },2000);
+                },1250);
             }
         }
     }

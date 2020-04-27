@@ -59,12 +59,20 @@ class TwitterProfile extends Model {
         return $this->hasMany('App\Follower')->orderBy('created_at');
     }
 
+    public function friends() {
+        return $this->hasMany('App\Friend');
+    }
+
     public function follows() {
         return $this->hasMany('App\Follow');
     }
 
     public function unfollows() {
         return $this->hasMany('App\Unfollow');
+    }
+
+    public function unfriends() {
+        return $this->hasMany('App\Unfriend');
     }
 
     public function reports() {

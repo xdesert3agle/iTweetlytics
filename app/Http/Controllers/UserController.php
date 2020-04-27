@@ -16,9 +16,11 @@ class UserController extends Controller {
             ->with('twitter_profiles')
             ->with(['current_twitter_profile' => function ($query) use ($profileIndex) {
                 $query->with('followers')
-                    ->with('reports')
                     ->with('follows')
                     ->with('unfollows')
+                    ->with('friends')
+                    ->with('unfriends')
+                    ->with('reports')
                     ->orderBy('created_at')
                     ->skip($profileIndex)->take(1);
             }])

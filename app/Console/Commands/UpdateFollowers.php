@@ -3,10 +3,9 @@
 namespace App\Console\Commands;
 
 use App\Jobs\UpdateFollowersAndUnfollowers;
-use App\Jobs\UpdateFriends;
+use App\Jobs\UpdateFriendsJob;
 use App\TwitterProfile;
 use Illuminate\Console\Command;
-use Illuminate\Support\Facades\Storage;
 
 class UpdateFollowers extends Command {
     const REQUEST_WINDOW = 15;
@@ -61,7 +60,7 @@ class UpdateFollowers extends Command {
             for ($k = 0; $k < $neededFriendsJobs; $k++) {
                 $delay = $k * self::REQUEST_WINDOW;
                 $isLastJob = $k == ($neededFriendsJobs - 1) ? true : false;
-                UpdateFriends::dispatch($profile, $isLastJob)->delay(now()->addMinutes($delay));
+                UpdateFriendsJob::dispatch($profile, $isLastJob)->delay(now()->addMinutes($delay));
             }
         }
     }
