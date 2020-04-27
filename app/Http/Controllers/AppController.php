@@ -16,7 +16,7 @@ class AppController extends Controller {
     public function index($selectedProfileIndex) {
         $startTime = microtime(true);
 
-        $user = UserController::get(null, $selectedProfileIndex);
+        $user = UserController::get($selectedProfileIndex);
 
         $user->profile_index = $selectedProfileIndex;
 
