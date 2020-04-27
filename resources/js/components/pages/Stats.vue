@@ -12,24 +12,14 @@
                     <div class="col">
                         <ul class="nav nav-tabs stat-list" id="myTab" role="tablist">
                             <li class="nav-item">
-                                <button class="btn active" id="follower-stats-tab" data-toggle="tab"
-                                        href="#follower-stats"
-                                        role="tab" aria-controls="follower-stats" aria-selected="true">Seguidores
+                                <button class="btn active" id="unfollower-stats-tab" data-toggle="tab" href="#unfollower-stats" role="tab" aria-controls="unfollower-stats" aria-selected="true">
+                                    Seguidores
                                 </button>
                             </li>
                             <li class="nav-item">
-                                <button class="btn" id="friends-stats-tab" data-toggle="tab" href="#friends-stats"
-                                        role="tab" aria-controls="friends-stats" aria-selected="false">Seguidos
+                                <button class="btn" id="friends-stats-tab" data-toggle="tab" href="#friends-stats" role="tab" aria-controls="friends-stats" aria-selected="false">
+                                    Seguidos
                                 </button>
-                            </li>
-                            <li class="nav-item">
-                                <select class="form-control" v-model="timeInterval"
-                                        @input="changeTimeInterval($event.target.value)">
-                                    <option value="weekly">7 días</option>
-                                    <option value="biweekly">14 días</option>
-                                    <option value="monthly">30 días</option>
-                                    <option value="yearly">1 año</option>
-                                </select>
                             </li>
                         </ul>
                     </div>
@@ -38,31 +28,8 @@
                 <div class="row no-gutters">
                     <div class="col">
                         <div class="tab-content" id="myTabContent">
-                            <div class="row no-gutters profile-stats-container tab-pane fade show active"
-                                 id="follower-stats"
-                                 role="tabpanel" aria-labelledby="follower-stats-tab">
-                                <div class="col-auto">
-                                    <div class="row card-row">
-                                        <div class="col">
-                                            <div class="card">
-                                                <div class="card-body">
-                                                    <h4 class="card-title">Tus followers</h4>
-                                                    <ul class="profiles-list">
-                                                        <li v-for="(follower, i) in d_user.current_twitter_profile[0].followers">
-                                                            <a :href="'https://twitter.com/' + follower.screen_name"
-                                                               class="profile-link">
-                                                                <span class="name">{{ follower.name }}</span>
-                                                                <span
-                                                                    class="screen-name text-muted">@{{ follower.screen_name }}</span>
-                                                            </a>
-                                                        </li>
-                                                    </ul>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-6">
+                            <div class="row no-gutters profile-stats-container tab-pane fade show active" id="unfollower-stats" role="tabpanel" aria-labelledby="unfollower-stats-tab">
+                                <div class="col-5">
                                     <div class="row card-row">
                                         <div class="col">
                                             <div class="card">
@@ -71,36 +38,62 @@
                                                         <div class="col">
                                                             <div class="row">
                                                                 <div class="col">
-                                                                    <h4 class="card-title">Followers</h4>
+                                                                    <div class="row">
+                                                                        <div class="col">
+                                                                            <h4 class="card-title">Followers</h4>
+                                                                        </div>
+                                                                        <div class="col-auto text-right">
+                                                                            <select class="form-control" @input="getFollowersData($event.target.value)">
+                                                                                <option value="weekly" selected>7 días</option>
+                                                                                <option value="biweekly">14 días</option>
+                                                                                <option value="monthly">30 días</option>
+                                                                                <option value="yearly">1 año</option>
+                                                                            </select>
+                                                                        </div>
+                                                                    </div>
+
+                                                                    <div class="followers-list-count-container">
+                                                                        <span>{{ d_user.current_twitter_profile[0].followers.length }} seguidores</span>
+                                                                        <a href="" data-toggle="modal" data-target="#followers-modal">
+                                                                            <i class="fa fa-eye"></i>
+                                                                        </a>
+                                                                    </div>
+
+                                                                    <div class="modal fade" id="followers-modal" tabindex="-1" role="dialog" aria-labelledby="followers-modal-label" aria-hidden="true">
+                                                                        <div class="modal-dialog" role="document">
+                                                                            <div class="modal-content">
+                                                                                <div class="modal-header">
+                                                                                    <h5 class="modal-title" id="followers-modal-label">
+                                                                                        Seguidores</h5>
+                                                                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                                                        <span aria-hidden="true">&times;</span>
+                                                                                    </button>
+                                                                                </div>
+                                                                                <div class="modal-body">
+                                                                                    <ul class="profiles-list">
+                                                                                        <li v-for="(follower, i) in d_user.current_twitter_profile[0].followers">
+                                                                                            <div class="row no-gutters profile-link">
+                                                                                                <a :href="'https://twitter.com/' + follower.screen_name" class="col-auto">
+                                                                                                    <img :src="follower.profile_image_url" :alt="'Foto de perfil de @' + follower.screen_name">
+                                                                                                </a>
+                                                                                                <div class="col">
+                                                                                                    <a :href="'https://twitter.com/' + follower.screen_name" class="name">{{
+                                                                                                        follower.name
+                                                                                                        }}</a>
+                                                                                                    <span class="screen-name text-muted">@{{ follower.screen_name }}</span>
+                                                                                                </div>
+                                                                                            </div>
+                                                                                        </li>
+                                                                                    </ul>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
                                                                 </div>
                                                             </div>
                                                             <div class="row">
                                                                 <div class="col">
-                                                                    <line-chart
-                                                                        :data="'/ajax/profile/' + d_user.current_twitter_profile[0].id + '/stats/followers/weekly/'"
-                                                                        :discrete="true" width="100%"></line-chart>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                        <div class="col">
-                                                            <div class="row">
-                                                                <div class="col">
-                                                                    <h4 class="card-title">Followers recientes</h4>
-                                                                </div>
-                                                            </div>
-                                                            <div class="row">
-                                                                <div class="col recent-followers-container">
-                                                                    <ul>
-                                                                        <li v-for="(follower, i) in d_user.current_twitter_profile[0].follows">
-                                                                            <a :href="'https://twitter.com/' + follower.screen_name"
-                                                                               class="profile-link">
-                                                                                <span
-                                                                                    class="name">{{ follower.name }}</span>
-                                                                                <span
-                                                                                    class="screen-name text-muted">@{{ follower.screen_name }}</span>
-                                                                            </a>
-                                                                        </li>
-                                                                    </ul>
+                                                                    <line-chart :data="followersData" width="100%"></line-chart>
                                                                 </div>
                                                             </div>
                                                         </div>
@@ -117,39 +110,65 @@
                                                         <div class="col">
                                                             <div class="row">
                                                                 <div class="col">
-                                                                    <h4 class="card-title">Unfollowers</h4>
-                                                                </div>
-                                                            </div>
-                                                            <div class="row">
-                                                                <div class="col">
-                                                                    <line-chart
-                                                                        :data="'/ajax/profile/' + d_user.current_twitter_profile[0].id + '/stats/unfollows/weekly/'"
-                                                                        :discrete="true" width="100%"></line-chart>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                        <div class="col">
-                                                            <div class="row">
-                                                                <div class="col">
-                                                                    <h4 class="card-title">Unfollowers recientes</h4>
-                                                                </div>
-                                                            </div>
-                                                            <div class="row">
-                                                                <div v-if="d_user.current_twitter_profile[0].unfollows.length > 0" class="col recent-followers-container">
-                                                                    <ul>
-                                                                        <li v-for="(unfollower, i) in d_user.current_twitter_profile[0].unfollows">
-                                                                            <a :href="'https://twitter.com/' + unfollower.screen_name"
-                                                                               class="profile-link">
-                                                                                <span
-                                                                                    class="name">{{ unfollower.name }}</span>
-                                                                                <span
-                                                                                    class="screen-name text-muted">@{{ unfollower.screen_name }}</span>
+                                                                    <div class="row">
+                                                                        <div class="col">
+                                                                            <h4 class="card-title">Unfollowers</h4>
+                                                                        </div>
+                                                                        <div class="col-auto text-right">
+                                                                            <select class="form-control" @input="fetchUnfollowsData($event.target.value)">
+                                                                                <option value="weekly" selected>7 días</option>
+                                                                                <option value="biweekly">14 días</option>
+                                                                                <option value="monthly">30 días</option>
+                                                                                <option value="yearly">1 año</option>
+                                                                            </select>
+                                                                        </div>
+                                                                    </div>
+
+                                                                    <div class="unfollowers-list-count-container">
+                                                                        <div v-if="d_user.current_twitter_profile[0].unfollowers">
+                                                                            <span>{{ d_user.current_twitter_profile[0].unfollowers.length }} unfollows</span>
+                                                                            <a href="" data-toggle="modal" data-target="#unfollowers-modal">
+                                                                                <i class="fa fa-eye"></i>
                                                                             </a>
-                                                                        </li>
-                                                                    </ul>
+                                                                        </div>
+                                                                        <span v-else>Ningún unfollower reciente</span>
+                                                                    </div>
+
+                                                                    <div class="modal fade" id="unfollowers-modal" tabindex="-1" role="dialog" aria-labelledby="unfollowers-modal-label" aria-hidden="true">
+                                                                        <div class="modal-dialog" role="document">
+                                                                            <div class="modal-content">
+                                                                                <div class="modal-header">
+                                                                                    <h5 class="modal-title" id="unfollowers-modal-label">
+                                                                                        Unfollowers</h5>
+                                                                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                                                        <span aria-hidden="true">&times;</span>
+                                                                                    </button>
+                                                                                </div>
+                                                                                <div class="modal-body">
+                                                                                    <ul class="profiles-list">
+                                                                                        <li v-for="(unfollower, i) in d_user.current_twitter_profile[0].unfollowers">
+                                                                                            <div class="row no-gutters profile-link">
+                                                                                                <a :href="'https://twitter.com/' + unfollower.screen_name" class="col-auto">
+                                                                                                    <img :src="unfollower.profile_image_url" :alt="'Foto de perfil de @' + unfollower.screen_name">
+                                                                                                </a>
+                                                                                                <div class="col">
+                                                                                                    <a :href="'https://twitter.com/' + unfollower.screen_name" class="name">{{
+                                                                                                        unfollower.name
+                                                                                                        }}</a>
+                                                                                                    <span class="screen-name text-muted">@{{ unfollower.screen_name }}</span>
+                                                                                                </div>
+                                                                                            </div>
+                                                                                        </li>
+                                                                                    </ul>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
                                                                 </div>
-                                                                <div v-else class="col">
-                                                                    <span>No se ha encontrado ningún unfollow reciente.</span>
+                                                            </div>
+                                                            <div class="row">
+                                                                <div class="col">
+                                                                    <line-chart :data="unfollowsData" width="100%"></line-chart>
                                                                 </div>
                                                             </div>
                                                         </div>
@@ -173,9 +192,7 @@
 
                                 </div>
                             </div>
-                            <div class="row no-gutters profile-stats-container tab-pane fade" id="friends-stats"
-                                 role="tabpanel"
-                                 aria-labelledby="friends-stats-tab">
+                            <div class="row no-gutters profile-stats-container tab-pane fade" id="friends-stats" role="tabpanel" aria-labelledby="friends-stats-tab">
                                 <h1>Friends</h1>
                             </div>
                         </div>
@@ -194,19 +211,26 @@
         data() {
             return {
                 d_user: this.user,
+                followersData: null,
+                unfollowsData: null
             }
         },
+        created() {
+            this.fetchFollowersData('weekly');
+            this.fetchUnfollowsData('weekly');
+        },
         methods: {
-            changeTimeInterval(timeInterval) {
-                axios.get('/ajax/user/get', {
-                    params: {
-                        timeInterval: timeInterval,
-                        profileIndex: this.d_user.profile_index
-                    }
-                }).then((response) => {
-                    console.log(response.data);
-                    this.d_user = response.data;
-                });
+            fetchFollowersData(timeInterval) {
+                axios.get('/ajax/profile/' + this.d_user.current_twitter_profile[0].id + '/stats/followers/' + timeInterval + '/')
+                    .then((response) => {
+                        this.followersData = response.data;
+                    });
+            },
+            fetchUnfollowsData(timeInterval) {
+                axios.get('/ajax/profile/' + this.d_user.current_twitter_profile[0].id + '/stats/unfollows/' + timeInterval + '/')
+                    .then((response) => {
+                        this.unfollowsData = response.data;
+                    });
             }
         }
     }
@@ -275,9 +299,25 @@
                         font-size: 16pt;
                     }
 
-                    .recent-followers-container {
+                    .followers-list-count-container, .unfollowers-list-count-container {
+                        margin-bottom: 2em;
+
+                        a {
+                            color: inherit;
+
+                            &:hover {
+                                text-decoration: none;
+                            }
+                        }
+                    }
+
+                    .recent-unfollowers-container {
                         max-height: 300px;
                         overflow-y: scroll;
+
+                        ::-webkit-scrollbar {
+                            width: 10px !important;
+                        }
                     }
 
                     .stat-amount {
@@ -290,6 +330,48 @@
                         flex: 1;
                         flex-direction: column-reverse;
                     }
+
+                    #followers-modal, #unfollowers-modal {
+
+                        .modal-body {
+                            max-height: 400px;
+                            overflow-y: scroll;
+                            overflow-x: hidden;
+                        }
+                    }
+
+                    .profiles-list {
+                        li {
+                            &:not(:first-child) {
+                                margin-top: 10px;
+                            }
+
+                            .profile-link {
+
+                                a {
+                                    text-decoration: none;
+                                }
+
+                                img {
+                                    border-radius: 50%;
+                                }
+
+                                .name {
+                                    font-weight: bold !important;
+                                    color: $textColor;
+                                    line-height: initial;
+                                }
+
+                                .screen-name {
+                                    font-weight: normal;
+                                    display: block;
+                                    color: #a7a2ce;
+                                    margin-top: 4px;
+                                    line-height: initial;
+                                }
+                            }
+                        }
+                    }
                 }
             }
 
@@ -300,7 +382,7 @@
     }
 
     ::-webkit-scrollbar {
-        width: 5px; /* Remove scrollbar space */
+        width: 10px; /* Remove scrollbar space */
         padding-left: 50px;
         background-color: lighten(black, 85%);
         //background: transparent;  /* Optional: just make scrollbar invisible */
@@ -327,23 +409,7 @@
         list-style: none;
         padding: 0;
         margin: 0;
-    }
 
-    .profile-link {
-        &:hover {
-            .name {
-                text-decoration: underline;
-            }
-        }
 
-        .name {
-            font-weight: bold !important;
-            color: $textColor;
-        }
-
-        .screen-name {
-            font-weight: normal;
-            color: #a7a2ce;
-        }
     }
 </style>

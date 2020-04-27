@@ -11,6 +11,7 @@ class StatsController extends Controller {
     public function getReportStat($profileId, $stat, $timeInterval) {
         $now = Carbon::now();
         $weekAgo = Carbon::now()->subWeek()->startOfDay();
+        $twoWeeksAgo = Carbon::now()->subWeeks(2)->startOfDay();
         $monthAgo = Carbon::now()->subMonth()->startOfDay();
         $yearAgo = Carbon::now()->subYear()->startOfDay();
 
@@ -39,12 +40,21 @@ class StatsController extends Controller {
                         });
                     break;
 
+                case 'biweekly':
+                    $reports = Report::whereBetween('created_at', [$twoWeeksAgo, $now])
+                        ->where('twitter_profile_id', $profileId)
+                        ->get()
+                        ->groupBy(function ($val) {
+                            return Carbon::parse($val->created_at)->format('d-m');
+                        });
+                    break;
+
                 case 'monthly':
                     $reports = Report::whereBetween('created_at', [$monthAgo, $now])
                         ->where('twitter_profile_id', $profileId)
                         ->get()
                         ->groupBy(function ($val) {
-                            return Carbon::parse($val->created_at)->format('d-m');
+                            return Carbon::parse($val->created_at)->format('d');
                         });
 
                     break;

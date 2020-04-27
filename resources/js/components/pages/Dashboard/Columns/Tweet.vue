@@ -86,8 +86,8 @@
                                     <span v-else-if="!updatedTweet.retweeted_status && updatedTweet.favorite_count > 0">{{ updatedTweet.favorite_count }}</span>
                                 </div>
 
-                                <div class="col tweet-action action-share">
-                                    <i class="fa fa-share-alt"></i>
+                                <div id="btn-share" @click.prevent="copyTweetToClipboard" class="col tweet-action action-share">
+                                    <i data-toggle="tooltip" data-placement="top" title="Tweet copiado" class="fa fa-share-alt"></i>
                                 </div>
                             </div>
                         </div>
@@ -137,6 +137,13 @@
 
                 return hasVideo;
             }
+        },
+        mounted() {
+            $('i[data-toggle="tooltip"]').tooltip({
+                animated: 'fade',
+                placement: 'top',
+                trigger: 'click'
+            });
         },
         methods: {
             toggleRetweet() {
@@ -268,6 +275,18 @@
                 });
 
                 return result;
+            },
+            copyTweetToClipboard() {
+                var dummy = document.createElement("textarea");
+                document.body.appendChild(dummy);
+                dummy.value = 'https://twitter.com/' + this.updatedTweet.user.screen_name + '/status/' + this.updatedTweet.id_str;
+                dummy.select();
+                document.execCommand("copy");
+                document.body.removeChild(dummy);
+
+                setTimeout(function(){
+                    $('i[data-toggle="tooltip"]').tooltip('hide');
+                },2000);
             }
         }
     }
