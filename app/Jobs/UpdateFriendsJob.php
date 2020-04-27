@@ -1,23 +1,23 @@
 <?php
 
-namespace App\Http\Controllers;
-
+namespace App\Jobs;
 
 use App\Follower;
-use App\Follow;
 use App\Friend;
 use App\Helpers\ApiHelper;
-use App\Jobs\FetchRemainingFriendsLookups;
 use App\Report;
-use App\TwitterProfile;
 use App\Unfriend;
-use App\User;
 use Carbon\Carbon;
-use Illuminate\Support\Facades\Auth;
+use Illuminate\Bus\Queueable;
+use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Foundation\Bus\Dispatchable;
+use Illuminate\Queue\InteractsWithQueue;
+use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Storage;
 use Thujohn\Twitter\Facades\Twitter;
 
-class TestController extends Controller {
+class UpdateFriendsJob implements ShouldQueue {
+    use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
     const FRIENDS_IDS_MAX_CONSECUTIVE_REQUESTS = 15;
     const USERS_LOOKUP_AMOUNT_PER_REQUEST = 100;
@@ -25,9 +25,12 @@ class TestController extends Controller {
     protected $profile;
     protected $isLast;
 
-    public function test() {
-        $this->profile = TwitterProfile::find(722857467495854080);
+    public function __construct($profile, $isLast) {
+        $this->profile = $profile;
+        $this->isLast = $isLast;
+    }
 
+    public function handle() {
         $dbFriends = Friend::where('twitter_profile_id', $this->profile->id)->get()->pluck('id_str')->toArray();
         $cursor = $this->profile->next_friends_cursor;
         $count = 0;
@@ -85,8 +88,6 @@ class TestController extends Controller {
                 $friend = new Friend;
                 $friend->twitter_profile_id = $this->profile->id;
                 $friend->id_str = $newFriendId;
-
-                dd($fetchedFriendsIds, $dbFriends, $newFriends, $fetchedFriendsLookup);
 
                 if (!empty($fetchedFriendsLookup)) {
                     $friend->name = $fetchedFriendsLookup[$i]->name;

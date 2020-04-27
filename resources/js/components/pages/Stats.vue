@@ -184,12 +184,18 @@
                                             <div class="card">
                                                 <div class="card-body">
                                                     <h4 class="card-title">Porcentaje de follow-back</h4>
-                                                    <span class="stat-amount">{{ d_user.current_twitter_profile[0].reports[d_user.current_twitter_profile[0].reports.length - 1].followback_percent.toString().replace('.', ',') }}%</span>
+                                                    <div class="row card-content">
+                                                        <div class="col">
+                                                            <span class="stat-amount">{{ d_user.current_twitter_profile[0].reports[d_user.current_twitter_profile[0].reports.length - 1].followback_percent.toString().replace('.', ',') }}%</span>
+                                                        </div>
+                                                        <div class="col-auto">
+                                                            <button class="btn">Detalles</button>
+                                                        </div>
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
-
                                 </div>
                             </div>
                             <div class="row no-gutters profile-stats-container tab-pane fade" id="friends-stats" role="tabpanel" aria-labelledby="friends-stats-tab">
@@ -297,6 +303,10 @@
 
                     .card-title {
                         font-size: 16pt;
+                    }
+
+                    .card-content {
+                        align-items: center;
                     }
 
                     .followers-list-count-container, .unfollowers-list-count-container {
