@@ -36,7 +36,8 @@
                                                 <div class="modal-dialog" role="document">
                                                     <div class="modal-content">
                                                         <div class="modal-header">
-                                                            <h5 class="modal-title" id="friends-modal-label">Seguidores</h5>
+                                                            <h5 class="modal-title" id="friends-modal-label">
+                                                                Seguidores</h5>
                                                             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                                                 <span aria-hidden="true">&times;</span>
                                                             </button>
@@ -123,14 +124,14 @@
                 <div class="col">
                     <div class="card">
                         <div class="card-body">
-                            <h4 class="card-title">Porcentaje de follow-back</h4>
+                            <h4 class="card-title">Tu follow-back</h4>
                             <div class="row card-content">
                                 <div class="col">
-                                    <span class="stat-amount">{{ user.current_twitter_profile[0].reports[user.current_twitter_profile[0].reports.length - 1].followback_percent.toString().replace('.', ',') }}%</span>
+                                    <span class="stat-amount">{{ user.current_twitter_profile[0].reports[user.current_twitter_profile[0].reports.length - 1].user_followback_percent.toFixed(2).toString().replace('.', ',') }}%</span>
                                 </div>
                                 <div class="col-auto">
-                                    <button-modal title="Seguidos">
-                                        <template slot="button-text">
+                                    <button-modal id="followback-details" title="Seguidores" :button="true">
+                                        <template slot="button">
                                             <span>Detalles</span>
                                         </template>
                                         <template slot="modal-body">
@@ -141,11 +142,11 @@
                                                             <img :src="friend.profile_image_url" :alt="'Foto de perfil de @' + friend.screen_name">
                                                         </a>
                                                         <div class="col">
-                                                                                    <span class="name">
-                                                                                        <a :href="'https://twitter.com/' + friend.screen_name">{{ friend.name }}</a>
-                                                                                        <span v-if="friend.follows_you" class="badge badge-success">Te sigue</span>
-                                                                                        <span v-else class="badge badge-danger">No te sigue</span>
-                                                                                    </span>
+                                                            <span class="name">
+                                                                <a :href="'https://twitter.com/' + friend.screen_name">{{ friend.name }}</a>
+                                                                <span v-if="friend.follows_you" class="badge badge-success">Te sigue</span>
+                                                                <span v-else class="badge badge-danger">No te sigue</span>
+                                                            </span>
                                                             <span class="screen-name text-muted">@{{ friend.screen_name }}</span>
                                                         </div>
                                                     </div>
