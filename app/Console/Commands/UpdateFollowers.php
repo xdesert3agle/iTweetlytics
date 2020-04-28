@@ -53,15 +53,6 @@ class UpdateFollowers extends Command {
                 $followersDelay = $j * self::REQUEST_WINDOW;
                 UpdateFollowersAndUnfollowers::dispatch($profile)->delay(now()->addMinutes($followersDelay));
             }
-
-            // Número de peticiones necesarias para poder fetchear la lista completa de seguidos del perfil
-            $neededFriendsJobs = ceil($profile->friends_count / (self::MAX_CONSECUTIVE_REQUESTS * self::FOLLOWERS_PER_REQUEST));
-
-            for ($k = 0; $k < $neededFriendsJobs; $k++) {
-                $delay = $k * self::REQUEST_WINDOW;
-                $isLastJob = $k == ($neededFriendsJobs - 1) ? true : false;
-                UpdateFriendsJob::dispatch($profile, $isLastJob)->delay(now()->addMinutes($delay));
-            }
         }
     }
 }

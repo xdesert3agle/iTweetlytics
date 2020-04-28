@@ -80,16 +80,6 @@ class UpdateFollowersAndUnfollowers implements ShouldQueue {
             $follower->followers_count = $user->followers_count;
             $follower->location = $user->location;
             $follower->save();
-
-            $friend = Friend::where([
-                ['twitter_profile_id', $this->profile->id],
-                ['id_str', $user->id_str]
-            ])->first();
-
-            if ($friend) {
-                $friend->follows_you = true;
-                $friend->save();
-            }
         }
     }
 
@@ -113,6 +103,17 @@ class UpdateFollowersAndUnfollowers implements ShouldQueue {
                 ['twitter_profile_id', $this->profile->id],
                 ['id_str', $user->id_str]
             ])->delete();
+
+            // Se marca también como que no te sigue en la lista de friends
+            $friend = Friend::where([
+                ['twitter_profile_id', $this->profile->id],
+                ['id_str', $user->id_str]
+            ])->first();
+
+            if ($friend) {
+                $friend->follows_you = false;
+                $friend->save();
+            }
         }
     }
 

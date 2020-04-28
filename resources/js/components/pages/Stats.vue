@@ -44,8 +44,10 @@
                                                                         </div>
                                                                         <div class="col-auto text-right">
                                                                             <select class="form-control" @input="getFollowersData($event.target.value)">
-                                                                                <option value="weekly" selected>7 días</option>
-                                                                                <option value="biweekly">14 días</option>
+                                                                                <option value="weekly" selected>7 días
+                                                                                </option>
+                                                                                <option value="biweekly">14 días
+                                                                                </option>
                                                                                 <option value="monthly">30 días</option>
                                                                                 <option value="yearly">1 año</option>
                                                                             </select>
@@ -116,8 +118,10 @@
                                                                         </div>
                                                                         <div class="col-auto text-right">
                                                                             <select class="form-control" @input="fetchUnfollowsData($event.target.value)">
-                                                                                <option value="weekly" selected>7 días</option>
-                                                                                <option value="biweekly">14 días</option>
+                                                                                <option value="weekly" selected>7 días
+                                                                                </option>
+                                                                                <option value="biweekly">14 días
+                                                                                </option>
                                                                                 <option value="monthly">30 días</option>
                                                                                 <option value="yearly">1 año</option>
                                                                             </select>
@@ -189,7 +193,30 @@
                                                             <span class="stat-amount">{{ d_user.current_twitter_profile[0].reports[d_user.current_twitter_profile[0].reports.length - 1].followback_percent.toString().replace('.', ',') }}%</span>
                                                         </div>
                                                         <div class="col-auto">
-                                                            <button class="btn">Detalles</button>
+                                                            <button-modal title="Seguidos">
+                                                                <template slot="button-text">
+                                                                    <span>Detalles</span>
+                                                                </template>
+                                                                <template slot="modal-body">
+                                                                    <ul class="profiles-list">
+                                                                        <li v-for="(friend, i) in d_user.current_twitter_profile[0].friends">
+                                                                            <div class="row no-gutters profile-link">
+                                                                                <a :href="'https://twitter.com/' + friend.screen_name" class="col-auto">
+                                                                                    <img :src="friend.profile_image_url" :alt="'Foto de perfil de @' + friend.screen_name">
+                                                                                </a>
+                                                                                <div class="col">
+                                                                                    <span class="name">
+                                                                                        <a :href="'https://twitter.com/' + friend.screen_name">{{ friend.name }}</a>
+                                                                                        <span v-if="friend.follows_you" class="badge badge-success">Te sigue</span>
+                                                                                        <span v-else class="badge badge-danger">No te sigue</span>
+                                                                                    </span>
+                                                                                    <span class="screen-name text-muted">@{{ friend.screen_name }}</span>
+                                                                                </div>
+                                                                            </div>
+                                                                        </li>
+                                                                    </ul>
+                                                                </template>
+                                                            </button-modal>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -342,7 +369,6 @@
                     }
 
                     #followers-modal, #unfollowers-modal {
-
                         .modal-body {
                             max-height: 400px;
                             overflow-y: scroll;
@@ -367,9 +393,19 @@
                                 }
 
                                 .name {
+                                    display: flex;
+                                    align-items: center;
+
                                     font-weight: bold !important;
-                                    color: $textColor;
                                     line-height: initial;
+
+                                    > :first-child {
+                                        color: $textColor;
+                                    }
+
+                                    span.badge {
+                                        margin-left: 7px;
+                                    }
                                 }
 
                                 .screen-name {

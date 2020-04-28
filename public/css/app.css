@@ -3153,25 +3153,25 @@
 }
 @charset "UTF-8";
 
-button {
+button:not(.close) {
   padding: 8px 20px !important;
   border-radius: 8px !important;
   font-weight: 500 !important;
 }
 
-button.btn-icon i:first-child {
+button:not(.close).btn-icon i:first-child {
   margin-right: 0.4em;
 }
 
-button.btn-icon i:last-child {
+button:not(.close).btn-icon i:last-child {
   margin-left: 0.4em;
 }
 
-button.btn-small {
+button:not(.close).btn-small {
   padding: 4px 10px !important;
 }
 
-button.btn-round {
+button:not(.close).btn-round {
   border-radius: 20px !important;
 }
 
