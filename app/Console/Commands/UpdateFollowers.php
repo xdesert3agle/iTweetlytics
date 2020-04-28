@@ -2,7 +2,7 @@
 
 namespace App\Console\Commands;
 
-use App\Jobs\UpdateFollowersAndUnfollowers;
+use App\Jobs\UpdateFollowersJob;
 use App\Jobs\UpdateFriendsJob;
 use App\TwitterProfile;
 use Illuminate\Console\Command;
@@ -41,17 +41,17 @@ class UpdateFollowers extends Command {
      * @return mixed
      */
     public function handle() {
-        $allProfiles = TwitterProfile::all();
+        $all_profiles = TwitterProfile::all();
 
-        foreach ($allProfiles as $i => $profile) {
+        foreach ($all_profiles as $i => $profile) {
 
             // Se calcula el número de peticiones necesarias para poder fetchear la lista completa de followers del perfil
-            $neededFollowersJobs = ceil($profile->followers_count / (self::MAX_CONSECUTIVE_REQUESTS * self::FOLLOWERS_PER_REQUEST));
+            $needed_jobs = ceil($profile->followers_count / (self::MAX_CONSECUTIVE_REQUESTS * self::FOLLOWERS_PER_REQUEST));
 
             // Se mandan los jobs necesarios, con suficiente espacio entre ellos para no llegar al Rate Limit
-            for ($j = 0; $j < $neededFollowersJobs; $j++) {
-                $followersDelay = $j * self::REQUEST_WINDOW;
-                UpdateFollowersAndUnfollowers::dispatch($profile)->delay(now()->addMinutes($followersDelay));
+            for ($j = 0; $j < $needed_jobs; $j++) {
+                $delay = $j * self::REQUEST_WINDOW;
+                UpdateFollowersJob::dispatch($profile)->delay(now()->addMinutes($delay));
             }
         }
     }

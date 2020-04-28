@@ -2,7 +2,7 @@
 
 namespace App\Console\Commands;
 
-use App\Jobs\UpdateFollowersAndUnfollowers;
+use App\Jobs\UpdateFollowersJob;
 use App\Jobs\UpdateFriendsJob;
 use App\TwitterProfile;
 use Illuminate\Console\Command;
@@ -42,20 +42,18 @@ class UpdateFriends extends Command {
      * @return mixed
      */
     public function handle() {
-        $allProfiles = TwitterProfile::all();
+        $all_profiles = TwitterProfile::all();
 
-        foreach ($allProfiles as $i => $profile) {
+        foreach ($all_profiles as $i => $profile) {
 
             // Número de peticiones necesarias para poder fetchear la lista completa de seguidos del perfil
             $neededFriendsJobs = ceil($profile->friends_count / (self::MAX_CONSECUTIVE_REQUESTS * self::FRIENDS_PER_REQUEST));
 
             for ($j = 0; $j < $neededFriendsJobs; $j++) {
                 $delay = $j * self::REQUEST_WINDOW;
-                $isLastJob = $j == ($neededFriendsJobs - 1) ? true : false;
-                UpdateFriendsJob::dispatch($profile, $isLastJob)->delay(now()->addMinutes($delay));
+                $is_last_job = $j == ($neededFriendsJobs - 1) ? true : false;
+                UpdateFriendsJob::dispatch($profile, $is_last_job)->delay(now()->addMinutes($delay));
             }
-
-
         }
     }
 }

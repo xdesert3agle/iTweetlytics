@@ -22,11 +22,15 @@ class StatsController extends Controller {
         if ($isUserOwnerOfProfile) {
             switch ($stat) {
                 case 'followers':
-                    $attr = 'profile_total_followers';
+                    $attr = 'total_followers';
                     break;
 
                 case 'unfollows':
                     $attr = 'unfollows';
+                    break;
+
+                case 'friends':
+                    $attr = 'friends';
                     break;
             }
 

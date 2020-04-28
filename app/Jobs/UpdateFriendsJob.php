@@ -2,6 +2,7 @@
 
 namespace App\Jobs;
 
+use App\Befriend;
 use App\Follower;
 use App\Friend;
 use App\Helpers\ApiHelper;
@@ -23,18 +24,18 @@ class UpdateFriendsJob implements ShouldQueue {
     const USERS_LOOKUP_AMOUNT_PER_REQUEST = 100;
 
     protected $profile;
-    protected $isLast;
+    protected $is_last_job;
 
-    public function __construct($profile, $isLast) {
+    public function __construct($profile, $is_last_job) {
         $this->profile = $profile;
-        $this->isLast = $isLast;
+        $this->is_last_job = $is_last_job;
     }
 
     public function handle() {
-        $dbFriends = Friend::where('twitter_profile_id', $this->profile->id)->get()->pluck('id_str')->toArray();
+        $db_friends = Friend::where('twitter_profile_id', $this->profile->id)->get()->pluck('id_str')->toArray();
         $cursor = $this->profile->next_friends_cursor;
         $count = 0;
-        $fetchedFriends = [];
+        $fetched_friends = [];
 
         // Se reconfigura la API de Twitter con los tokens de acceso del perfil
         ApiHelper::reconfig($this->profile);
@@ -44,20 +45,18 @@ class UpdateFriendsJob implements ShouldQueue {
             $friends = Twitter::getFriendsIds(['screen_name' => $this->profile->screen_name, 'cursor' => $cursor, 'count' => 5000, 'stringify_ids' => 'true']);
             $cursor = $friends->next_cursor;
 
-            $fetchedFriends = array_merge($fetchedFriends, $friends->ids);
+            $fetched_friends = array_merge($fetched_friends, $friends->ids);
         } while ($cursor != 0 && ++$count < self::FRIENDS_IDS_MAX_CONSECUTIVE_REQUESTS); // Hasta que el cursor sea 0 o hasta límite de repeticiones
 
         // Se guarda el cursor si aún no se ha terminado de recorrer todas las páginas. Si no, se pone a -1
         $this->profile->next_friends_cursor = $cursor != 0 ? $cursor : -1;
         $this->profile->save();
 
-        $this->insertNewFriends($dbFriends, $fetchedFriends);
-        $this->deleteOldFriends($dbFriends, $fetchedFriends);
+        $this->insertNewFriends($db_friends, $fetched_friends);
+        $this->deleteOldFriends($db_friends, $fetched_friends);
 
-        $dbFollowers = Follower::where('twitter_profile_id', $this->profile->id)->get()->pluck('id_str')->toArray();
-
-        if ($this->isLast)
-            Report::generateDailyReport($this->profile, $dbFollowers);
+        if ($this->is_last_job)
+            Report::generateDailyReport($this->profile);
     }
 
     protected function insertNewFriends($dbFriends, $fetchedFriendsIds) {
@@ -74,7 +73,7 @@ class UpdateFriendsJob implements ShouldQueue {
 
             } else {
 
-                if ($this->isLast) {
+                if ($this->is_last_job) {
                     $lookup_reset_time = Carbon::createFromTimestamp($rate_reset_timestamp);
                     $delay = $lookup_reset_time->diffInSeconds(Carbon::now());
 
@@ -83,23 +82,33 @@ class UpdateFriendsJob implements ShouldQueue {
             }
 
             foreach ($newFriends as $i => $newFriendId) {
-                $friend = new Friend;
-                $friend->twitter_profile_id = $this->profile->id;
-                $friend->id_str = $newFriendId;
-                $friend->follows_you = Follower::where([
-                    ['twitter_profile_id', $this->profile->id],
-                    ['id_str', $newFriendId]
-                ])->first() ? true : false;
+                $array = [
+                    'twitter_profile_id' => $this->profile->id,
+                    'id_str' => $newFriendId,
+                    'follows_you' => Follower::where([
+                                            ['twitter_profile_id', $this->profile->id],
+                                            ['id_str', $newFriendId]
+                                        ])->first() ? true : false
+                ];
 
+                // Si se han fetcheado los campos extra se añaden al array
                 if (!empty($fetchedFriendsLookup)) {
-                    $friend->name = $fetchedFriendsLookup[$i]->name;
-                    $friend->screen_name = $fetchedFriendsLookup[$i]->screen_name;
-                    $friend->followers_count = $fetchedFriendsLookup[$i]->followers_count;
-                    $friend->profile_image_url = $fetchedFriendsLookup[$i]->profile_image_url;
-                    $friend->location = $fetchedFriendsLookup[$i]->location;
+                    $additional_fields = [
+                        'name' => $fetchedFriendsLookup[$i]->name,
+                        'screen_name' => $fetchedFriendsLookup[$i]->screen_name,
+                        'followers_count' => $fetchedFriendsLookup[$i]->followers_count,
+                        'profile_image_url' => $fetchedFriendsLookup[$i]->profile_image_url,
+                        'location' => $fetchedFriendsLookup[$i]->location
+                    ];
+
+                    $array = array_merge($array, $additional_fields);
                 }
 
-                $friend->save();
+                $friend = new Friend;
+                $befriend = new Befriend;
+
+                $friend->fill($array)->save();
+                $befriend->fill($array)->save();
             }
         }
     }
