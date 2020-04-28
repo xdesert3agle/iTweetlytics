@@ -1949,6 +1949,47 @@ __webpack_require__.r(__webpack_exports__);
 
 /***/ }),
 
+/***/ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/elements/ButtonModal.vue?vue&type=script&lang=js&":
+/*!*******************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/babel-loader/lib??ref--4-0!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/elements/ButtonModal.vue?vue&type=script&lang=js& ***!
+  \*******************************************************************************************************************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+/* harmony default export */ __webpack_exports__["default"] = ({
+  props: {
+    'title': String
+  }
+});
+
+/***/ }),
+
 /***/ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/elements/TwitterProfileCard.vue?vue&type=script&lang=js&":
 /*!**************************************************************************************************************************************************************************************!*\
   !*** ./node_modules/babel-loader/lib??ref--4-0!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/elements/TwitterProfileCard.vue?vue&type=script&lang=js& ***!
@@ -3418,6 +3459,33 @@ __webpack_require__.r(__webpack_exports__);
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 //
 //
 //
@@ -26824,6 +26892,25 @@ exports.push([module.i, ".tw-username[data-v-fa44bb0e] {\n  font-weight: bold;\n
 
 /***/ }),
 
+/***/ "./node_modules/css-loader/index.js!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src/index.js?!./node_modules/sass-loader/dist/cjs.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/elements/ButtonModal.vue?vue&type=style&index=0&id=10d580ae&lang=scss&scoped=true&":
+/*!******************************************************************************************************************************************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/css-loader!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src??ref--7-2!./node_modules/sass-loader/dist/cjs.js??ref--7-3!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/elements/ButtonModal.vue?vue&type=style&index=0&id=10d580ae&lang=scss&scoped=true& ***!
+  \******************************************************************************************************************************************************************************************************************************************************************************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+exports = module.exports = __webpack_require__(/*! ../../../../node_modules/css-loader/lib/css-base.js */ "./node_modules/css-loader/lib/css-base.js")(false);
+// imports
+
+
+// module
+exports.push([module.i, ".modal-body[data-v-10d580ae] {\n  max-height: 500px;\n  overflow-y: scroll;\n}\n[data-v-10d580ae]::-webkit-scrollbar {\n  width: 10px;\n  /* Remove scrollbar space */\n  padding-left: 50px;\n  background-color: #d9d9d9;\n}\n[data-v-10d580ae]::-webkit-scrollbar-thumb {\n  background: #946bff;\n  margin-left: 10px;\n}", ""]);
+
+// exports
+
+
+/***/ }),
+
 /***/ "./node_modules/css-loader/index.js!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src/index.js?!./node_modules/sass-loader/dist/cjs.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/elements/TwitterProfileCard.vue?vue&type=style&index=0&id=e9945bba&lang=scss&scoped=true&":
 /*!*************************************************************************************************************************************************************************************************************************************************************************************************************************************************************!*\
   !*** ./node_modules/css-loader!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src??ref--7-2!./node_modules/sass-loader/dist/cjs.js??ref--7-3!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/elements/TwitterProfileCard.vue?vue&type=style&index=0&id=e9945bba&lang=scss&scoped=true& ***!
@@ -27064,7 +27151,7 @@ exports = module.exports = __webpack_require__(/*! ../../../../node_modules/css-
 
 
 // module
-exports.push([module.i, ".tab-content .active[data-v-7a0ce10e] {\n  display: flex;\n}\n.stat-list-container[data-v-7a0ce10e] {\n  padding-bottom: 1em;\n}\n.stat-list-container .stat-list[data-v-7a0ce10e] {\n  border: 0;\n}\n.stat-list-container .stat-list li[data-v-7a0ce10e]:not(:first-child) {\n  margin-left: 10px !important;\n}\n.stat-list-container .stat-list li button[data-v-7a0ce10e] {\n  padding: 6px 20px !important;\n  background-color: #e6e6e6 !important;\n  border: 1px solid #d7d7d7 !important;\n  color: #444 !important;\n  transition: 200ms !important;\n}\n.stat-list-container .stat-list li button[data-v-7a0ce10e]:hover {\n  background-color: #d7d7d7 !important;\n}\n.profile-stats-container div[class*=col][data-v-7a0ce10e] {\n  display: flex;\n  flex-direction: column;\n}\n.profile-stats-container div[class*=col][data-v-7a0ce10e]:not(:first-child) {\n  padding-left: 10px;\n}\n.profile-stats-container .card-row .card .card-body[data-v-7a0ce10e] {\n  display: flex;\n  flex-direction: column;\n  max-height: 100vh;\n  overflow: hidden;\n}\n.profile-stats-container .card-row .card .card-body .card-title[data-v-7a0ce10e] {\n  font-size: 16pt;\n}\n.profile-stats-container .card-row .card .card-body .card-content[data-v-7a0ce10e] {\n  align-items: center;\n}\n.profile-stats-container .card-row .card .card-body .followers-list-count-container[data-v-7a0ce10e], .profile-stats-container .card-row .card .card-body .unfollowers-list-count-container[data-v-7a0ce10e] {\n  margin-bottom: 2em;\n}\n.profile-stats-container .card-row .card .card-body .followers-list-count-container a[data-v-7a0ce10e], .profile-stats-container .card-row .card .card-body .unfollowers-list-count-container a[data-v-7a0ce10e] {\n  color: inherit;\n}\n.profile-stats-container .card-row .card .card-body .followers-list-count-container a[data-v-7a0ce10e]:hover, .profile-stats-container .card-row .card .card-body .unfollowers-list-count-container a[data-v-7a0ce10e]:hover {\n  text-decoration: none;\n}\n.profile-stats-container .card-row .card .card-body .recent-unfollowers-container[data-v-7a0ce10e] {\n  max-height: 300px;\n  overflow-y: scroll;\n}\n.profile-stats-container .card-row .card .card-body .recent-unfollowers-container[data-v-7a0ce10e] ::-webkit-scrollbar {\n  width: 10px !important;\n}\n.profile-stats-container .card-row .card .card-body .stat-amount[data-v-7a0ce10e] {\n  font-size: 32pt;\n  font-weight: bold;\n  color: #7642FF;\n  line-height: initial;\n  display: flex;\n  flex: 1;\n  flex-direction: column-reverse;\n}\n.profile-stats-container .card-row .card .card-body #followers-modal .modal-body[data-v-7a0ce10e], .profile-stats-container .card-row .card .card-body #unfollowers-modal .modal-body[data-v-7a0ce10e] {\n  max-height: 400px;\n  overflow-y: scroll;\n  overflow-x: hidden;\n}\n.profile-stats-container .card-row .card .card-body .profiles-list li[data-v-7a0ce10e]:not(:first-child) {\n  margin-top: 10px;\n}\n.profile-stats-container .card-row .card .card-body .profiles-list li .profile-link a[data-v-7a0ce10e] {\n  text-decoration: none;\n}\n.profile-stats-container .card-row .card .card-body .profiles-list li .profile-link img[data-v-7a0ce10e] {\n  border-radius: 50%;\n}\n.profile-stats-container .card-row .card .card-body .profiles-list li .profile-link .name[data-v-7a0ce10e] {\n  font-weight: bold !important;\n  color: #3E396B;\n  line-height: initial;\n}\n.profile-stats-container .card-row .card .card-body .profiles-list li .profile-link .screen-name[data-v-7a0ce10e] {\n  font-weight: normal;\n  display: block;\n  color: #a7a2ce;\n  margin-top: 4px;\n  line-height: initial;\n}\n.profile-stats-container .card-row[data-v-7a0ce10e]:not(:first-child) {\n  margin-top: 10px;\n}\n[data-v-7a0ce10e]::-webkit-scrollbar {\n  width: 10px;\n  /* Remove scrollbar space */\n  padding-left: 50px;\n  background-color: #d9d9d9;\n}\n\n/* Optional: show position indicator in red */\n[data-v-7a0ce10e]::-webkit-scrollbar-thumb {\n  background: #946bff;\n  margin-left: 10px;\n}\n.full-column[data-v-7a0ce10e] {\n  height: calc(100vh - 39.82px - 15px * 2 - 4px);\n  overflow: scroll;\n}\n.half-column[data-v-7a0ce10e] {\n  height: calc((100vh - 39.82px - 15px * 2 - 4px) / 2);\n  overflow: scroll;\n  overflow-x: hidden;\n}\nul[data-v-7a0ce10e] {\n  list-style: none;\n  padding: 0;\n  margin: 0;\n}", ""]);
+exports.push([module.i, ".tab-content .active[data-v-7a0ce10e] {\n  display: flex;\n}\n.stat-list-container[data-v-7a0ce10e] {\n  padding-bottom: 1em;\n}\n.stat-list-container .stat-list[data-v-7a0ce10e] {\n  border: 0;\n}\n.stat-list-container .stat-list li[data-v-7a0ce10e]:not(:first-child) {\n  margin-left: 10px !important;\n}\n.stat-list-container .stat-list li button[data-v-7a0ce10e] {\n  padding: 6px 20px !important;\n  background-color: #e6e6e6 !important;\n  border: 1px solid #d7d7d7 !important;\n  color: #444 !important;\n  transition: 200ms !important;\n}\n.stat-list-container .stat-list li button[data-v-7a0ce10e]:hover {\n  background-color: #d7d7d7 !important;\n}\n.profile-stats-container div[class*=col][data-v-7a0ce10e] {\n  display: flex;\n  flex-direction: column;\n}\n.profile-stats-container div[class*=col][data-v-7a0ce10e]:not(:first-child) {\n  padding-left: 10px;\n}\n.profile-stats-container .card-row .card .card-body[data-v-7a0ce10e] {\n  display: flex;\n  flex-direction: column;\n  max-height: 100vh;\n  overflow: hidden;\n}\n.profile-stats-container .card-row .card .card-body .card-title[data-v-7a0ce10e] {\n  font-size: 16pt;\n}\n.profile-stats-container .card-row .card .card-body .card-content[data-v-7a0ce10e] {\n  align-items: center;\n}\n.profile-stats-container .card-row .card .card-body .followers-list-count-container[data-v-7a0ce10e], .profile-stats-container .card-row .card .card-body .unfollowers-list-count-container[data-v-7a0ce10e] {\n  margin-bottom: 2em;\n}\n.profile-stats-container .card-row .card .card-body .followers-list-count-container a[data-v-7a0ce10e], .profile-stats-container .card-row .card .card-body .unfollowers-list-count-container a[data-v-7a0ce10e] {\n  color: inherit;\n}\n.profile-stats-container .card-row .card .card-body .followers-list-count-container a[data-v-7a0ce10e]:hover, .profile-stats-container .card-row .card .card-body .unfollowers-list-count-container a[data-v-7a0ce10e]:hover {\n  text-decoration: none;\n}\n.profile-stats-container .card-row .card .card-body .recent-unfollowers-container[data-v-7a0ce10e] {\n  max-height: 300px;\n  overflow-y: scroll;\n}\n.profile-stats-container .card-row .card .card-body .recent-unfollowers-container[data-v-7a0ce10e] ::-webkit-scrollbar {\n  width: 10px !important;\n}\n.profile-stats-container .card-row .card .card-body .stat-amount[data-v-7a0ce10e] {\n  font-size: 32pt;\n  font-weight: bold;\n  color: #7642FF;\n  line-height: initial;\n  display: flex;\n  flex: 1;\n  flex-direction: column-reverse;\n}\n.profile-stats-container .card-row .card .card-body #followers-modal .modal-body[data-v-7a0ce10e], .profile-stats-container .card-row .card .card-body #unfollowers-modal .modal-body[data-v-7a0ce10e] {\n  max-height: 400px;\n  overflow-y: scroll;\n  overflow-x: hidden;\n}\n.profile-stats-container .card-row .card .card-body .profiles-list li[data-v-7a0ce10e]:not(:first-child) {\n  margin-top: 10px;\n}\n.profile-stats-container .card-row .card .card-body .profiles-list li .profile-link a[data-v-7a0ce10e] {\n  text-decoration: none;\n}\n.profile-stats-container .card-row .card .card-body .profiles-list li .profile-link img[data-v-7a0ce10e] {\n  border-radius: 50%;\n}\n.profile-stats-container .card-row .card .card-body .profiles-list li .profile-link .name[data-v-7a0ce10e] {\n  display: flex;\n  align-items: center;\n  font-weight: bold !important;\n  line-height: initial;\n}\n.profile-stats-container .card-row .card .card-body .profiles-list li .profile-link .name[data-v-7a0ce10e] > :first-child {\n  color: #3E396B;\n}\n.profile-stats-container .card-row .card .card-body .profiles-list li .profile-link .name span.badge[data-v-7a0ce10e] {\n  margin-left: 7px;\n}\n.profile-stats-container .card-row .card .card-body .profiles-list li .profile-link .screen-name[data-v-7a0ce10e] {\n  font-weight: normal;\n  display: block;\n  color: #a7a2ce;\n  margin-top: 4px;\n  line-height: initial;\n}\n.profile-stats-container .card-row[data-v-7a0ce10e]:not(:first-child) {\n  margin-top: 10px;\n}\n[data-v-7a0ce10e]::-webkit-scrollbar {\n  width: 10px;\n  /* Remove scrollbar space */\n  padding-left: 50px;\n  background-color: #d9d9d9;\n}\n\n/* Optional: show position indicator in red */\n[data-v-7a0ce10e]::-webkit-scrollbar-thumb {\n  background: #946bff;\n  margin-left: 10px;\n}\n.full-column[data-v-7a0ce10e] {\n  height: calc(100vh - 39.82px - 15px * 2 - 4px);\n  overflow: scroll;\n}\n.half-column[data-v-7a0ce10e] {\n  height: calc((100vh - 39.82px - 15px * 2 - 4px) / 2);\n  overflow: scroll;\n  overflow-x: hidden;\n}\nul[data-v-7a0ce10e] {\n  list-style: none;\n  padding: 0;\n  margin: 0;\n}", ""]);
 
 // exports
 
@@ -76717,6 +76804,36 @@ if(false) {}
 
 /***/ }),
 
+/***/ "./node_modules/style-loader/index.js!./node_modules/css-loader/index.js!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src/index.js?!./node_modules/sass-loader/dist/cjs.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/elements/ButtonModal.vue?vue&type=style&index=0&id=10d580ae&lang=scss&scoped=true&":
+/*!**********************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/style-loader!./node_modules/css-loader!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src??ref--7-2!./node_modules/sass-loader/dist/cjs.js??ref--7-3!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/elements/ButtonModal.vue?vue&type=style&index=0&id=10d580ae&lang=scss&scoped=true& ***!
+  \**********************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+
+var content = __webpack_require__(/*! !../../../../node_modules/css-loader!../../../../node_modules/vue-loader/lib/loaders/stylePostLoader.js!../../../../node_modules/postcss-loader/src??ref--7-2!../../../../node_modules/sass-loader/dist/cjs.js??ref--7-3!../../../../node_modules/vue-loader/lib??vue-loader-options!./ButtonModal.vue?vue&type=style&index=0&id=10d580ae&lang=scss&scoped=true& */ "./node_modules/css-loader/index.js!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src/index.js?!./node_modules/sass-loader/dist/cjs.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/elements/ButtonModal.vue?vue&type=style&index=0&id=10d580ae&lang=scss&scoped=true&");
+
+if(typeof content === 'string') content = [[module.i, content, '']];
+
+var transform;
+var insertInto;
+
+
+
+var options = {"hmr":true}
+
+options.transform = transform
+options.insertInto = undefined;
+
+var update = __webpack_require__(/*! ../../../../node_modules/style-loader/lib/addStyles.js */ "./node_modules/style-loader/lib/addStyles.js")(content, options);
+
+if(content.locals) module.exports = content.locals;
+
+if(false) {}
+
+/***/ }),
+
 /***/ "./node_modules/style-loader/index.js!./node_modules/css-loader/index.js!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src/index.js?!./node_modules/sass-loader/dist/cjs.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/elements/TwitterProfileCard.vue?vue&type=style&index=0&id=e9945bba&lang=scss&scoped=true&":
 /*!*****************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************!*\
   !*** ./node_modules/style-loader!./node_modules/css-loader!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src??ref--7-2!./node_modules/sass-loader/dist/cjs.js??ref--7-3!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/elements/TwitterProfileCard.vue?vue&type=style&index=0&id=e9945bba&lang=scss&scoped=true& ***!
@@ -78415,6 +78532,102 @@ var render = function() {
   ])
 }
 var staticRenderFns = []
+render._withStripped = true
+
+
+
+/***/ }),
+
+/***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/elements/ButtonModal.vue?vue&type=template&id=10d580ae&scoped=true&":
+/*!***********************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/elements/ButtonModal.vue?vue&type=template&id=10d580ae&scoped=true& ***!
+  \***********************************************************************************************************************************************************************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return staticRenderFns; });
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c("div", { staticClass: "button-modal-container" }, [
+    _c(
+      "button",
+      {
+        staticClass: "btn btn-primary",
+        attrs: {
+          type: "button",
+          "data-toggle": "modal",
+          "data-target": "#modal"
+        }
+      },
+      [_vm._t("button-text")],
+      2
+    ),
+    _vm._v(" "),
+    _c(
+      "div",
+      {
+        staticClass: "modal fade",
+        attrs: {
+          id: "modal",
+          tabindex: "-1",
+          role: "dialog",
+          "aria-labelledby": "modal-label",
+          "aria-hidden": "true"
+        }
+      },
+      [
+        _c(
+          "div",
+          { staticClass: "modal-dialog", attrs: { role: "document" } },
+          [
+            _c("div", { staticClass: "modal-content" }, [
+              _c("div", { staticClass: "modal-header" }, [
+                _c(
+                  "h5",
+                  { staticClass: "modal-title", attrs: { id: "modal-label" } },
+                  [_vm._v(_vm._s(_vm.title))]
+                ),
+                _vm._v(" "),
+                _vm._m(0)
+              ]),
+              _vm._v(" "),
+              _c(
+                "div",
+                { staticClass: "modal-body" },
+                [_vm._t("modal-body")],
+                2
+              )
+            ])
+          ]
+        )
+      ]
+    )
+  ])
+}
+var staticRenderFns = [
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c(
+      "button",
+      {
+        staticClass: "close",
+        attrs: {
+          type: "button",
+          "data-dismiss": "modal",
+          "aria-label": "Close"
+        }
+      },
+      [_c("span", { attrs: { "aria-hidden": "true" } }, [_vm._v("×")])]
+    )
+  }
+]
 render._withStripped = true
 
 
@@ -80957,7 +81170,11 @@ var render = function() {
                                                       selected: ""
                                                     }
                                                   },
-                                                  [_vm._v("7 días")]
+                                                  [
+                                                    _vm._v(
+                                                      "7 días\n                                                                            "
+                                                    )
+                                                  ]
                                                 ),
                                                 _vm._v(" "),
                                                 _c(
@@ -80965,7 +81182,11 @@ var render = function() {
                                                   {
                                                     attrs: { value: "biweekly" }
                                                   },
-                                                  [_vm._v("14 días")]
+                                                  [
+                                                    _vm._v(
+                                                      "14 días\n                                                                            "
+                                                    )
+                                                  ]
                                                 ),
                                                 _vm._v(" "),
                                                 _c(
@@ -81218,7 +81439,11 @@ var render = function() {
                                                       selected: ""
                                                     }
                                                   },
-                                                  [_vm._v("7 días")]
+                                                  [
+                                                    _vm._v(
+                                                      "7 días\n                                                                            "
+                                                    )
+                                                  ]
                                                 ),
                                                 _vm._v(" "),
                                                 _c(
@@ -81226,7 +81451,11 @@ var render = function() {
                                                   {
                                                     attrs: { value: "biweekly" }
                                                   },
-                                                  [_vm._v("14 días")]
+                                                  [
+                                                    _vm._v(
+                                                      "14 días\n                                                                            "
+                                                    )
+                                                  ]
                                                 ),
                                                 _vm._v(" "),
                                                 _c(
@@ -81476,7 +81705,149 @@ var render = function() {
                                   ])
                                 ]),
                                 _vm._v(" "),
-                                _vm._m(8)
+                                _c(
+                                  "div",
+                                  { staticClass: "col-auto" },
+                                  [
+                                    _c(
+                                      "button-modal",
+                                      { attrs: { title: "Seguidos" } },
+                                      [
+                                        _c(
+                                          "template",
+                                          { slot: "button-text" },
+                                          [_c("span", [_vm._v("Detalles")])]
+                                        ),
+                                        _vm._v(" "),
+                                        _c("template", { slot: "modal-body" }, [
+                                          _c(
+                                            "ul",
+                                            { staticClass: "profiles-list" },
+                                            _vm._l(
+                                              _vm.d_user
+                                                .current_twitter_profile[0]
+                                                .friends,
+                                              function(friend, i) {
+                                                return _c("li", [
+                                                  _c(
+                                                    "div",
+                                                    {
+                                                      staticClass:
+                                                        "row no-gutters profile-link"
+                                                    },
+                                                    [
+                                                      _c(
+                                                        "a",
+                                                        {
+                                                          staticClass:
+                                                            "col-auto",
+                                                          attrs: {
+                                                            href:
+                                                              "https://twitter.com/" +
+                                                              friend.screen_name
+                                                          }
+                                                        },
+                                                        [
+                                                          _c("img", {
+                                                            attrs: {
+                                                              src:
+                                                                friend.profile_image_url,
+                                                              alt:
+                                                                "Foto de perfil de @" +
+                                                                friend.screen_name
+                                                            }
+                                                          })
+                                                        ]
+                                                      ),
+                                                      _vm._v(" "),
+                                                      _c(
+                                                        "div",
+                                                        { staticClass: "col" },
+                                                        [
+                                                          _c(
+                                                            "span",
+                                                            {
+                                                              staticClass:
+                                                                "name"
+                                                            },
+                                                            [
+                                                              _c(
+                                                                "a",
+                                                                {
+                                                                  attrs: {
+                                                                    href:
+                                                                      "https://twitter.com/" +
+                                                                      friend.screen_name
+                                                                  }
+                                                                },
+                                                                [
+                                                                  _vm._v(
+                                                                    _vm._s(
+                                                                      friend.name
+                                                                    )
+                                                                  )
+                                                                ]
+                                                              ),
+                                                              _vm._v(" "),
+                                                              friend.follows_you
+                                                                ? _c(
+                                                                    "span",
+                                                                    {
+                                                                      staticClass:
+                                                                        "badge badge-success"
+                                                                    },
+                                                                    [
+                                                                      _vm._v(
+                                                                        "Te sigue"
+                                                                      )
+                                                                    ]
+                                                                  )
+                                                                : _c(
+                                                                    "span",
+                                                                    {
+                                                                      staticClass:
+                                                                        "badge badge-danger"
+                                                                    },
+                                                                    [
+                                                                      _vm._v(
+                                                                        "No te sigue"
+                                                                      )
+                                                                    ]
+                                                                  )
+                                                            ]
+                                                          ),
+                                                          _vm._v(" "),
+                                                          _c(
+                                                            "span",
+                                                            {
+                                                              staticClass:
+                                                                "screen-name text-muted"
+                                                            },
+                                                            [
+                                                              _vm._v(
+                                                                "@" +
+                                                                  _vm._s(
+                                                                    friend.screen_name
+                                                                  )
+                                                              )
+                                                            ]
+                                                          )
+                                                        ]
+                                                      )
+                                                    ]
+                                                  )
+                                                ])
+                                              }
+                                            ),
+                                            0
+                                          )
+                                        ])
+                                      ],
+                                      2
+                                    )
+                                  ],
+                                  1
+                                )
                               ])
                             ])
                           ])
@@ -81486,7 +81857,7 @@ var render = function() {
                   ]
                 ),
                 _vm._v(" "),
-                _vm._m(9)
+                _vm._m(8)
               ]
             )
           ])
@@ -81676,14 +82047,6 @@ var staticRenderFns = [
         },
         [_c("span", { attrs: { "aria-hidden": "true" } }, [_vm._v("×")])]
       )
-    ])
-  },
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "col-auto" }, [
-      _c("button", { staticClass: "btn" }, [_vm._v("Detalles")])
     ])
   },
   function() {
@@ -95743,7 +96106,8 @@ Vue.component('Profiles', __webpack_require__(/*! ./components/pages/Profiles.vu
 Vue.component('Stats', __webpack_require__(/*! ./components/pages/Stats.vue */ "./resources/js/components/pages/Stats.vue")["default"]);
 Vue.component('Login', __webpack_require__(/*! ./components/pages/Login.vue */ "./resources/js/components/pages/Login.vue")["default"]); // Elements
 
-Vue.component('TwitterProfileCard', __webpack_require__(/*! ./components/elements/TwitterProfileCard.vue */ "./resources/js/components/elements/TwitterProfileCard.vue")["default"]); // Utility
+Vue.component('TwitterProfileCard', __webpack_require__(/*! ./components/elements/TwitterProfileCard.vue */ "./resources/js/components/elements/TwitterProfileCard.vue")["default"]);
+Vue.component('ButtonModal', __webpack_require__(/*! ./components/elements/ButtonModal.vue */ "./resources/js/components/elements/ButtonModal.vue")["default"]); // Utility
 
 Vue.component('Csrf', __webpack_require__(/*! ./components/utility/Csrf.vue */ "./resources/js/components/utility/Csrf.vue")["default"]);
 
@@ -95912,6 +96276,93 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_HomePage_vue_vue_type_template_id_fa44bb0e_scoped_true___WEBPACK_IMPORTED_MODULE_0__["render"]; });
 
 /* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_HomePage_vue_vue_type_template_id_fa44bb0e_scoped_true___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
+
+
+
+/***/ }),
+
+/***/ "./resources/js/components/elements/ButtonModal.vue":
+/*!**********************************************************!*\
+  !*** ./resources/js/components/elements/ButtonModal.vue ***!
+  \**********************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _ButtonModal_vue_vue_type_template_id_10d580ae_scoped_true___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./ButtonModal.vue?vue&type=template&id=10d580ae&scoped=true& */ "./resources/js/components/elements/ButtonModal.vue?vue&type=template&id=10d580ae&scoped=true&");
+/* harmony import */ var _ButtonModal_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./ButtonModal.vue?vue&type=script&lang=js& */ "./resources/js/components/elements/ButtonModal.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport *//* harmony import */ var _ButtonModal_vue_vue_type_style_index_0_id_10d580ae_lang_scss_scoped_true___WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./ButtonModal.vue?vue&type=style&index=0&id=10d580ae&lang=scss&scoped=true& */ "./resources/js/components/elements/ButtonModal.vue?vue&type=style&index=0&id=10d580ae&lang=scss&scoped=true&");
+/* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
+
+
+
+
+
+
+/* normalize component */
+
+var component = Object(_node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_3__["default"])(
+  _ButtonModal_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__["default"],
+  _ButtonModal_vue_vue_type_template_id_10d580ae_scoped_true___WEBPACK_IMPORTED_MODULE_0__["render"],
+  _ButtonModal_vue_vue_type_template_id_10d580ae_scoped_true___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"],
+  false,
+  null,
+  "10d580ae",
+  null
+  
+)
+
+/* hot reload */
+if (false) { var api; }
+component.options.__file = "resources/js/components/elements/ButtonModal.vue"
+/* harmony default export */ __webpack_exports__["default"] = (component.exports);
+
+/***/ }),
+
+/***/ "./resources/js/components/elements/ButtonModal.vue?vue&type=script&lang=js&":
+/*!***********************************************************************************!*\
+  !*** ./resources/js/components/elements/ButtonModal.vue?vue&type=script&lang=js& ***!
+  \***********************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_ButtonModal_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../node_modules/babel-loader/lib??ref--4-0!../../../../node_modules/vue-loader/lib??vue-loader-options!./ButtonModal.vue?vue&type=script&lang=js& */ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/elements/ButtonModal.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport */ /* harmony default export */ __webpack_exports__["default"] = (_node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_ButtonModal_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__["default"]); 
+
+/***/ }),
+
+/***/ "./resources/js/components/elements/ButtonModal.vue?vue&type=style&index=0&id=10d580ae&lang=scss&scoped=true&":
+/*!********************************************************************************************************************!*\
+  !*** ./resources/js/components/elements/ButtonModal.vue?vue&type=style&index=0&id=10d580ae&lang=scss&scoped=true& ***!
+  \********************************************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_style_loader_index_js_node_modules_css_loader_index_js_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_7_2_node_modules_sass_loader_dist_cjs_js_ref_7_3_node_modules_vue_loader_lib_index_js_vue_loader_options_ButtonModal_vue_vue_type_style_index_0_id_10d580ae_lang_scss_scoped_true___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../node_modules/style-loader!../../../../node_modules/css-loader!../../../../node_modules/vue-loader/lib/loaders/stylePostLoader.js!../../../../node_modules/postcss-loader/src??ref--7-2!../../../../node_modules/sass-loader/dist/cjs.js??ref--7-3!../../../../node_modules/vue-loader/lib??vue-loader-options!./ButtonModal.vue?vue&type=style&index=0&id=10d580ae&lang=scss&scoped=true& */ "./node_modules/style-loader/index.js!./node_modules/css-loader/index.js!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src/index.js?!./node_modules/sass-loader/dist/cjs.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/elements/ButtonModal.vue?vue&type=style&index=0&id=10d580ae&lang=scss&scoped=true&");
+/* harmony import */ var _node_modules_style_loader_index_js_node_modules_css_loader_index_js_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_7_2_node_modules_sass_loader_dist_cjs_js_ref_7_3_node_modules_vue_loader_lib_index_js_vue_loader_options_ButtonModal_vue_vue_type_style_index_0_id_10d580ae_lang_scss_scoped_true___WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_node_modules_style_loader_index_js_node_modules_css_loader_index_js_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_7_2_node_modules_sass_loader_dist_cjs_js_ref_7_3_node_modules_vue_loader_lib_index_js_vue_loader_options_ButtonModal_vue_vue_type_style_index_0_id_10d580ae_lang_scss_scoped_true___WEBPACK_IMPORTED_MODULE_0__);
+/* harmony reexport (unknown) */ for(var __WEBPACK_IMPORT_KEY__ in _node_modules_style_loader_index_js_node_modules_css_loader_index_js_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_7_2_node_modules_sass_loader_dist_cjs_js_ref_7_3_node_modules_vue_loader_lib_index_js_vue_loader_options_ButtonModal_vue_vue_type_style_index_0_id_10d580ae_lang_scss_scoped_true___WEBPACK_IMPORTED_MODULE_0__) if(__WEBPACK_IMPORT_KEY__ !== 'default') (function(key) { __webpack_require__.d(__webpack_exports__, key, function() { return _node_modules_style_loader_index_js_node_modules_css_loader_index_js_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_7_2_node_modules_sass_loader_dist_cjs_js_ref_7_3_node_modules_vue_loader_lib_index_js_vue_loader_options_ButtonModal_vue_vue_type_style_index_0_id_10d580ae_lang_scss_scoped_true___WEBPACK_IMPORTED_MODULE_0__[key]; }) }(__WEBPACK_IMPORT_KEY__));
+ /* harmony default export */ __webpack_exports__["default"] = (_node_modules_style_loader_index_js_node_modules_css_loader_index_js_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_7_2_node_modules_sass_loader_dist_cjs_js_ref_7_3_node_modules_vue_loader_lib_index_js_vue_loader_options_ButtonModal_vue_vue_type_style_index_0_id_10d580ae_lang_scss_scoped_true___WEBPACK_IMPORTED_MODULE_0___default.a); 
+
+/***/ }),
+
+/***/ "./resources/js/components/elements/ButtonModal.vue?vue&type=template&id=10d580ae&scoped=true&":
+/*!*****************************************************************************************************!*\
+  !*** ./resources/js/components/elements/ButtonModal.vue?vue&type=template&id=10d580ae&scoped=true& ***!
+  \*****************************************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_ButtonModal_vue_vue_type_template_id_10d580ae_scoped_true___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!../../../../node_modules/vue-loader/lib??vue-loader-options!./ButtonModal.vue?vue&type=template&id=10d580ae&scoped=true& */ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/elements/ButtonModal.vue?vue&type=template&id=10d580ae&scoped=true&");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_ButtonModal_vue_vue_type_template_id_10d580ae_scoped_true___WEBPACK_IMPORTED_MODULE_0__["render"]; });
+
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_ButtonModal_vue_vue_type_template_id_10d580ae_scoped_true___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
 
 
 

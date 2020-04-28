@@ -40,6 +40,7 @@ Vue.component('Login', require('./components/pages/Login.vue').default);
 
 // Elements
 Vue.component('TwitterProfileCard', require('./components/elements/TwitterProfileCard.vue').default);
+Vue.component('ButtonModal', require('./components/elements/ButtonModal.vue').default);
 
 // Utility
 Vue.component('Csrf', require('./components/utility/Csrf.vue').default);

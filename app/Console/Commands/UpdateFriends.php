@@ -54,6 +54,8 @@ class UpdateFriends extends Command {
                 $isLastJob = $j == ($neededFriendsJobs - 1) ? true : false;
                 UpdateFriendsJob::dispatch($profile, $isLastJob)->delay(now()->addMinutes($delay));
             }
+
+
         }
     }
 }

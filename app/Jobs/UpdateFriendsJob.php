@@ -6,6 +6,7 @@ use App\Follower;
 use App\Friend;
 use App\Helpers\ApiHelper;
 use App\Report;
+use App\TwitterProfile;
 use App\Unfriend;
 use Carbon\Carbon;
 use Illuminate\Bus\Queueable;
@@ -13,7 +14,6 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
-use Illuminate\Support\Facades\Storage;
 use Thujohn\Twitter\Facades\Twitter;
 
 class UpdateFriendsJob implements ShouldQueue {
@@ -71,8 +71,6 @@ class UpdateFriendsJob implements ShouldQueue {
 
             if ($available_requests >= $needed_requests) {
                 $fetchedFriendsLookup = $this->getLookupFromIdArray($newFriends);
-                Storage::put($this->profile->id . '_newfriends.txt', print_r($newFriends, true));
-                Storage::put($this->profile->id . '_friendslookup.txt', print_r($fetchedFriendsLookup, true));
 
             } else {
 
@@ -88,12 +86,17 @@ class UpdateFriendsJob implements ShouldQueue {
                 $friend = new Friend;
                 $friend->twitter_profile_id = $this->profile->id;
                 $friend->id_str = $newFriendId;
+                $friend->follows_you = Follower::where([
+                    ['twitter_profile_id', $this->profile->id],
+                    ['id_str', $newFriendId]
+                ])->first() ? true : false;
 
                 if (!empty($fetchedFriendsLookup)) {
                     $friend->name = $fetchedFriendsLookup[$i]->name;
                     $friend->screen_name = $fetchedFriendsLookup[$i]->screen_name;
                     $friend->followers_count = $fetchedFriendsLookup[$i]->followers_count;
                     $friend->profile_image_url = $fetchedFriendsLookup[$i]->profile_image_url;
+                    $friend->location = $fetchedFriendsLookup[$i]->location;
                 }
 
                 $friend->save();
