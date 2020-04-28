@@ -20,9 +20,14 @@ use Thujohn\Twitter\Facades\Twitter;
 class TestController extends Controller {
 
     public function test() {
-        dd(Follower::where([
+        $friend = Friend::where([
             ['twitter_profile_id', 286561116],
-            ['id_str', 7203924242429181]
-        ])->first() ? true : false);
+            ['id_str', 28955739]
+        ])->first();
+
+        $friend->follows_you = true;
+        $friend->save();
+
+        dd($friend);
     }
 }

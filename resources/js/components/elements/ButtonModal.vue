@@ -1,14 +1,17 @@
 <template>
     <div class="button-modal-container">
-        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#modal">
-            <slot name="button-text"></slot>
+        <button v-if="button" type="button" class="btn btn-primary" data-toggle="modal" :data-target="'#' + id">
+            <slot name="button"></slot>
         </button>
+        <a v-else class="element" href="" data-toggle="modal" :data-target="'#' + id">
+            <slot name="button"></slot>
+        </a>
 
-        <div class="modal fade" id="modal" tabindex="-1" role="dialog" aria-labelledby="modal-label" aria-hidden="true">
+        <div class="modal fade" :id="id" tabindex="-1" role="dialog" :aria-labelledby="id + '-label'" aria-hidden="true">
             <div class="modal-dialog" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title" id="modal-label">{{ title }}</h5>
+                        <h5 class="modal-title" :id="id + '-label'">{{ title }}</h5>
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
                         </button>
@@ -25,7 +28,9 @@
 <script>
     export default {
         props: {
+            'id': String,
             'title': String,
+            'button': Boolean
         }
     }
 </script>
@@ -34,20 +39,35 @@
     $primaryColor: #7642FF;
     $textColor: #3E396B;
 
-    .modal-body {
-        max-height: 500px;
-        overflow-y: scroll;
-    }
+    .button-modal-container {
+        display: inline;
 
-    ::-webkit-scrollbar {
-        width: 10px; /* Remove scrollbar space */
-        padding-left: 50px;
-        background-color: lighten(black, 85%);
-        //background: transparent;  /* Optional: just make scrollbar invisible */
-    }
+        a.element {
+            color: inherit;
 
-    ::-webkit-scrollbar-thumb {
-        background: lighten($primaryColor, 8%);
-        margin-left: 10px;
+            &:hover {
+                text-decoration: none;
+            }
+        }
+
+        .modal-content {
+            .modal-body {
+                max-height: 80vh;
+                overflow-y: scroll;
+                overflow-x: hidden;
+            }
+
+            ::-webkit-scrollbar {
+                width: 10px; /* Remove scrollbar space */
+                padding-left: 50px;
+                background-color: lighten(black, 85%);
+                //background: transparent;  /* Optional: just make scrollbar invisible */
+            }
+
+            ::-webkit-scrollbar-thumb {
+                background: lighten($primaryColor, 8%);
+                margin-left: 10px;
+            }
+        }
     }
 </style>

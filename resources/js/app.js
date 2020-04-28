@@ -35,7 +35,9 @@ Vue.component('App', require('./components/pages/App.vue').default);
     Vue.component('Tweet', require('./components/pages/Dashboard/Columns/Tweet.vue').default);
 
 Vue.component('Profiles', require('./components/pages/Profiles.vue').default);
-Vue.component('Stats', require('./components/pages/Stats.vue').default);
+Vue.component('Stats', require('./components/pages/Stats/Stats.vue').default);
+    Vue.component('FollowersStats', require('./components/pages/Stats/FollowersStats.vue').default);
+    Vue.component('FriendsStats', require('./components/pages/Stats/FriendsStats.vue').default);
 Vue.component('Login', require('./components/pages/Login.vue').default);
 
 // Elements

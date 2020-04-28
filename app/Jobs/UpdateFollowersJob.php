@@ -6,19 +6,15 @@ use App\Follower;
 use App\Follow;
 use App\Friend;
 use App\Helpers\ApiHelper;
-use App\Helpers\UtilHelper;
-use App\Report;
 use App\Unfollow;
-use Carbon\Carbon;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
-use Illuminate\Support\Facades\Storage;
 use Thujohn\Twitter\Facades\Twitter;
 
-class UpdateFollowersAndUnfollowers implements ShouldQueue {
+class UpdateFollowersJob implements ShouldQueue {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
     const FOLLOWER_IDS_MAX_CONSECUTIVE_REQUESTS = 15;
