@@ -55,6 +55,8 @@ Route::group(['middleware' => 'auth'], function () {
             Route::prefix('{profileId}/stats')->group(function () {
                 Route::get('{stat}/{timeInterval}', 'StatsController@getReportStat');
             });
+
+            Route::post('unfollow', 'AppController@unfollowUser');
         });
     });
 

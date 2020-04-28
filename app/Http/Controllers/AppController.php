@@ -3,10 +3,13 @@
 namespace App\Http\Controllers;
 
 use App\Follow;
+use App\Follower;
+use App\Friend;
 use App\Helpers\ApiHelper;
 use App\Report;
 use App\TwitterProfile;
 use App\Unfollow;
+use App\Unfriend;
 use App\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -17,7 +20,6 @@ class AppController extends Controller {
         $startTime = microtime(true);
 
         $user = UserController::get($selectedProfileIndex);
-
         $user->profile_index = $selectedProfileIndex;
 
         // Se reconfigura la API para realizar las peticiones con el perfil activo
@@ -172,5 +174,30 @@ class AppController extends Controller {
 
     public function removeFavorite(Request $r) {
         return Twitter::destroyFavorite(['id' => $r->id, 'tweet_mode' => 'extended', 'format' => 'json']);
+    }
+
+    public function unfollowUser(Request $r) {
+        $response = Twitter::postUnfollow(['screen_name' => $r->screen_name]);
+
+        if ($response) {
+            $friend = Friend::where([
+                ['twitter_profile_id', $r->twitter_profile_id],
+                ['screen_name', $r->screen_name]
+            ])->first();
+
+            $friend->hidden = true;
+            $friend->save();
+
+            return [
+                'status' => 'success',
+                'message' => 'Has dejado de seguir a @' . $r->screen_name . '.'
+            ];
+        }
+        else {
+            return [
+                'status' => 'error',
+                'message' => 'Ha ocurrido un error al intentar dejar de seguir a @' . $r->screen_name . '.'
+            ];
+        }
     }
 }

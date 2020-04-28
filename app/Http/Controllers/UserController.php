@@ -18,7 +18,9 @@ class UserController extends Controller {
                 $query->with('followers')
                     ->with('follows')
                     ->with('unfollows')
-                    ->with('friends')
+                    ->with(['friends' => function ($query) {
+                        $query->where('hidden', false);
+                    }])
                     ->with('unfriends')
                     ->with('reports')
                     ->orderBy('created_at')
