@@ -25,12 +25,24 @@ class StatsController extends Controller {
                     $attr = 'total_followers';
                     break;
 
+                case 'follows':
+                    $attr = 'follows';
+                    break;
+
                 case 'unfollows':
                     $attr = 'unfollows';
                     break;
 
                 case 'friends':
-                    $attr = 'friends';
+                    $attr = 'total_friends';
+                    break;
+
+                case 'befriends':
+                    $attr = 'befriends';
+                    break;
+
+                case 'unfriends':
+                    $attr = 'befriends';
                     break;
             }
 
