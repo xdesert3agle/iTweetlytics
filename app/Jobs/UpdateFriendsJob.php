@@ -126,7 +126,10 @@ class UpdateFriendsJob implements ShouldQueue {
             $unfriend->screen_name = $friend->screen_name;
             $unfriend->profile_image_url = $friend->profile_image_url;
             $unfriend->location = $friend->location;
-            $unfriend->location = $friend->location;
+            $unfriend->follows_you = Follower::where([
+                ['twitter_profile_id', $this->profile->id],
+                ['id_str', $newFriendId]
+            ])->first() ? true : false;
             $unfriend->save();
 
             $friend->delete();

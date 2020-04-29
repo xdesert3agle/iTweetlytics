@@ -20,6 +20,12 @@ button:not(.close){
     &.btn-round {
         border-radius: 20px!important;
     }
+
+    &.btn-text {
+        padding: 0!important;
+        border: 0!important;
+        background: transparent!important;
+    }
 }
 
 form > button:first-child {

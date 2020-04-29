@@ -11,10 +11,10 @@
                                         <div class="col">
                                             <div class="row">
                                                 <div class="col">
-                                                    <h4 class="card-title">Followers</h4>
+                                                    <h4 class="card-title">Seguidores</h4>
                                                 </div>
                                                 <div class="col-auto text-right">
-                                                    <select class="form-control" @input="fetchFollowersData($event.target.value)">
+                                                    <select class="form-control" @input="fetchFollowersGraphData($event.target.value)">
                                                         <option value="weekly" selected>7 días
                                                         </option>
                                                         <option value="biweekly">14 días
@@ -25,26 +25,29 @@
                                                 </div>
                                             </div>
 
-                                            <div class="followers-list-count-container">
-                                                <span>{{ d_user.current_twitter_profile[0].followers.length }} seguidores</span>
+                                            <div class="followers-list-container">
+                                                <span class="stat-amount">{{ user.current_twitter_profile[0].followers.length }}</span>
                                                 <button-modal id="followers-list" title="Seguidores" :button="false">
                                                     <template slot="button">
-                                                        <i class="fa fa-lg fa-eye"></i>
+                                                        <button class="btn-text">Detalles</button>
                                                     </template>
                                                     <template slot="modal-body">
                                                         <ul class="profiles-list">
-                                                            <li v-for="(friend, i) in d_user.current_twitter_profile[0].friends">
+                                                            <li v-for="(follower, i) in user.current_twitter_profile[0].followers" :id="'element-' + follower.screen_name">
                                                                 <div class="row no-gutters profile-link">
-                                                                    <a :href="'https://twitter.com/' + friend.screen_name" class="col-auto">
-                                                                        <img :src="friend.profile_image_url" :alt="'Foto de perfil de @' + friend.screen_name">
+                                                                    <a :href="'https://twitter.com/' + follower.screen_name" class="col-auto">
+                                                                        <img :src="follower.profile_image_url" :alt="'Foto de perfil de @' + follower.screen_name">
                                                                     </a>
                                                                     <div class="col">
-                                                                                    <span class="name">
-                                                                                        <a :href="'https://twitter.com/' + friend.screen_name">{{ friend.name }}</a>
-                                                                                        <span v-if="friend.follows_you" class="badge badge-success">Te sigue</span>
-                                                                                        <span v-else class="badge badge-danger">No te sigue</span>
-                                                                                    </span>
-                                                                        <span class="screen-name text-muted">@{{ friend.screen_name }}</span>
+                                                                        <span class="name">
+                                                                            <a :href="'https://twitter.com/' + follower.screen_name">
+                                                                                {{ follower.name }}
+                                                                            </a>
+                                                                        </span>
+                                                                        <span class="screen-name text-muted">@{{ follower.screen_name }}</span>
+                                                                    </div>
+                                                                    <div class="col-auto unfollow-button">
+                                                                        <i @click="unfollowUser(follower.screen_name, i)" class="fa fa-lg fa-times"></i>
                                                                     </div>
                                                                 </div>
                                                             </li>
@@ -56,7 +59,7 @@
                                     </div>
                                     <div class="row">
                                         <div class="col">
-                                            <line-chart :data="followersData" width="100%"></line-chart>
+                                            <line-chart :data="followersGraphData" width="100%"></line-chart>
                                         </div>
                                     </div>
                                 </div>
@@ -89,14 +92,34 @@
                                                 </div>
                                             </div>
 
-                                            <div class="unfollowers-list-count-container">
-                                                <div v-if="d_user.current_twitter_profile[0].unfollowers">
-                                                    <span>{{ d_user.current_twitter_profile[0].unfollowers.length }} unfollows</span>
-                                                    <a href="" data-toggle="modal" data-target="#unfollowers-modal">
-                                                        <i class="fa fa-eye"></i>
-                                                    </a>
-                                                </div>
-                                                <span v-else>Ningún unfollower reciente</span>
+                                            <div class="unfollowers-list-container">
+                                                <span class="stat-amount">{{ user.current_twitter_profile[0].unfollows.length }}</span>
+                                                <button-modal id="unfollowers-list" title="Unfollowers" :button="false">
+                                                    <template slot="button">
+                                                        <button class="btn-text">Detalles</button>
+                                                    </template>
+                                                    <template slot="modal-body">
+                                                        <ul class="profiles-list">
+                                                            <li v-for="(unfollower, i) in user.current_twitter_profile[0].unfollows" :id="'element-' + unfollower.screen_name">
+                                                                <div class="row no-gutters profile-link">
+                                                                    <a :href="'https://twitter.com/' + unfollower.screen_name" class="col-auto">
+                                                                        <img :src="unfollower.profile_image_url" :alt="'Foto de perfil de @' + unfollower.screen_name">
+                                                                    </a>
+                                                                    <div class="col">
+                                                                        <span class="name">
+                                                                            <a :href="'https://twitter.com/' + unfollower.screen_name">
+                                                                                {{ unfollower.name }}
+                                                                                <span v-if="unfollower.follows_you" class="badge badge-success">Te sigue</span>
+                                                                                <span v-else class="badge badge-danger">No te sigue</span>
+                                                                            </a>
+                                                                        </span>
+                                                                        <span class="screen-name text-muted">@{{ unfollower.screen_name }}</span>
+                                                                    </div>
+                                                                </div>
+                                                            </li>
+                                                        </ul>
+                                                    </template>
+                                                </button-modal>
                                             </div>
 
                                             <div class="modal fade" id="unfollowers-modal" tabindex="-1" role="dialog" aria-labelledby="unfollowers-modal-label" aria-hidden="true">
@@ -148,41 +171,10 @@
                 <div class="col">
                     <div class="card">
                         <div class="card-body">
-                            <h4 class="card-title">Follow-back de tus seguidos</h4>
+                            <h4 class="card-title">Follow-back a tus seguidores</h4>
                             <div class="row card-content">
                                 <div class="col">
-                                    <span class="stat-amount">{{ d_user.current_twitter_profile[0].reports[d_user.current_twitter_profile[0].reports.length - 1].followers_followback_percent.toFixed(2).toString().replace('.', ',') }}%</span>
-                                </div>
-                                <div class="col-auto">
-                                    <button-modal id="followback-details" title="Seguidos" :button="true">
-                                        <template slot="button">
-                                            <span>Detalles</span>
-                                        </template>
-                                        <template slot="modal-body">
-                                            <ul class="profiles-list">
-                                                <li v-for="(friend, i) in d_user.current_twitter_profile[0].friends" :id="'element-' + friend.screen_name">
-                                                    <div class="row no-gutters profile-link">
-                                                        <a :href="'https://twitter.com/' + friend.screen_name" class="col-auto">
-                                                            <img :src="friend.profile_image_url" :alt="'Foto de perfil de @' + friend.screen_name">
-                                                        </a>
-                                                        <div class="col">
-                                                            <span class="name">
-                                                                <a :href="'https://twitter.com/' + friend.screen_name">
-                                                                    {{ friend.name }}
-                                                                    <span v-if="friend.follows_you" class="badge badge-success">Te sigue</span>
-                                                                    <span v-else class="badge badge-danger">No te sigue</span>
-                                                                </a>
-                                                            </span>
-                                                            <span class="screen-name text-muted">@{{ friend.screen_name }}</span>
-                                                        </div>
-                                                        <div class="col-auto unfollow-button">
-                                                            <i @click="unfollowUser(friend.screen_name, i)" class="fa fa-lg fa-times"></i>
-                                                        </div>
-                                                    </div>
-                                                </li>
-                                            </ul>
-                                        </template>
-                                    </button-modal>
+                                    <span class="stat-amount">{{ user.current_twitter_profile[0].reports[user.current_twitter_profile[0].reports.length - 1].user_followback_percent.toFixed(2).toString().replace('.', ',') }}%</span>
                                 </div>
                             </div>
                         </div>
@@ -201,19 +193,19 @@
         data() {
             return {
                 d_user: this.user,
-                followersData: null,
+                followersGraphData: null,
                 unfollowsData: null
             }
         },
         created() {
-            this.fetchFollowersData('weekly');
+            this.fetchFollowersGraphData('weekly');
             this.fetchUnfollowsData('weekly');
         },
         methods: {
-            fetchFollowersData(timeInterval) {
+            fetchFollowersGraphData(timeInterval) {
                 axios.get('/ajax/profile/' + this.d_user.current_twitter_profile[0].id + '/stats/followers/' + timeInterval + '/')
                     .then((response) => {
-                        this.followersData = response.data;
+                        this.followersGraphData = response.data;
                     });
             },
             fetchUnfollowsData(timeInterval) {
@@ -278,7 +270,7 @@
                         align-items: center;
                     }
 
-                    .followers-list-count-container, .unfollowers-list-count-container {
+                    .followers-list-container, .unfollowers-list-container {
                         margin-bottom: 2em;
 
                         a {

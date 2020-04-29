@@ -15,7 +15,9 @@ class UserController extends Controller {
         return User::find(Auth::id())
             ->with('twitter_profiles')
             ->with(['current_twitter_profile' => function ($query) use ($profileIndex) {
-                $query->with('followers')
+                $query->with(['followers' => function ($query) {
+                    $query->orderByDesc('followers.id')->get();
+                }])
                     ->with('follows')
                     ->with('unfollows')
                     ->with(['friends' => function ($query) {
@@ -23,7 +25,6 @@ class UserController extends Controller {
                     }])
                     ->with('unfriends')
                     ->with('reports')
-                    ->orderBy('created_at')
                     ->skip($profileIndex)->take(1);
             }])
             ->first();

@@ -56,7 +56,7 @@ class TwitterProfile extends Model {
 
     // ---------------------------------------------- RELATIONSHIPS --------------------------------------------- //
     public function followers() {
-        return $this->hasMany('App\Follower')->orderBy('created_at');
+        return $this->hasMany('App\Follower');
     }
 
     public function friends() {
