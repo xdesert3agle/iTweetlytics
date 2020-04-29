@@ -20,10 +20,10 @@ use Thujohn\Twitter\Facades\Twitter;
 class TestController extends Controller {
 
     public function test() {
-        $followers = Follower::where([
-            ['twitter_profile_id', 286561116]
-        ])->orderByDesc('id');
+        for ($i = 0; $i < 50; $i++) {
+            $local = $i;
+        }
 
-        dd($followers->get()->toArray());
+        dd($local);
     }
 }
