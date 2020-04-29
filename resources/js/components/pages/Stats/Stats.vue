@@ -51,30 +51,6 @@
         props: [
             'user'
         ],
-        data() {
-            return {
-                followersData: null,
-                unfollowsData: null
-            }
-        },
-        created() {
-            this.fetchFollowersData('weekly');
-            this.fetchUnfollowsData('weekly');
-        },
-        methods: {
-            fetchFollowersData(timeInterval) {
-                axios.get('/ajax/profile/' + this.user.current_twitter_profile[0].id + '/stats/followers/' + timeInterval + '/')
-                    .then((response) => {
-                        this.followersData = response.data;
-                    });
-            },
-            fetchUnfollowsData(timeInterval) {
-                axios.get('/ajax/profile/' + this.user.current_twitter_profile[0].id + '/stats/unfollows/' + timeInterval + '/')
-                    .then((response) => {
-                        this.unfollowsData = response.data;
-                    });
-            }
-        }
     }
 </script>
 
