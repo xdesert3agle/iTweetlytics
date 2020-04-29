@@ -76,6 +76,17 @@ class UpdateFollowersJob implements ShouldQueue {
             $follower->followers_count = $user->followers_count;
             $follower->location = $user->location;
             $follower->save();
+
+            // Si el usuario le estaba siguiendo, se marca como que ahora él también te sigue
+            $friend = Friend::where([
+                ['twitter_profile_id', $this->profile->id],
+                ['id_str', $user->id_str]
+            ])->first();
+
+            if ($friend) {
+                $friend->follows_you = true;
+                $friend->save();
+            }
         }
     }
 
@@ -100,7 +111,7 @@ class UpdateFollowersJob implements ShouldQueue {
                 ['id_str', $user->id_str]
             ])->delete();
 
-            // Se marca también como que no te sigue en la lista de friends
+            // Si el usuario no estaba siguiendo, se marca como que ya no le sigue
             $friend = Friend::where([
                 ['twitter_profile_id', $this->profile->id],
                 ['id_str', $user->id_str]

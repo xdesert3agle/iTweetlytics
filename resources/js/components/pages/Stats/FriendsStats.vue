@@ -129,32 +129,6 @@
                                 <div class="col">
                                     <span class="stat-amount">{{ user.current_twitter_profile[0].reports[user.current_twitter_profile[0].reports.length - 1].user_followback_percent.toFixed(2).toString().replace('.', ',') }}%</span>
                                 </div>
-                                <div class="col-auto">
-                                    <button-modal id="followback-details" title="Seguidores" :button="true">
-                                        <template slot="button">
-                                            <span>Detalles</span>
-                                        </template>
-                                        <template slot="modal-body">
-                                            <ul class="profiles-list">
-                                                <li v-for="(friend, i) in user.current_twitter_profile[0].friends">
-                                                    <div class="row no-gutters profile-link">
-                                                        <a :href="'https://twitter.com/' + friend.screen_name" class="col-auto">
-                                                            <img :src="friend.profile_image_url" :alt="'Foto de perfil de @' + friend.screen_name">
-                                                        </a>
-                                                        <div class="col">
-                                                            <span class="name">
-                                                                <a :href="'https://twitter.com/' + friend.screen_name">{{ friend.name }}</a>
-                                                                <span v-if="friend.follows_you" class="badge badge-success">Te sigue</span>
-                                                                <span v-else class="badge badge-danger">No te sigue</span>
-                                                            </span>
-                                                            <span class="screen-name text-muted">@{{ friend.screen_name }}</span>
-                                                        </div>
-                                                    </div>
-                                                </li>
-                                            </ul>
-                                        </template>
-                                    </button-modal>
-                                </div>
                             </div>
                         </div>
                     </div>
