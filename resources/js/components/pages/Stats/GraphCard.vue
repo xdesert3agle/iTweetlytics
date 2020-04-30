@@ -5,7 +5,7 @@
                 <div class="col">
                     <div class="row">
                         <div class="col">
-                            <h4 class="card-title">{{ card_title }}</h4>
+                            <h4 class="card-title">{{ card_title }}{{stat.is_accumulated ? ' en ' + timeIntervalString : ""}}</h4>
                         </div>
                         <div class="col-auto text-right">
                             <select class="form-control" @input="timeIntervalChanged">
@@ -64,6 +64,23 @@
                     is_accumulated: null
                 },
                 timeInterval: 'weekly'
+            }
+        },
+        computed: {
+            timeIntervalString() {
+                switch (this.timeInterval) {
+                    case 'weekly':
+                        return "los últimos 7 días";
+
+                    case 'biweekly':
+                        return "los últimos 14 días";
+
+                    case 'monthly':
+                        return "los últimos 30 días";
+
+                    case 'yearly':
+                        return "el último año";
+                }
             }
         },
         created() {

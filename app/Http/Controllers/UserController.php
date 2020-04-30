@@ -12,7 +12,7 @@ use Thujohn\Twitter\Facades\Twitter;
 
 class UserController extends Controller {
     public static function get($profileIndex) {
-        return User::find(Auth::id())
+        $user = User::find(Auth::id())
             ->with('twitter_profiles')
             ->with(['current_twitter_profile' => function ($query) use ($profileIndex) {
                 $query->with(['followers' => function ($query) {
@@ -23,11 +23,22 @@ class UserController extends Controller {
                     ->with(['friends' => function ($query) {
                         $query->where('hidden', false);
                     }])
+                    ->with('befriends')
                     ->with('unfriends')
                     ->with('reports')
                     ->skip($profileIndex)->take(1);
             }])
             ->first();
+
+        $followers = $user->current_twitter_profile[0]->followers->keyBy('id_str')->toArray();
+        unset($user->current_twitter_profile[0]->followers);
+        $user->current_twitter_profile[0]->followers = $followers;
+
+        $friends = $user->current_twitter_profile[0]->friends->keyBy('id_str')->toArray();
+        unset($user->current_twitter_profile[0]->friends);
+        $user->current_twitter_profile[0]->friends = $friends;
+
+        return $user;
     }
 
     public static function getFromRequest(Request $r) {

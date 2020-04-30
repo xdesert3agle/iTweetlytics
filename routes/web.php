@@ -57,6 +57,7 @@ Route::group(['middleware' => 'auth'], function () {
             });
 
             Route::post('unfollow', 'AppController@unfollowUser');
+            Route::post('follow', 'AppController@followUser');
         });
     });
 

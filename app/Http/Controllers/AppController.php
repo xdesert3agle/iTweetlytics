@@ -22,8 +22,6 @@ class AppController extends Controller {
         $user = UserController::get($selectedProfileIndex);
         $user->profile_index = $selectedProfileIndex;
 
-        //dd($user->current_twitter_profile->toArray());
-
         // Se reconfigura la API para realizar las peticiones con el perfil activo
         ApiHelper::reconfig($user->current_twitter_profile[0]);
 
@@ -199,6 +197,23 @@ class AppController extends Controller {
             return [
                 'status' => 'error',
                 'message' => 'Ha ocurrido un error al intentar dejar de seguir a @' . $r->screen_name . '.'
+            ];
+        }
+    }
+
+    public function followUser(Request $r) {
+        $response = Twitter::postFollow(['screen_name' => $r->screen_name]);
+
+        if ($response) {
+            return [
+                'status' => 'success',
+                'message' => 'Has comenzado a seguir a @' . $r->screen_name . '.'
+            ];
+        }
+        else {
+            return [
+                'status' => 'error',
+                'message' => 'Ha ocurrido un error al intentar seguir a @' . $r->screen_name . '.'
             ];
         }
     }

@@ -2,8 +2,10 @@
 
 namespace App;
 
+use App\Helpers\ApiHelper;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
+use Thujohn\Twitter\Facades\Twitter;
 
 class TwitterProfile extends Model {
     const REFRESH_COOLDOWN_SECS = 300;
@@ -71,6 +73,10 @@ class TwitterProfile extends Model {
         return $this->hasMany('App\Unfollow');
     }
 
+    public function befriends() {
+        return $this->hasMany('App\Befriend');
+    }
+
     public function unfriends() {
         return $this->hasMany('App\Unfriend');
     }
@@ -113,5 +119,11 @@ class TwitterProfile extends Model {
 
     public function canBeRefreshed() {
         return $this->secsSinceLastRefresh() >= self::REFRESH_COOLDOWN_SECS;
+    }
+
+    public function refresh() {
+        ApiHelper::reconfig($this);
+        $this->fill(collect(Twitter::getCredentials())->toArray());
+        $this->save();
     }
 }

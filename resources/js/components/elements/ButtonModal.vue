@@ -50,23 +50,29 @@
             }
         }
 
-        .modal-content {
-            .modal-body {
-                max-height: 80vh;
-                overflow-y: scroll;
-                overflow-x: hidden;
-            }
+        .modal {
+            .modal-dialog {
+                max-width: 600px;
 
-            ::-webkit-scrollbar {
-                width: 10px; /* Remove scrollbar space */
-                padding-left: 50px;
-                background-color: lighten(black, 85%);
-                //background: transparent;  /* Optional: just make scrollbar invisible */
-            }
+                .modal-content {
+                    .modal-body {
+                        max-height: 80vh;
+                        overflow-y: scroll;
+                        overflow-x: hidden;
+                    }
 
-            ::-webkit-scrollbar-thumb {
-                background: lighten($primaryColor, 8%);
-                margin-left: 10px;
+                    ::-webkit-scrollbar {
+                        width: 10px; /* Remove scrollbar space */
+                        padding-left: 50px;
+                        background-color: lighten(black, 85%);
+                        //background: transparent;  /* Optional: just make scrollbar invisible */
+                    }
+
+                    ::-webkit-scrollbar-thumb {
+                        background: lighten($primaryColor, 8%);
+                        margin-left: 10px;
+                    }
+                }
             }
         }
     }

@@ -52,7 +52,7 @@ class Report extends Model {
 
         $users_following_count = Friend::where([
             ['twitter_profile_id', $profile->id],
-            ['follows_you', true]
+            ['is_following', true]
         ])->count();
 
         return round(($users_following_count / $all_friends_count) * 100, 2);

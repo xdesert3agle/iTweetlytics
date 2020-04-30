@@ -3,11 +3,9 @@
 namespace App\Jobs;
 
 use App\Befriend;
-use App\Follower;
 use App\Friend;
 use App\Helpers\ApiHelper;
 use App\Report;
-use App\TwitterProfile;
 use App\Unfriend;
 use Carbon\Carbon;
 use Illuminate\Bus\Queueable;
@@ -55,8 +53,10 @@ class UpdateFriendsJob implements ShouldQueue {
         $this->insertNewFriends($db_friends, $fetched_friends);
         $this->deleteOldFriends($db_friends, $fetched_friends);
 
-        if ($this->is_last_job)
-            Report::generateDailyReport($this->profile);
+        // Si es el último job => Se genera el reporte diario
+        if ($this->is_last_job) {
+            //Report::generateDailyReport($this->profile);
+        }
     }
 
     protected function insertNewFriends($dbFriends, $fetchedFriendsIds) {
@@ -85,10 +85,6 @@ class UpdateFriendsJob implements ShouldQueue {
                 $array = [
                     'twitter_profile_id' => $this->profile->id,
                     'id_str' => $newFriendId,
-                    'follows_you' => Follower::where([
-                                            ['twitter_profile_id', $this->profile->id],
-                                            ['id_str', $newFriendId]
-                                        ])->first() ? true : false
                 ];
 
                 // Si se han fetcheado los campos extra se añaden al array
@@ -126,10 +122,6 @@ class UpdateFriendsJob implements ShouldQueue {
             $unfriend->screen_name = $friend->screen_name;
             $unfriend->profile_image_url = $friend->profile_image_url;
             $unfriend->location = $friend->location;
-            $unfriend->follows_you = Follower::where([
-                ['twitter_profile_id', $this->profile->id],
-                ['id_str', $newFriendId]
-            ])->first() ? true : false;
             $unfriend->save();
 
             $friend->delete();
