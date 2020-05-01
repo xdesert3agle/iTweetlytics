@@ -55,7 +55,7 @@ class UpdateFriendsJob implements ShouldQueue {
 
         // Si es el último job => Se genera el reporte diario
         if ($this->is_last_job) {
-            //Report::generateDailyReport($this->profile);
+            Report::generateDailyReport($this->profile);
         }
     }
 

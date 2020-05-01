@@ -17,7 +17,7 @@ class Report extends Model {
             ->count();
 
         $all_followers = Follower::where('twitter_profile_id', $profile->id)->get();
-        $all_followers_ids =$all_followers->pluck('id_str')->toArray();
+        $all_followers_ids = $all_followers->pluck('id_str')->toArray();
         $total_followers_count = count($all_followers);
 
         $befriends_count = Befriend::where('twitter_profile_id', $profile->id)
@@ -41,27 +41,29 @@ class Report extends Model {
         $report->befriends = $befriends_count;
         $report->unfriends = $unfriends_count;
         $report->total_friends = $total_friends_count;
-        $report->followers_followback_percent = self::calcFollowbackPercentage($profile, count($all_friends));
-        $report->user_followback_percent = self::calcUserFollowbackPercentage($all_followers_ids, $all_friends_ids);
+        $report->followers_followback_percent = self::calcFollowbackPercentage($profile);
+        $report->user_followback_percent = self::calcUserFollowbackPercentage($profile);
 
         $report->save();
     }
 
-    public static function calcFollowbackPercentage($profile, $all_friends_count) {
+    public static function calcFollowbackPercentage($profile) {
         $all_friends_count = Friend::where('twitter_profile_id', $profile->id)->count();
 
-        $users_following_count = Friend::where([
-            ['twitter_profile_id', $profile->id],
-            ['is_following', true]
-        ])->count();
+        $users_following_count = Friend::where('twitter_profile_id', $profile->id)
+            ->whereIn('id_str', Follower::where('twitter_profile_id', $profile->id)->get()->pluck('id_str'))
+            ->count();
 
         return round(($users_following_count / $all_friends_count) * 100, 2);
     }
 
-    public static function calcUserFollowbackPercentage($followers, $friends) {
-        $followers_not_following_count = count(array_diff($followers, $friends));
-        $all_followers_count = count($followers);
+    public static function calcUserFollowbackPercentage($profile) {
+        $all_followers_count = Follower::where('twitter_profile_id', $profile->id)->count();
 
-        return round(100 - (($followers_not_following_count / $all_followers_count) * 100), 2);
+        $followers_following_back = Follower::where('twitter_profile_id', $profile->id)
+            ->whereIn('id_str', Friend::where('twitter_profile_id', $profile->id)->get()->pluck('id_str'))
+            ->count();
+
+        return round(($followers_following_back / $all_followers_count) * 100, 2);
     }
 }
