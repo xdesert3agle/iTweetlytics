@@ -63,7 +63,7 @@ class UpdateFriendsJob implements ShouldQueue {
         $newFriends = array_values(array_diff($fetchedFriendsIds, $dbFriends));
 
         if (!empty($newFriends)) {
-            $rate_limits = Twitter::getAppRateLimit(['format' => 'array']);
+            $rate_limits = Twittcer::getAppRateLimit(['format' => 'array']);
             $available_requests = $rate_limits['resources']['users']['/users/lookup']['remaining'];
             $needed_requests = count($newFriends) / self::USERS_LOOKUP_AMOUNT_PER_REQUEST;
             $rate_reset_timestamp = $rate_limits['resources']['users']['/users/lookup']['reset'];

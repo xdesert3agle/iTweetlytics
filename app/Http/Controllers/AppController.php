@@ -6,7 +6,9 @@ use App\Follow;
 use App\Follower;
 use App\Friend;
 use App\Helpers\ApiHelper;
+use App\Jobs\ScheduledTweetJob;
 use App\Report;
+use App\ScheduledTweet;
 use App\TwitterProfile;
 use App\Unfollow;
 use App\Unfriend;
@@ -99,12 +101,31 @@ class AppController extends Controller {
     }
 
     public function postTweet(Request $r) {
-        Twitter::postTweet(['status' => $r->text]);
+        if (!$r->scheduleTime) {
+            Twitter::postTweet(['status' => $r->text]);
 
-        return [
-            'status' => 'success',
-            'message' => 'El tweet ha sido publicado.'
-        ];
+            return [
+                'status' => 'success',
+                'message' => 'El tweet ha sido publicado.'
+            ];
+        } else {
+            $scheduledTweet = new ScheduledTweet;
+            $scheduledTweet->tweet_content = $r->text;
+            $scheduledTweet->schedule_time = $r->scheduleTime;
+            $scheduledTweet->save();
+
+            $now = Carbon::createFromTimestamp($r->now);
+            $target_date = Carbon::createFromTimestamp($r->scheduleTime / 1000);
+
+            $seconds_until_date = $now->diffInSeconds($target_date);
+
+            ScheduledTweetJob::dispatch($scheduledTweet)->delay(now()->addSeconds($seconds_until_date));
+
+            return [
+                'status' => 'success',
+                'message' => 'El tweet ha sido programado con éxito.'
+            ];
+        }
     }
 
     function getParsedChats() {

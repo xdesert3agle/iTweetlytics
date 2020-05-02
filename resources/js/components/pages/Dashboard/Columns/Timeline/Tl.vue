@@ -8,35 +8,6 @@
                 </div>
             </div>
 
-            <!-- Modal -->
-            <div class="modal fade" id="new-tweet-modal" tabindex="-1" role="dialog"
-                 aria-labelledby="new-tweet-modalLabel" aria-hidden="true">
-                <div class="modal-dialog" role="document">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title" id="new-tweet-modalLabel">Nuevo Tweet</h5>
-                            <button type="button" id="close-new-tweet-modal" class="close" aria-label="Close" data-dismiss="modal">
-                                <span aria-hidden="true">&times;</span>
-                            </button>
-                        </div>
-                        <div class="modal-body">
-                            <div class="row no-gutters">
-                                <div class="col-2 user-profile-img-container">
-                                    <h1>HOLA</h1>
-                                </div>
-                                <div class="col">
-                                    <textarea class="" v-model="newTweetText" maxlength="280"
-                                              placeholder="¿Qué está pasando?"></textarea>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="modal-footer">
-                            <button @click="sendTweet" type="button" class="btn btn-primary btn-round">Twittear</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
             <div class="row no-gutters tweet-list-row">
                 <div class="col tweet-list-container">
                     <tweet v-for="(tweet, i) in timeline" :tweet="tweet" :key="tweet.id"></tweet>
@@ -123,7 +94,7 @@
 
     .btn-new-tweet {
         position: absolute;
-        top: 0;
+        top: -4px;
         right: 0;
 
         margin-top: 0.2em;

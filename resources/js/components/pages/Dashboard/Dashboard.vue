@@ -42,11 +42,6 @@
         .dash-content {
             max-height: 100% !important;
             flex: 1;
-            overflow: hidden;
-
-            .twitter-column {
-                overflow: hidden;
-            }
         }
 
         ::-webkit-scrollbar {

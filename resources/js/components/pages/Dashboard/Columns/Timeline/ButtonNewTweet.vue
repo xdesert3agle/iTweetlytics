@@ -1,16 +1,14 @@
 <template>
     <div class="new-tweet-button-container">
-        <button type="button" class="btn btn-primary btn-small btn-icon btn-tweet" data-toggle="modal"
-                data-target="#new-tweet-modal">
+        <button type="button" class="btn btn-primary btn-icon btn-tweet" data-toggle="modal" data-target="#new-tweet-modal">
             <i class="fab fa-twitter"></i>
             <span>Tweet</span>
         </button>
 
         <!-- Modal -->
-        <div class="modal fade" id="new-tweet-modal" tabindex="-1" role="dialog"
-             aria-labelledby="label-new-tweet-modal" aria-hidden="true">
+        <div class="modal fade" id="new-tweet-modal" tabindex="-1" role="dialog" aria-labelledby="label-new-tweet-modal" aria-hidden="true">
             <div class="modal-dialog" role="document">
-                <div class="modal-content">
+                <div v-if="!isScheduling" class="modal-content">
                     <div class="modal-header">
                         <h5 class="modal-title" id="label-new-tweet-modal">Nuevo Tweet</h5>
                         <button type="button" id="close-new-tweet-modal" class="close" aria-label="Close" data-dismiss="modal">
@@ -20,17 +18,43 @@
                     <div class="modal-body">
                         <div class="row no-gutters">
                             <div class="col-2 user-profile-img-container">
-                                <img :src="user.twitter_profiles.profile_image_url" class="user-profile-img"
-                                     alt="Tu imagen de perfil">
+                                <img :src="user.current_twitter_profile[0].profile_image_url" class="user-profile-img" alt="Tu imagen de perfil">
                             </div>
                             <div class="col">
-                                <textarea class="js-autoresize" v-model="newTweetText" maxlength="280"
-                                          placeholder="¿Qué está pasando?"></textarea>
+                                <textarea class="js-autoresize" v-model="newTweetText" maxlength="280" placeholder="¿Qué está pasando?"></textarea>
                             </div>
                         </div>
                     </div>
                     <div class="modal-footer">
+                        <span class="scheduled-date" v-if="scheduleTime">
+                            <i class="fas fa-calendar-day"></i>
+                            {{ formattedScheduleTime }}
+                        </span>
+                        <button @click="isScheduling = true" type="button" class="btn btn-info btn-round">Programar
+                        </button>
                         <button @click="sendTweet" type="button" class="btn btn-primary btn-round">Twittear</button>
+                    </div>
+                </div>
+                <div v-else class="modal-content">
+                    <div class="modal-header">
+                        <i @click="isScheduling = false" class="fa fa-lg fa-chevron-left"></i>
+                        <h5 class="modal-title">Programar tweet</h5>
+                        <button type="button" class="close" aria-label="Close" data-dismiss="modal">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row no-gutters">
+                            <div class="col-12">
+                                <h6>Fecha y hora a la que se publicará el tweet</h6>
+                                <date-picker v-model="scheduleTime" type="datetime" valueType="timestamp"></date-picker>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button @click="isScheduling = false" type="button" class="btn btn-primary btn-round">
+                            Confirmar
+                        </button>
                     </div>
                 </div>
             </div>
@@ -41,13 +65,30 @@
 <script>
     import {setResizeListeners} from "../../../../../helpers/auto-resize.js";
 
+
     export default {
         props: [
             'user'
         ],
         data() {
             return {
-                newTweetText: ""
+                newTweetText: "",
+                isScheduling: false,
+                scheduleTime: null,
+            }
+        },
+        computed: {
+            formattedScheduleTime() {
+                let a = new Date(this.scheduleTime);
+                let months = ['Ene.', 'Feb.', 'Mar.', 'Abr.', 'May.', 'Jun.', 'Jul.', 'Ago.', 'Sep.', 'Oct.', 'Nov.', 'Dic.'];
+                let year = a.getFullYear();
+                let month = months[a.getMonth()];
+                let date = a.getDate();
+                let hour = a.getHours();
+                let min = a.getMinutes() < 10 ? '0' + a.getMinutes() : a.getMinutes();
+                let sec = a.getSeconds() < 10 ? '0' + a.getSeconds() : a.getSeconds();
+
+                return date + ' ' + month + ' ' + year + ' ' + hour + ':' + min + ':' + sec;
             }
         },
         mounted() {
@@ -55,24 +96,38 @@
         },
         methods: {
             sendTweet() {
-                axios.post('/ajax/tweets/new', {'text': this.newTweetText})
-                    .then((response) => {
-                        if (response.data.status == 'success') {
-                            this.$toast.success(response.data.message);
-                            this.newTweetText = "";
-                        }
-                    });
+                axios.post('/ajax/tweets/new', {
+                    'text': this.newTweetText,
+                    'scheduleTime': this.scheduleTime,
+                    'now': Date.now()
+                }).then((response) => {
+                    if (response.data.status == 'success') {
+                        this.$toast.success(response.data.message);
+                        this.newTweetText = "";
+                    }
+                });
             }
         }
     }
 </script>
 
 <style lang="scss" scoped>
+    $primaryColor: #7642FF;
     $textColor: #3E396B;
+
+    .btn-tweet {
+        padding: 2px 10px!important;
+    }
 
     .modal {
         .modal-header {
             border: none;
+
+            i {
+                padding: 9px;
+                margin-left: -7px;
+                cursor: pointer;
+            }
 
             .label-new-tweet-modal {
                 color: $textColor;
@@ -113,6 +168,22 @@
 
         .modal-footer {
             border: none;
+
+            .btn-info {
+                color: #444;
+                background-color: #e8e8e8;
+                border: 0;
+
+                &:hover {
+                    background-color: darken(#e8e8e8, 7%);
+                }
+            }
+
+            .scheduled-date {
+                flex: 1;
+                font-weight: 500;
+                color: $textColor;
+            }
         }
     }
 </style>
