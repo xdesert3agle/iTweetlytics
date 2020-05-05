@@ -14,6 +14,11 @@
                         </a>
                     </li>
                     <li class="nav-item">
+                        <a class="nav-link" id="pills-scheduled-tweets-tab" data-toggle="pill" href="#pills-scheduled-tweets" role="tab" aria-controls="pills-scheduled-tweets" aria-selected="false">
+                            <i class="fas fa-lg fa-calendar-alt"></i>
+                        </a>
+                    </li>
+                    <li class="nav-item">
                         <a :class="{'active': user.twitter_profiles.length == 0}" class="nav-link" id="pills-profiles-tab" data-toggle="pill" href="#pills-profiles" role="tab" aria-controls="pills-profiles" aria-selected="false">
                             <i class="fas fa-lg fa-address-card"></i>
                         </a>
@@ -35,6 +40,9 @@
                     </div>
                     <div v-if="user.twitter_profiles != null" class="tab-pane" id="pills-stats" role="tabpanel" aria-labelledby="pills-stats-tab">
                         <stats :user="Object.freeze(user)"></stats>
+                    </div>
+                    <div class="tab-pane" id="pills-scheduled-tweets" role="tabpanel" aria-labelledby="pills-scheduled-tweets-tab">
+                        <scheduled-tweets :user="user"></scheduled-tweets>
                     </div>
                     <div class="tab-pane" :class="{'active': user.twitter_profiles.length == 0}" id="pills-profiles" role="tabpanel" aria-labelledby="pills-profiles-tab">
                         <profiles :user="user"></profiles>
@@ -79,6 +87,11 @@
         background-color: #0f233c;
 
         .nav {
+            .nav-item {
+                display: flex;
+                justify-content: center;
+            }
+
             .nav-link {
                 color: #64707e;
                 border-radius: 0;

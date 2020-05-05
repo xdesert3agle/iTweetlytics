@@ -136,7 +136,7 @@
                 <div class="col-md-4 col-12">
                     <div class="card">
                         <div class="card-body">
-                            <h4 class="card-title">Follow-back de tus seguidores</h4>
+                            <h4 class="card-title">Follow-back de tus seguidos</h4>
                             <div class="row card-content">
                                 <div class="col">
                                     <span class="stat-amount">{{ d_user.current_twitter_profile[0].reports[d_user.current_twitter_profile[0].reports.length - 1].followers_followback_percent.toFixed(2).toString().replace('.', ',') }}%</span>

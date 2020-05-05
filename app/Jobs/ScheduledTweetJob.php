@@ -12,12 +12,14 @@ use Thujohn\Twitter\Facades\Twitter;
 class ScheduledTweetJob implements ShouldQueue {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
+    const TWEET_STATUS_SENT = 'sent';
+
     protected $tweet;
 
     /**
      * Create a new job instance.
      *
-     * @return void
+     * @param $tweet
      */
     public function __construct($tweet) {
         $this->tweet = $tweet;
@@ -30,5 +32,8 @@ class ScheduledTweetJob implements ShouldQueue {
      */
     public function handle() {
         Twitter::postTweet(['status' => $this->tweet->tweet_content]);
+
+        $this->tweet->status = self::TWEET_STATUS_SENT;
+        $this->tweet->save();
     }
 }

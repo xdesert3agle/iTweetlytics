@@ -16,7 +16,7 @@ class UserController extends Controller {
             ->with('twitter_profiles')
             ->with(['current_twitter_profile' => function ($query) use ($profileIndex) {
                 $query->with(['followers' => function ($query) {
-                    $query->orderByDesc('followers.id')->get();
+                    $query->orderBy('followers.id')->get();
                 }])
                     ->with('follows')
                     ->with('unfollows')
@@ -26,15 +26,33 @@ class UserController extends Controller {
                     ->with('befriends')
                     ->with('unfriends')
                     ->with('reports')
+                    ->with(['scheduled_tweets' => function ($query) {
+                        $query->where('status', '!=', 'sent')
+                            ->get();
+                    }])
                     ->skip($profileIndex)->take(1);
             }])
             ->first();
 
-        $followers = $user->current_twitter_profile[0]->followers->keyBy('id_str')->toArray();
+
+        if ($user->current_twitter_profile[0]->scheduled_tweets->count() > 0) {
+            foreach ($user->current_twitter_profile[0]->scheduled_tweets as $tweet) {
+                $formatted_scheduled_tweets[Carbon::createFromTimestamp($tweet->schedule_time / 1000)->format('d/m/Y')][] = $tweet;
+            }
+
+            unset($user->current_twitter_profile[0]->scheduled_tweets);
+            $user->current_twitter_profile[0]->scheduled_tweets = $formatted_scheduled_tweets;
+        }
+
+        $followers = $user->current_twitter_profile[0]->followers->mapWithKeys(function ($item) {
+            return [$item['id_str'] => $item];
+        });
         unset($user->current_twitter_profile[0]->followers);
         $user->current_twitter_profile[0]->followers = $followers;
 
-        $friends = $user->current_twitter_profile[0]->friends->keyBy('id_str')->toArray();
+        $friends = $user->current_twitter_profile[0]->friends->mapWithKeys(function ($item) {
+            return [$item['id_str'] => $item];
+        });
         unset($user->current_twitter_profile[0]->friends);
         $user->current_twitter_profile[0]->friends = $friends;
 

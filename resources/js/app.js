@@ -34,6 +34,7 @@ Vue.component('App', require('./components/pages/App.vue').default);
 
     Vue.component('Tweet', require('./components/pages/Dashboard/Columns/Tweet.vue').default);
 
+Vue.component('ScheduledTweets', require('./components/pages/ScheduledTweets.vue').default);
 Vue.component('Profiles', require('./components/pages/Profiles.vue').default);
 Vue.component('Stats', require('./components/pages/Stats/Stats.vue').default);
     Vue.component('FollowersStats', require('./components/pages/Stats/FollowersStats.vue').default);
@@ -67,24 +68,6 @@ const options = {
 };
 
 Vue.use(Toast, options);
-
-// Google Charts wrapper
-import VueGoogleCharts from 'vue-google-charts'
-Vue.use(VueGoogleCharts);
-
-import VueExpandableImage from 'vue-expandable-image'
-Vue.use(VueExpandableImage);
-
-import VuePlyr from 'vue-plyr'
-Vue.use(VuePlyr);
-
-import Chartkick from 'vue-chartkick'
-import Chart from 'chart.js'
-Vue.use(Chartkick.use(Chart));
-
-import DatePicker from 'vue2-datepicker';
-import 'vue2-datepicker/index.css';
-Vue.use(DatePicker);
 
 /**
  * Next, we will create a fresh Vue application instance and attach it to

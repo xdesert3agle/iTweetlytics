@@ -96,9 +96,10 @@ class UpdateFollowersJob implements ShouldQueue {
 
     protected function registerUnfollows($dbFollowers, $fetchedFollowers) {
         $newUnfollowers = array_diff($dbFollowers, $fetchedFollowers);
-        $fetchedUsersLookup = $this->getFetchedUsersLookup($newUnfollowers);
 
-        foreach ($fetchedUsersLookup as $user) {
+        $newUnfollowersHydrated = Follower::whereIn('id_str', $newUnfollowers)->get();
+
+        foreach ($newUnfollowersHydrated as $user) {
 
             // Se registra el unfollow
             $unfollow = new Unfollow;

@@ -110,8 +110,10 @@ class AppController extends Controller {
             ];
         } else {
             $scheduledTweet = new ScheduledTweet;
+            $scheduledTweet->twitter_profile_id = $r->twitter_profile_id;
             $scheduledTweet->tweet_content = $r->text;
             $scheduledTweet->schedule_time = $r->scheduleTime;
+            $scheduledTweet->status = 'queued';
             $scheduledTweet->save();
 
             $now = Carbon::createFromTimestamp($r->now);
@@ -126,6 +128,10 @@ class AppController extends Controller {
                 'message' => 'El tweet ha sido programado con éxito.'
             ];
         }
+    }
+
+    public function deleteScheduledTweet(Request $r) {
+        ScheduledTweet::destroy($r->tweetId);
     }
 
     function getParsedChats() {

@@ -64,12 +64,16 @@
 
 <script>
     import {setResizeListeners} from "../../../../../helpers/auto-resize.js";
-
+    import DatePicker from 'vue2-datepicker';
+    import 'vue2-datepicker/index.css';
 
     export default {
         props: [
             'user'
         ],
+        components: {
+            DatePicker
+        },
         data() {
             return {
                 newTweetText: "",
@@ -97,6 +101,7 @@
         methods: {
             sendTweet() {
                 axios.post('/ajax/tweets/new', {
+                    'twitter_profile_id': this.user.current_twitter_profile[0].id,
                     'text': this.newTweetText,
                     'scheduleTime': this.scheduleTime,
                     'now': Date.now()

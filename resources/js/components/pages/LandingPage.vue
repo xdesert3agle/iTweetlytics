@@ -6,6 +6,12 @@
                 <div class="client-logos text-center">
                     <p class="text-muted">TRUSTED BY MOST POPULAR BRANDS</p>
 
+                    <pre>
+                        {{ reports }}
+                    </pre>
+
+
+
                     <img src="images/client_logo_1.png" alt="client logo" />
                     <img src="images/client_logo_2.png" alt="client logo" />
                     <img src="images/client_logo_3.png" alt="client logo" />
@@ -337,6 +343,9 @@
 
 <script>
     export default {
+        props: [
+            'reports'
+        ],
         data() {
             return {
                 csrf: document.querySelector('meta[name="csrf-token"]').getAttribute('content')

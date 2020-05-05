@@ -56,6 +56,7 @@ Route::group(['middleware' => 'auth'], function () {
                 Route::get('{stat}/{timeInterval}', 'StatsController@getStat');
             });
 
+            Route::post('scheduled_tweet/delete', 'AppController@deleteScheduledTweet');
             Route::post('unfollow', 'AppController@unfollowUser');
             Route::post('follow', 'AppController@followUser');
         });

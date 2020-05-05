@@ -10,7 +10,7 @@
 
                 <div class="row stat-list-container">
                     <div class="col">
-                        <ul class="nav nav-tabs stat-list" id="myTab" role="tablist">
+                        <ul class="nav nav-tabs stat-list" id="stats" role="tablist">
                             <li class="nav-item">
                                 <button class="btn active" id="unfollower-stats-tab" data-toggle="tab" href="#unfollower-stats" role="tab" aria-controls="unfollower-stats" aria-selected="true">
                                     Seguidores
@@ -27,7 +27,7 @@
 
                 <div class="row no-gutters">
                     <div class="col">
-                        <div class="tab-content" id="myTabContent">
+                        <div class="tab-content" id="stats-content">
                             <div class="row no-gutters profile-stats-container tab-pane fade show active" id="unfollower-stats" role="tabpanel" aria-labelledby="unfollower-stats-tab">
                                 <div class="col-12">
                                     <followers-stats :user="user"></followers-stats>
@@ -47,10 +47,16 @@
 </template>
 
 <script>
+    import Chartkick from 'vue-chartkick'
+    import Chart from 'chart.js'
+
     export default {
         props: [
             'user'
         ],
+        components: {
+            Chartkick, Chart
+        }
     }
 </script>
 
