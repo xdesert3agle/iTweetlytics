@@ -2,16 +2,8 @@
     <div class="landing-content">
         <div class="section" id="intro">
             <div class="container">
-
                 <div class="client-logos text-center">
                     <p class="text-muted">TRUSTED BY MOST POPULAR BRANDS</p>
-
-                    <pre>
-                        {{ reports }}
-                    </pre>
-
-
-
                     <img src="images/client_logo_1.png" alt="client logo" />
                     <img src="images/client_logo_2.png" alt="client logo" />
                     <img src="images/client_logo_3.png" alt="client logo" />
@@ -35,7 +27,6 @@
 
                 <div class="row">
                     <div class="col-md-6 col-lg-4">
-                        <div class="media mb-5">
                             <div class="media-icon d-flex mr-3"> <i class="pe-7s-paint-bucket pe-3x"></i> </div>
                             <!-- // end .di -->
                             <div class="media-body">
@@ -55,6 +46,7 @@
                     <div class="col-md-6 col-lg-4">
                         <div class="media mb-5">
                             <div class="media-icon d-flex mr-3"> <i class="pe-7s-piggy pe-3x"></i> </div>
+                        <div class="media mb-5">
                             <!-- // end .di -->
                             <div class="media-body">
                                 <h5 class="mt-0">Save Money</h5>in gravida nulla. Nulla vel metus scelerisque ante sollicitudin.

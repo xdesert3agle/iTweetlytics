@@ -31,5 +31,5 @@
 @endsection
 
 @section('content')
-    <landing-page :reports="@json($reports)"></landing-page>
+    <landing-page></landing-page>
 @endsection
