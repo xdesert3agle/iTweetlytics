@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Providers\RouteServiceProvider;
 use App\TwitterProfile;
 use App\User;
+use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Session;
@@ -70,8 +71,13 @@ class LoginWithTwitterController extends Controller {
                 // Auth::login($user) should do the trick.
                 Session::put('access_token', $tokens);
 
+                // El perfil de Twitter no debe haberse sincronizado por alguien más
                 if (!TwitterProfile::find($credentials->id)) {
-                    $this->assignTwitterProfileToUser($credentials, $tokens);
+                    $newProfile = $this->assignTwitterProfileToUser($credentials, $tokens);
+
+                    Artisan::call('profile:process', [
+                        'profileId' => $newProfile->id
+                    ]);
                 }
 
                 return Redirect::to(RouteServiceProvider::APP);
@@ -96,7 +102,7 @@ class LoginWithTwitterController extends Controller {
     }
 
     public function assignTwitterProfileToUser($credentials, $tokens) {
-        $profile = TwitterProfile::create([
+        return TwitterProfile::create([
             'id' => $credentials->id,
             'user_id' => Auth::user()->id,
             'name'  => $credentials->name,

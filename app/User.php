@@ -47,7 +47,7 @@ class User extends Authenticatable {
         return $this->hasMany('App\TwitterProfile');
     }
 
-    public function ownsProfile($profileId) {
-        return User::where('twitter_profile_id', );
+    public function hasSyncProfiles() {
+        return $this->twitter_profiles->count() > 0;
     }
 }

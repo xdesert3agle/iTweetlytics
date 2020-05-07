@@ -19,7 +19,7 @@
                 <div class="row">
                     <div class="col">
                         <form action="/twitter/login">
-                            <button type="submit" class="btn btn-primary btn-icon">
+                            <button type="submit" class="btn btn-primary">
                                 <i class="fa fa-plus"></i>
                                 <span>Añadir perfil de Twitter</span>
                             </button>

@@ -22,6 +22,7 @@ window.Vue = require('vue');
 // Páginas
 Vue.component('HomePage', require('./components/HomePage.vue').default);
 Vue.component('LandingPage', require('./components/pages/LandingPage.vue').default);
+Vue.component('Sync', require('./components/pages/Sync.vue').default);
 
 Vue.component('App', require('./components/pages/App.vue').default);
     Vue.component('Dashboard', require('./components/pages/Dashboard/Dashboard.vue').default);
@@ -45,6 +46,7 @@ Vue.component('Login', require('./components/pages/Login.vue').default);
 // Elements
 Vue.component('TwitterProfileCard', require('./components/elements/TwitterProfileCard.vue').default);
 Vue.component('ButtonModal', require('./components/elements/ButtonModal.vue').default);
+Vue.component('ButtonHref', require('./components/elements/ButtonHref.vue').default);
 
 // Utility
 Vue.component('Csrf', require('./components/utility/Csrf.vue').default);
