@@ -12,6 +12,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
+use Illuminate\Support\Facades\Storage;
 use Thujohn\Twitter\Facades\Twitter;
 
 class UpdateFollowersJob implements ShouldQueue {
@@ -43,6 +44,8 @@ class UpdateFollowersJob implements ShouldQueue {
         do {
             $followers = Twitter::getFollowersIds(['screen_name' => $this->profile->screen_name, 'cursor' => $cursor, 'count' => 5000, 'stringify_ids' => 'true']);
             $cursor = $followers->next_cursor;
+
+            Storage::put('file.txt', print_r($fetchedFollowers, true));
 
             $fetchedFollowers = array_merge($fetchedFollowers, $followers->ids);
         } while ($cursor != 0 && ++$count < self::MAX_CONSECUTIVE_REQUESTS); // Hasta que el cursor sea 0 o hasta límite de repeticiones

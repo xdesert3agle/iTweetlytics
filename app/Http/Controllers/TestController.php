@@ -3,14 +3,17 @@
 namespace App\Http\Controllers;
 
 use App\TwitterProfile;
+use App\User;
+use Illuminate\Support\Facades\Artisan;
+use Thujohn\Twitter\Facades\Twitter;
 
 class TestController extends Controller {
 
     public function test() {
-        $target = TwitterProfile::where('id', 286561116)->get();
+        dd(Twitter::getFollowersIds(['screen_name' => 'virtu_callosa', 'cursor' => -1, 'count' => 5000, 'stringify_ids' => 'true']));
 
-        foreach ($target as $i => $profile) {
-            dd($profile->toArray());
-        }
+        /*Artisan::call('profile:process', [
+            'target' => 1172641896
+        ]);*/
     }
 }

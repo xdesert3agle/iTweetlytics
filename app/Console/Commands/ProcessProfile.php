@@ -8,7 +8,7 @@ use Illuminate\Console\Command;
 use Illuminate\Support\Str;
 use Thujohn\Twitter\Twitter;
 
-class StartWork extends Command {
+class ProcessProfile extends Command {
     const REQUEST_WINDOW = 15;
     const MAX_CONSECUTIVE_REQUESTS = 15;
     const FOLLOWERS_PER_REQUEST = 5000;

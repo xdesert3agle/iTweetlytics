@@ -75,7 +75,9 @@ class LoginWithTwitterController extends Controller {
                 if (!TwitterProfile::find($credentials->id)) {
                     $newProfile = $this->assignTwitterProfileToUser($credentials, $tokens);
 
-                    Artisan::call('profile:process ' . $newProfile->id);
+                    Artisan::call('profile:process', [
+                        'target' => $credentials->id_str
+                    ]);
                 }
 
                 return Redirect::to(RouteServiceProvider::APP);
