@@ -12,7 +12,7 @@ use Thujohn\Twitter\Facades\Twitter;
 
 class UserController extends Controller {
     public static function get($profileIndex) {
-        $user = User::find(Auth::id())
+        $user = User::where('id', Auth::id())
             ->with('twitter_profiles')
             ->with(['current_twitter_profile' => function ($query) use ($profileIndex) {
                 $query->with(['followers' => function ($query) {
@@ -33,7 +33,6 @@ class UserController extends Controller {
                     ->skip($profileIndex)->take(1);
             }])
             ->first();
-
 
         if ($user->current_twitter_profile[0]->scheduled_tweets->count() > 0) {
             foreach ($user->current_twitter_profile[0]->scheduled_tweets as $tweet) {

@@ -76,7 +76,7 @@ class LoginWithTwitterController extends Controller {
                     $newProfile = $this->assignTwitterProfileToUser($credentials, $tokens);
 
                     Artisan::call('profile:process', [
-                        'profileId' => $newProfile->id
+                        'target' => $newProfile->id
                     ]);
                 }
 
@@ -102,30 +102,8 @@ class LoginWithTwitterController extends Controller {
     }
 
     public function assignTwitterProfileToUser($credentials, $tokens) {
-        return TwitterProfile::create([
-            'id' => $credentials->id,
-            'user_id' => Auth::user()->id,
-            'name'  => $credentials->name,
-            'screen_name'  => $credentials->screen_name,
-            'location' => $credentials->location,
-            'description' => $credentials->description,
-            'protected' => $credentials->protected,
-            'followers_count' => $credentials->followers_count,
-            'friends_count' => $credentials->friends_count,
-            'listed_count' => $credentials->listed_count,
-            'favourites_count' => $credentials->favourites_count,
-            'time_zone' => $credentials->time_zone,
-            'geo_enabled' => $credentials->geo_enabled,
-            'verified' => $credentials->verified,
-            'statuses_count' => $credentials->statuses_count,
-            'profile_background_color' => $credentials->profile_background_color,
-            'profile_image_url' => str_replace('_normal', '', $credentials->profile_image_url),
-            'profile_banner_url' => $credentials->profile_banner_url,
-            'profile_link_color' => $credentials->profile_link_color,
-            'lang' => $credentials->lang,
-            'suspended' => $credentials->suspended,
-            'oauth_token' => $tokens['oauth_token'],
-            'oauth_token_secret' => $tokens['oauth_token_secret']
-        ]);
+        $profile_fields = array_merge((array)$credentials, $tokens);
+        $profile_fields['user_id'] = Auth::id();
+        return TwitterProfile::create($profile_fields);
     }
 }

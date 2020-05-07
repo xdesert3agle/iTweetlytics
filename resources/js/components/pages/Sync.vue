@@ -8,7 +8,7 @@
                             <div class="col">
                                 <div class="row">
                                     <div class="col">
-                                        <h1>¡Bienvenido a iTweetlytics, {{ user.name }}!</h1>
+                                        <h1>¡Bienvenid@ a iTweetlytics, {{ user.name }}!</h1>
                                         <h3>
                                             Sincroniza tu perfil de Twitter para comenzar
                                             <i class="fab fa-twitter"></i>

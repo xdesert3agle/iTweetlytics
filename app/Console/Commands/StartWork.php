@@ -5,6 +5,7 @@ namespace App\Console\Commands;
 use App\Jobs\UpdateFollowersJob;
 use App\TwitterProfile;
 use Illuminate\Console\Command;
+use Illuminate\Support\Str;
 use Thujohn\Twitter\Twitter;
 
 class StartWork extends Command {
@@ -41,18 +42,16 @@ class StartWork extends Command {
      * @return void
      */
     public function handle() {
-        $target = null;
-
         switch ($this->argument('target')) {
             case "all":
                 $target = TwitterProfile::all();
                 break;
 
             default:
-                if (is_string($this->argument('target'))) {
-                    $target = TwitterProfile::where('screen_name', $this->argument('target'));
+                if (Str::startsWith($this->argument('target'), '@')) {
+                    $target = TwitterProfile::where('screen_name', $this->argument('target'))->first();
                 } else {
-                    $target = TwitterProfile::find($this->argument('target'));
+                    $target = TwitterProfile::where('id', $this->argument('target'))->get();
                 }
 
                 break;

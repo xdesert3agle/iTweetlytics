@@ -136,35 +136,40 @@ class AppController extends Controller {
 
     function getParsedChats() {
         $dms = Twitter::getDms(['count' => 50]);
-        $messages = [];
-        $myId = "";
 
-        foreach ($dms->events as $dm) {
-            if (property_exists($dm->message_create, 'source_app_id')) {
-                $myId = $dm->message_create->sender_id;
-                break;
-            }
-        }
+        if (!empty($dms->events)) {
+            $messages = [];
+            $myId = "";
 
-        foreach ($dms->events as $dm) {
-            if ($dm->message_create->sender_id != $myId) {
-                $personId = $dm->message_create->sender_id;
-            } else {
-                $personId = $dm->message_create->target->recipient_id;
+            foreach ($dms->events as $dm) {
+                if (property_exists($dm->message_create, 'source_app_id')) {
+                    $myId = $dm->message_create->sender_id;
+                    break;
+                }
             }
 
-            $messages[$personId][] = $dm;
+            foreach ($dms->events as $dm) {
+                if ($dm->message_create->sender_id != $myId) {
+                    $personId = $dm->message_create->sender_id;
+                } else {
+                    $personId = $dm->message_create->target->recipient_id;
+                }
+
+                $messages[$personId][] = $dm;
+            }
+
+            $userProfiles = Twitter::getUsersLookup(['user_id' => array_keys($messages)]);
+
+            $chats = [];
+            foreach ($userProfiles as $i => $user) {
+                $chats[$i]['user'] = $user;
+                $chats[$i]['messages'] = $messages[$user->id];
+            }
+
+            return json_encode($chats);
+        } else {
+            return [];
         }
-
-        $userProfiles = Twitter::getUsersLookup(['user_id' => array_keys($messages)]);
-
-        $chats = [];
-        foreach ($userProfiles as $i => $user) {
-            $chats[$i]['user'] = $user;
-            $chats[$i]['messages'] = $messages[$user->id];
-        }
-
-        return json_encode($chats);
     }
 
     function getParsedLists() {
