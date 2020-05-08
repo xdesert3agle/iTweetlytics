@@ -46,25 +46,13 @@
                 <div class="collapse navbar-collapse" id="site-nav">
                     <ul class="navbar-nav text-sm-left ml-auto">
                         <li class="nav-item">
-                            <a class="nav-link" href="#features">Features</a>
+                            <a class="nav-link" href="#features">Características</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" href="#pricing">Pricing</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="blog.html">Blog</a>
-                        </li>
-
-                        <li class="nav-item dropdown">
-                            <a class="nav-link" href="#" data-toggle="dropdown">Pages <span class="pe-2x pe-7s-angle-down"></span>  </a>
-                            <div class="dropdown-menu">
-                                <a class="dropdown-item" href="index-two.html">Landing Style Two</a>
-                                <a class="dropdown-item" href="blog.html">Blog Page</a>
-                                <a class="dropdown-item" href="blog-single.html">Blog Single</a>
-                            </div>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="#">Help</a>
+                            <a class="nav-link" href="#">Contacto</a>
                         </li>
 
                         <li class="nav-item text-center">

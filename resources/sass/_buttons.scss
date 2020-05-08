@@ -2,6 +2,8 @@ button:not(.close), a.btn{
     padding: 8px 20px!important;
     border-radius: 8px!important;
     font-weight: 500!important;
+    font-size: 12pt;
+    text-transform: none!important;
 
     &.btn-icon {
         i:first-child {
@@ -25,6 +27,10 @@ button:not(.close), a.btn{
         padding: 0!important;
         border: 0!important;
         background: transparent!important;
+    }
+
+    &.btn-block {
+        padding: 10px!important
     }
 }
 
