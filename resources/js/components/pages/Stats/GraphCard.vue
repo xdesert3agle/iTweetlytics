@@ -175,7 +175,6 @@
 
     .card {
         height: 400px;
-
         .card-body {
             display: flex;
             flex-direction: column;
