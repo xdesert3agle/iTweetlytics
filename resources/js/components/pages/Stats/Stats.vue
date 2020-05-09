@@ -12,7 +12,12 @@
                     <div class="col">
                         <ul class="nav nav-tabs stat-list" id="stats" role="tablist">
                             <li class="nav-item">
-                                <button class="btn active" id="unfollower-stats-tab" data-toggle="tab" href="#unfollower-stats" role="tab" aria-controls="unfollower-stats" aria-selected="true">
+                                <button class="btn active" id="general-stats-tab" data-toggle="tab" href="#general-stats" role="tab" aria-controls="general-stats" aria-selected="false">
+                                    Generales
+                                </button>
+                            </li>
+                            <li class="nav-item">
+                                <button class="btn" id="followers-stats-tab" data-toggle="tab" href="#followers-stats" role="tab" aria-controls="followers-stats" aria-selected="true">
                                     Seguidores
                                 </button>
                             </li>
@@ -28,12 +33,17 @@
                 <div class="row no-gutters">
                     <div class="col">
                         <div class="tab-content" id="stats-content">
-                            <div class="row no-gutters profile-stats-container tab-pane fade show active" id="unfollower-stats" role="tabpanel" aria-labelledby="unfollower-stats-tab">
+                            <div class="row no-gutters tab-pane fade show active" id="general-stats" role="tabpanel" aria-labelledby="general-stats-tab">
+                                <div class="col-12">
+                                    <general-stats :user="user"></general-stats>
+                                </div>
+                            </div>
+                            <div class="row no-gutters tab-pane fade" id="followers-stats" role="tabpanel" aria-labelledby="followers-stats-tab">
                                 <div class="col-12">
                                     <followers-stats :user="user"></followers-stats>
                                 </div>
                             </div>
-                            <div class="row no-gutters profile-stats-container tab-pane fade" id="friends-stats" role="tabpanel" aria-labelledby="friends-stats-tab">
+                            <div class="row no-gutters tab-pane fade" id="friends-stats" role="tabpanel" aria-labelledby="friends-stats-tab">
                                 <div class="col-12">
                                     <friends-stats :user="user"></friends-stats>
                                 </div>

@@ -2,13 +2,23 @@
 
 namespace App\Http\Controllers;
 
+use App\Befriend;
+use App\Follow;
+use App\Follower;
+use App\Friend;
 use App\Report;
 use App\TwitterProfile;
+use App\Unfollow;
+use App\Unfriend;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
+use function GuzzleHttp\Promise\queue;
 
 class StatsController extends Controller {
     public function getStat($profileId, $stat, $timeInterval) {
+
+        // Intervalos de tiempo
+        $startTime = "";
         $now = Carbon::now();
         $weekAgo = Carbon::now()->subWeek()->startOfDay();
         $twoWeeksAgo = Carbon::now()->subWeeks(2)->startOfDay();
@@ -17,89 +27,93 @@ class StatsController extends Controller {
 
         $isUserOwnerOfProfile = TwitterProfile::find($profileId)->belongsToUser(Auth::id());
 
-        $reports = [];
-        $attr = "";
-        $is_accum = false;
+        $attr = ""; // Campo del modelo Report que se va a obtener
+        $is_accum = false; // ¿El campo es acumulado sobre el tiempo?
+        $target_model = "";
 
         if ($isUserOwnerOfProfile) {
             switch ($stat) {
                 case 'followers':
                     $attr = 'total_followers';
                     $is_accum = false;
+                    $target_model = Follower::class;
                     break;
 
                 case 'follows':
                     $attr = 'follows';
                     $is_accum = true;
+                    $target_model = Follow::class;
                     break;
 
                 case 'unfollows':
                     $attr = 'unfollows';
                     $is_accum = true;
+                    $target_model = Unfollow::class;
                     break;
 
                 case 'friends':
                     $attr = 'total_friends';
                     $is_accum = false;
+                    $target_model = Friend::class;
                     break;
 
                 case 'befriends':
                     $attr = 'befriends';
                     $is_accum = true;
+                    $target_model = Befriend::class;
                     break;
 
                 case 'unfriends':
                     $attr = 'unfriends';
                     $is_accum = true;
+                    $target_model = Unfriend::class;
+                    break;
+
+                case 'f2f_ratio':
+                    $attr = 'friends_to_followers_ratio';
+                    $is_accum = true;
+                    $target_model = null;
                     break;
             }
+
+            $group_by_format = ""; // ¿Cömo se agrupan los datos de la gráfica?
 
             switch ($timeInterval) {
                 case 'weekly':
-                    $reports = Report::whereBetween('created_at', [$weekAgo, $now])
-                        ->where('twitter_profile_id', $profileId)
-                        ->get()
-                        ->groupBy(function ($val) {
-                            return Carbon::parse($val->created_at)->format('d-m');
-                        });
+                    $startTime = $weekAgo;
+                    $group_by_format = "d-m";
                     break;
 
                 case 'biweekly':
-                    $reports = Report::whereBetween('created_at', [$twoWeeksAgo, $now])
-                        ->where('twitter_profile_id', $profileId)
-                        ->get()
-                        ->groupBy(function ($val) {
-                            return Carbon::parse($val->created_at)->format('d-m');
-                        });
+                    $startTime = $twoWeeksAgo;
+                    $group_by_format = "d-m";
                     break;
 
                 case 'monthly':
-                    $reports = Report::whereBetween('created_at', [$monthAgo, $now])
-                        ->where('twitter_profile_id', $profileId)
-                        ->get()
-                        ->groupBy(function ($val) {
-                            return Carbon::parse($val->created_at)->format('d');
-                        });
-
+                    $startTime = $monthAgo;
+                    $group_by_format = "d";
                     break;
 
                 case 'yearly':
-                    $reports = Report::whereBetween('created_at', [$yearAgo, $now])
-                        ->where('twitter_profile_id', $profileId)
-                        ->get()
-                        ->groupBy(function ($val) {
-                            return Carbon::parse($val->created_at)->format('d-m');
-                        });
+                    $startTime = $yearAgo;
+                    $group_by_format = "m";
 
                     break;
             }
+
+            $reports = Report::whereBetween('created_at', [$startTime, $now])
+                ->where('twitter_profile_id', $profileId)
+                ->get()
+                ->groupBy(function ($val) use ($group_by_format) {
+                    return Carbon::parse($val->created_at)->format($group_by_format);
+                });
 
             $graph_data = [];
             $latest_report = "";
             $accum_variation = 0;
             $accum_value = 0;
 
-            $prev_report = (object)array_values($reports->toArray())[0][0]; // Al principio el report anterior es el primero
+            $prev_report = (object)array_values($reports->toArray())[0][0]; // Al principio, el report anterior es el primero
 
             foreach ($reports as $i => $report) {
                 $latest_report_index = count($report) - 1;
@@ -114,23 +128,38 @@ class StatsController extends Controller {
                 $prev_report = $latest_report;
             }
 
+            $response = [];
+
+            // Si se escoge modelo target es porque la estadística objetivo va a requerir de una lista de usuarios
+            if ($target_model != null) {
+
+                // Si es acumulado significa que la lista va a estar acotada sobre un periodo de tiempo
+                $users_list = $target_model::where('twitter_profile_id', $profileId)
+                    ->when($is_accum, function ($query) use ($startTime, $now) {
+                        $query->whereBetween('created_at', [$startTime, $now]);
+                    })
+                    ->get();
+
+                $response['users_list'] = $users_list;
+            }
+
             if ($is_accum) {
-                return [
+                return array_merge($response, [
                     'stat' => [
                         'value' => $accum_value,
                         'is_accumulated' => $is_accum
                     ],
-                    'graph' => $graph_data
-                ];
+                    'graph' => $graph_data,
+                ]);
             } else {
-                return [
+                return array_merge($response, [
                     'stat' => [
                         'value' => $latest_report->$attr,
                         'variation' => $accum_variation,
                         'is_accumulated' => $is_accum
                     ],
-                    'graph' => $graph_data
-                ];
+                    'graph' => $graph_data,
+                ]);
             }
         }
     }

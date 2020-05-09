@@ -5,9 +5,10 @@
                 <div class="col">
                     <div class="row">
                         <div class="col">
-                            <h4 class="card-title">{{ card_title }}{{stat.is_accumulated ? ' en ' + timeIntervalString : ""}}</h4>
+                            <h4 class="card-title">{{ card_title }}{{stat.is_accumulated ? ' en ' + timeIntervalString :
+                                ""}}</h4>
                         </div>
-                        <div class="col-auto text-right">
+                        <div v-if="stat.is_accumulated" class="col-auto text-right">
                             <select class="form-control" @input="timeIntervalChanged">
                                 <option value="weekly" selected>7 días</option>
                                 <option value="biweekly">14 días</option>
@@ -18,27 +19,56 @@
                     </div>
                     <div class="stat-container">
                         <span class="stat-amount">{{ stat.value }}</span>
-                        <span v-if="!stat.is_accumulated" class="stat-variation" :class="{'increase': stat.variation > 0, 'decrease': stat.variation < 0}">
+                        <span v-if="!stat.is_accumulated" class="stat-variation" :class="{'increase': stat.variation > 0, 'decrease': stat.variation < 0, 'no-variation': stat.variation == 0}">
                             <i v-if="stat.variation > 0" class="fa fa-lg fa-caret-up"></i>
+                            <i v-else-if="stat.variation == 0" class="fa fa-sm fa-equals"></i>
                             <i v-else-if="stat.variation < 0" class="fa fa-lg fa-caret-down"></i>
-                            {{ stat.variation }}
+                            {{ stat.variation != 0 ? Math.abs(stat.variation) : '' }}
                         </span>
                     </div>
-                    <div class="row no-gutters modal-trigger-row">
+                    <div v-if="modal_title" class="row no-gutters modal-trigger-row">
                         <div class="col">
                             <button-modal :id="id" :title="modal_title" :button="false">
                                 <template slot="button">
                                     <slot name="modal-trigger"></slot>
                                 </template>
                                 <template slot="modal-body">
-                                    <slot name="modal"></slot>
+                                    <ul class="profiles-list">
+                                        <li v-for="(profile, i) in profilesList" :id="'element-' + profile.screen_name">
+                                            <div class="row profile-link">
+                                                <a :href="'https://twitter.com/' + profile.screen_name" class="col-auto">
+                                                    <img :src="profile.profile_image_url" :alt="'Foto de perfil de @' + profile.screen_name">
+                                                </a>
+                                                <div class="col">
+                                                    <span class="name">
+                                                        <a :href="'https://twitter.com/' + profile.screen_name">
+                                                            {{ profile.name }}
+                                                        </a>
+                                                        <span @click.prevent v-if="shouldShowFollowingStat && d_user.current_twitter_profile[0].followers[profile.id_str]" class="badge badge-success">Te sigue</span>
+                                                            <span @click.prevent v-else-if="shouldShowFollowingStat && !d_user.current_twitter_profile[0].followers[profile.id_str]" class="badge badge-danger">No te sigue</span>
+                                                    </span>
+                                                    <span class="screen-name text-muted">@{{ profile.screen_name }}</span>
+                                                </div>
+                                                <div v-if="d_user.current_twitter_profile[0].friends[profile.id_str]" class="col-4">
+                                                    <button @click="unfollowUser(profile.screen_name, i)" class="btn btn-sm btn-unfollow">
+                                                        Dejar de seguir
+                                                    </button>
+                                                </div>
+                                                <div v-else class="col-4">
+                                                    <button @click="followUser(profile.screen_name, i)" class="btn btn-sm btn-follow">
+                                                        Seguir
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </li>
+                                    </ul>
                                 </template>
                             </button-modal>
                         </div>
                     </div>
                     <div class="row">
                         <div class="col">
-                            <line-chart :data="graphData" width="100%"></line-chart>
+                            <line-chart :data="graphData" width="100%" height="215px"></line-chart>
                         </div>
                     </div>
                 </div>
@@ -53,7 +83,8 @@
             'id',
             'card_title',
             'stat_endpoint',
-            'modal_title'
+            'modal_title',
+            'user'
         ],
         data() {
             return {
@@ -63,7 +94,9 @@
                     variation: null,
                     is_accumulated: null
                 },
-                timeInterval: 'weekly'
+                profilesList: null,
+                timeInterval: 'weekly',
+                d_user: this.user
             }
         },
         computed: {
@@ -81,6 +114,9 @@
                     case 'yearly':
                         return "el último año";
                 }
+            },
+            shouldShowFollowingStat() {
+                return !this.stat_endpoint.toLowerCase().includes('follow');
             }
         },
         created() {
@@ -92,12 +128,42 @@
                     .then((response) => {
                         this.stat = response.data.stat;
                         this.graphData = response.data.graph;
+                        this.profilesList = response.data.users_list;
                     });
             },
             timeIntervalChanged($event) {
                 this.timeInterval = $event.target.value;
 
                 this.fetchData();
+            },
+            unfollowUser(screen_name, index) {
+                axios.post('/ajax/profile/unfollow', {
+                    'screen_name': screen_name,
+                    'twitter_profile_id': this.d_user.current_twitter_profile[0].id
+                }).then((response) => {
+                    if (response.data.status == 'success') {
+                        this.twitterProfile = response.data.data;
+                        this.$toast.success(response.data.message);
+                    } else {
+                        this.$toast.error(response.data.message);
+                    }
+                });
+            },
+            followUser(screen_name, index) {
+                axios.post('/ajax/profile/follow', {
+                    'screen_name': screen_name,
+                    'twitter_profile_id': this.d_user.current_twitter_profile[0].id
+                }).then((response) => {
+                    if (response.data.status == 'success') {
+                        this.twitterProfile = response.data.data;
+                        this.$toast.success(response.data.message);
+
+                        this.d_user.current_twitter_profile[0].friends.splice(index, 1);
+                        $('#element-' + screen_name).remove();
+                    } else {
+                        this.$toast.error(response.data.message);
+                    }
+                });
             }
         }
     }
@@ -108,13 +174,149 @@
     $textColor: #3E396B;
 
     .card {
-        //height: 100%;
+        height: 400px;
 
         .card-body {
             display: flex;
             flex-direction: column;
             max-height: 100vh;
             overflow: hidden;
+
+            > .row {
+                height: 100%;
+
+                .col {
+                    display: flex;
+                    flex-direction: column;
+                    height: 100%;
+
+                    .profiles-list {
+                        list-style: none;
+                        padding: 0;
+                        margin: 0;
+
+                        li {
+                            &:not(:first-child) {
+                                margin-top: 15px;
+                            }
+
+                            .profile-link {
+
+                                a {
+                                    text-decoration: none;
+                                }
+
+                                img {
+                                    border-radius: 50%;
+                                }
+
+                                .name {
+                                    display: flex;
+                                    align-items: center;
+
+                                    font-weight: bold !important;
+                                    line-height: initial;
+
+                                    > :first-child {
+                                        color: $textColor;
+                                    }
+
+                                    span.badge {
+                                        margin-left: 7px;
+                                    }
+                                }
+
+                                .screen-name {
+                                    font-weight: normal;
+                                    display: block;
+                                    color: #a7a2ce;
+                                    margin-top: 4px;
+                                    line-height: initial;
+                                }
+
+                            }
+
+                            button {
+                                display: flex;
+                                justify-content: center;
+                                align-items: center;
+                                width: 95%;
+
+                                padding: 7px 0 !important;
+
+                                background: transparent;
+
+                                text-transform: uppercase;
+
+                                &.btn-follow {
+                                    color: $primaryColor;
+                                    border-color: $primaryColor;
+                                    transition: 150ms;
+
+                                    &:hover {
+                                        background-color: $primaryColor;
+                                        color: white;
+                                    }
+                                }
+
+                                &.btn-unfollow {
+                                    color: #c80000;
+                                    border-color: #c80000;
+                                    transition: 150ms;
+
+                                    &:hover {
+                                        background-color: #c80000;
+                                        color: white;
+                                    }
+                                }
+
+                                i {
+                                    margin-right: 7px;
+                                    margin-bottom: 1px;
+                                }
+                            }
+                        }
+                    }
+
+                    .stat-container {
+                        display: flex;
+                        align-items: flex-start;
+                        flex: 1;
+
+                        .stat-amount {
+                            color: $primaryColor;
+                            line-height: initial;
+
+                            font-size: 32pt;
+                            font-weight: bold;
+                        }
+
+                        .stat-variation {
+                            align-self: center;
+
+                            color: $primaryColor;
+                            line-height: initial;
+
+                            font-size: 20pt;
+                            font-weight: 500;
+
+                            margin-left: 5px;
+
+                            &.no-variation {
+                                color: rgba(40, 41, 41, 0.96);
+                            }
+
+                            &.increase {
+                                color: #4BB543;
+                            }
+
+                            &.decrease {
+                                color: #F2262D;
+                            }
+                        }
+                    }
+                }
+            }
 
             .card-title {
                 font-size: 16pt;
@@ -142,30 +344,6 @@
 
                 ::-webkit-scrollbar {
                     width: 10px !important;
-                }
-            }
-
-            .stat-amount {
-                color: $primaryColor;
-                line-height: initial;
-
-                font-size: 32pt;
-                font-weight: bold;
-            }
-
-            .stat-variation {
-                color: $primaryColor;
-                line-height: initial;
-
-                font-size: 20pt;
-                font-weight: 500;
-
-                &.increase {
-                    color: green;
-                }
-
-                &.decrease {
-                    color: red;
                 }
             }
 

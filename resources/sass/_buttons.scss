@@ -4,6 +4,7 @@ button:not(.close), a.btn{
     font-weight: 500!important;
     font-size: 12pt;
     text-transform: none!important;
+    transition: 200ms;
 
     &.btn-icon {
         i:first-child {
@@ -31,6 +32,13 @@ button:not(.close), a.btn{
 
     &.btn-block {
         padding: 10px!important
+    }
+
+    &.btn-outline-primary:hover, .btn-outline-primary:active {
+        color: #fff;
+        background-color: #7642FF;
+        border-color: #7642FF;
+        background-image: none;
     }
 }
 

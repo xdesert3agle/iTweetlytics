@@ -38,6 +38,7 @@ Vue.component('App', require('./components/pages/App.vue').default);
 Vue.component('ScheduledTweets', require('./components/pages/ScheduledTweets.vue').default);
 Vue.component('Profiles', require('./components/pages/Profiles.vue').default);
 Vue.component('Stats', require('./components/pages/Stats/Stats.vue').default);
+    Vue.component('GeneralStats', require('./components/pages/Stats/GeneralStats.vue').default);
     Vue.component('FollowersStats', require('./components/pages/Stats/FollowersStats.vue').default);
     Vue.component('FriendsStats', require('./components/pages/Stats/FriendsStats.vue').default);
     Vue.component('GraphCard', require('./components/pages/Stats/GraphCard.vue').default);
@@ -51,25 +52,8 @@ Vue.component('ButtonHref', require('./components/elements/ButtonHref.vue').defa
 // Utility
 Vue.component('Csrf', require('./components/utility/Csrf.vue').default);
 
-import Toast from "vue-toastification";
-import "vue-toastification/dist/index.css";
-
-const options = {
-    position: "top-right",
-    timeout: 5000,
-    closeOnClick: true,
-    pauseOnFocusLoss: false,
-    pauseOnHover: true,
-    draggable: true,
-    draggablePercent: 0.6,
-    showCloseButtonOnHover: false,
-    hideProgressBar: true,
-    closeButton: "button",
-    icon: true,
-    rtl: false
-};
-
-Vue.use(Toast, options);
+import VueToastr from "vue-toastr";
+Vue.use(VueToastr);
 
 /**
  * Next, we will create a fresh Vue application instance and attach it to

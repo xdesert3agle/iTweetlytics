@@ -55,8 +55,11 @@
                 max-width: 600px;
 
                 .modal-content {
+                    @media (max-width: 768px) {
+                        height: calc(100vh - 15px);
+                    }
+
                     .modal-body {
-                        max-height: 80vh;
                         overflow-y: scroll;
                         overflow-x: hidden;
                     }

@@ -8,6 +8,10 @@ use Illuminate\Support\Facades\Storage;
 
 class Report extends Model {
     public static function generateDailyReport($profile) {
+        // Followers
+        $all_followers = Follower::where('twitter_profile_id', $profile->id)->get();
+        $total_followers_count = $all_followers->count();
+
         $follows_count = Follow::where('twitter_profile_id', $profile->id)
             ->whereDate('created_at', Carbon::today())
             ->count();
@@ -16,54 +20,50 @@ class Report extends Model {
             ->whereDate('created_at', Carbon::today())
             ->count();
 
-        $all_followers = Follower::where('twitter_profile_id', $profile->id)->get();
-        $all_followers_ids = $all_followers->pluck('id_str')->toArray();
-        $total_followers_count = count($all_followers);
+        // Friends
+        $all_friends = Friend::where('twitter_profile_id', $profile->id)->get();
+        $total_friends_count = $all_friends->count();
 
         $befriends_count = Befriend::where('twitter_profile_id', $profile->id)
             ->whereDate('created_at', Carbon::today())
             ->count();
-
         $unfriends_count = Unfriend::where('twitter_profile_id', $profile->id)
             ->whereDate('created_at', Carbon::today())
             ->count();
 
-        $all_friends = Friend::where('twitter_profile_id', $profile->id)->get();
-        $all_friends_ids = $all_friends->pluck('id_str')->toArray();
-        $total_friends_count = count($all_friends);
-
-        $report = new Report;
-        $report->twitter_profile_id = $profile->id;
-        $report->follows = $follows_count;
-        $report->unfollows = $unfollows_count;
-        $report->followers_variation = $follows_count - $unfollows_count;
-        $report->total_followers = $total_followers_count;
-        $report->befriends = $befriends_count;
-        $report->unfriends = $unfriends_count;
-        $report->total_friends = $total_friends_count;
-        $report->followers_followback_percent = self::calcFollowbackPercentage($profile);
-        $report->user_followback_percent = self::calcUserFollowbackPercentage($profile);
-
-        $report->save();
+        Report::create([
+            'twitter_profile_id' => $profile->id,
+            'follows' => $follows_count,
+            'unfollows' => $unfollows_count,
+            'followers_variation' => $follows_count - $unfollows_count,
+            'befriends' => $befriends_count,
+            'unfriends' => $unfriends_count,
+            'total_followers' => $total_followers_count,
+            'total_friends' => $total_friends_count,
+            'followers_followback_percent' => self::calcFollowbackPercentage($profile, $total_followers_count),
+            'user_followback_percent' => self::calcUserFollowbackPercentage($profile, $total_friends_count),
+            'friends_to_followers_ratio' => self::calcFriendsToFollowersRatio($total_friends_count, $total_followers_count),
+        ]);
     }
 
-    public static function calcFollowbackPercentage($profile) {
-        $all_friends_count = Friend::where('twitter_profile_id', $profile->id)->count();
-
+    public static function calcFollowbackPercentage($profile, $total_friends_count) {
         $users_following_count = Friend::where('twitter_profile_id', $profile->id)
             ->whereIn('id_str', Follower::where('twitter_profile_id', $profile->id)->get()->pluck('id_str'))
             ->count();
 
-        return round(($users_following_count / $all_friends_count) * 100, 2);
+        return round(($users_following_count / $total_friends_count) * 100, 2);
     }
 
-    public static function calcUserFollowbackPercentage($profile) {
-        $all_followers_count = Follower::where('twitter_profile_id', $profile->id)->count();
+    public static function calcUserFollowbackPercentage($profile, $total_followers_count) {
 
         $followers_following_back = Follower::where('twitter_profile_id', $profile->id)
             ->whereIn('id_str', Friend::where('twitter_profile_id', $profile->id)->get()->pluck('id_str'))
             ->count();
 
-        return round(($followers_following_back / $all_followers_count) * 100, 2);
+        return round(($followers_following_back / $total_followers_count) * 100, 2);
+    }
+
+    public static function calcFriendsToFollowersRatio($total_friends_count, $total_followers_count) {
+        return round(($total_followers_count / $total_friends_count), 2);
     }
 }

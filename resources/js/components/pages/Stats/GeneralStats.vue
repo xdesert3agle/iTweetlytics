@@ -1,39 +1,52 @@
-<template>
+ <template>
     <div class="row">
         <div class="col-12">
             <div class="row no-gutters card-row">
                 <div class="col-md-4 col-12">
-                    <graph-card id="friends"
-                                :user="user" :stat_endpoint="'/ajax/profile/' + d_user.current_twitter_profile[0].id + '/reports/friends/'"
-                                card_title="Seguidos"
-                                modal_title="Seguidos">
-
-                        <template slot="modal-trigger">
-                            <button class="btn-text">Gestionar seguidos</button>
-                        </template>
+                    <graph-card id="followers" :user="user" :stat_endpoint="'/ajax/profile/' + d_user.current_twitter_profile[0].id + '/reports/f2f_ratio/'" card_title="Ratio seguidores/seguidos">
                     </graph-card>
                 </div>
-                <div class="col-md-4 col-12">
-                    <graph-card id="befriends"
-                                :user="user" :stat_endpoint="'/ajax/profile/' + d_user.current_twitter_profile[0].id + '/reports/befriends/'"
-                                card_title="Seguidos"
-                                modal_title="Seguidos">
-
-                        <template slot="modal-trigger">
-                            <button class="btn-text">Detalles</button>
-                        </template>
-                    </graph-card>
-                </div>
-                <div class="col-md-4 col-12">
-                    <graph-card id="unfriends"
-                                :user="user" :stat_endpoint="'/ajax/profile/' + d_user.current_twitter_profile[0].id + '/reports/unfriends/'"
-                                card_title="Dejados de seguir"
-                                modal_title="Dejados de seguir">
-
-                        <template slot="modal-trigger">
-                            <button class="btn-text">Detalles</button>
-                        </template>
-                    </graph-card>
+                <div class="col-md-4 col-12 small-cards-container">
+                    <div class="row no-gutters">
+                        <div class="col-md-6 col-12">
+                            <div class="card small-card">
+                                <div class="card-body">
+                                    <h4 class="card-title">Porcentaje de seguidos que te siguen de vuelta</h4>
+                                    <div class="row card-content">
+                                        <div class="col">
+                                            <span class="stat-amount">{{ d_user.current_twitter_profile[0].reports[d_user.current_twitter_profile[0].reports.length - 1].followers_followback_percent.toFixed(2).toString().replace('.', ',') }}%</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6 col-12">
+                            <div class="card small-card">
+                                <div class="card-body">
+                                    <h4 class="card-title">Porcentaje de seguidores que sigues de vuelta</h4>
+                                    <div class="row">
+                                        <div class="col">
+                                            <span class="stat-amount">{{ d_user.current_twitter_profile[0].reports[d_user.current_twitter_profile[0].reports.length - 1].user_followback_percent.toFixed(2).toString().replace('.', ',') }}%</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row no-gutters">
+                        <div class="col-md-6 col-12">
+                            <div class="card small-card">
+                                <div class="card-body">
+                                    <h4 class="card-title">Porcentaje de seguidores que sigues de vuelta</h4>
+                                    <div class="row">
+                                        <div class="col">
+                                            <span class="stat-amount">{{ d_user.current_twitter_profile[0].reports[d_user.current_twitter_profile[0].reports.length - 1].user_followback_percent.toFixed(2).toString().replace('.', ',') }}%</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -89,22 +102,68 @@
     $primaryColor: #7642FF;
     $textColor: #3E396B;
 
-    div[class*="col"] {
-        display: flex;
-        flex-direction: column;
+    .card-row {
+        div[class*="col"] {
+            display: flex;
+            flex-direction: column;
 
-        &:not(:first-child) {
-            padding-left: 10px;
+            &:not(:first-child) {
+                padding-left: 10px;
+
+                @media (max-width: 768px) {
+                    padding-left: 0!important;
+                    margin-top: 10px!important;
+                }
+            }
+
+            @media (max-width: 768px) {
+                &:not(.small-cards-container):not(:first-child) {
+                    margin-top: 10px!important;
+                }
+            }
+        }
+    }
+
+    .small-cards-container {
+        .row:not(:first-child) {
+            margin-top: 10px;
+
+            @media (max-width: 768px) {
+                margin-top: 0!important;
+            }
+        }
+
+        @media (max-width: 768px) {
+            margin-top: 0!important;
+            padding-top: 0!important;
+
+            .row:not(:first-child) {
+                margin-top: 10px!important;
+            }
         }
     }
 
     .card-row {
         //flex: 1;
 
-        @media (max-width: 768px) {
-            div[class*="col"]:not(:first-child) {
-                margin-top: 10px!important;
-                padding-left: 0!important;
+        .card {
+            height: 400px;
+
+            &.small-card {
+                height: 195px;
+            }
+
+            .card-body {
+                display: flex;
+                flex-direction: column;
+
+                .row {
+                    height: 100%;
+                }
+
+                .card-title {
+                    font-size: 16pt;
+                }
             }
         }
 
@@ -121,7 +180,7 @@
         .profiles-list {
             li {
                 &:not(:first-child) {
-                    margin-top: 15px;
+                    margin-top: 10px;
                 }
 
                 .profile-link {
@@ -157,7 +216,6 @@
                         margin-top: 4px;
                         line-height: initial;
                     }
-
                 }
 
                 button {
@@ -166,7 +224,7 @@
                     align-items: center;
                     width: 95%;
 
-                    padding: 7px 0 !important;
+                    padding: 7px 0!important;
 
                     background: transparent;
 

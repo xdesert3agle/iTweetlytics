@@ -10,12 +10,12 @@
                                 <h3>Iniciar sesión</h3>
 
                                 <div class="form-group">
-                                    <label for="email">Email*</label>
+                                    <label for="email" class="required">Email</label>
                                     <input v-model="user.email" id="email" type="email" class="form-control" placeholder="Dirección de correo electrónico" required autocomplete="email">
                                 </div>
 
                                 <div class="form-group">
-                                    <label for="email">Contraseña*</label>
+                                    <label for="email" class="required">Contraseña</label>
                                     <input v-model="user.password" id="password" type="password" class="form-control" placeholder="Contraseña" required autocomplete="current-password">
                                 </div>
 
@@ -38,8 +38,8 @@
                                     </div>
                                 </div>
                                 <span class="form-small-msg">
-                                        ¿Aún no tienes una cuenta? Regístrate
-                                        <a href="/#signup">aquí</a>.
+                                        ¿Aún no tienes una cuenta? Únete
+                                        <a href="/">aquí</a>.
                                     </span>
                             </div>
                         </div>
@@ -91,10 +91,6 @@
             background-size: cover;
         }
 
-        label {
-            font-size: 12pt;
-            font-weight: 500;
-        }
     }
 
     .card {

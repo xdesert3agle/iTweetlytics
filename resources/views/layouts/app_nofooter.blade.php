@@ -56,11 +56,9 @@
                         </li>
 
                         <li class="nav-item text-center">
-                            <a href="login" class="btn align-middle btn-outline-primary my-2 my-lg-0">Login</a>
+                            <a href="login" class="btn align-middle btn-outline-primary">Iniciar sesión</a>
                         </li>
-                        <li class="nav-item text-center">
-                            <a href="#signup" class="btn align-middle btn-primary my-2 my-lg-0">Sign Up</a>
-                        </li>
+
                     </ul>
 
                 </div>
