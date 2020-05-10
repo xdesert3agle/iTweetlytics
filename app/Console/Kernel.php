@@ -23,7 +23,7 @@ class Kernel extends ConsoleKernel {
     ];
 
     protected function schedule(Schedule $schedule) {
-        $schedule->command('work:start')->daily();
+        $schedule->command('profile:process all')->daily();
     }
 
     /**
