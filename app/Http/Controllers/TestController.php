@@ -11,11 +11,12 @@ use App\TwitterProfile;
 use App\Unfollow;
 use App\Unfriend;
 use Carbon\Carbon;
+use Thujohn\Twitter\Facades\Twitter;
 
 class TestController extends Controller {
 
     public function test() {
-        $this->generateDailyReport(TwitterProfile::find(286561116));
+        dd(Twitter::getAppRateLimit());
     }
 
     public function generateDailyReport($profile) {
