@@ -60,7 +60,8 @@ class Kernel extends HttpKernel
         'guest' => \App\Http\Middleware\RedirectIfAuthenticated::class,
         'password.confirm' => \Illuminate\Auth\Middleware\RequirePassword::class,
         'signed' => \Illuminate\Routing\Middleware\ValidateSignature::class,
-        'sync' => \App\Http\Middleware\RedirectIfUnsynced::class,
+        'sync.completed' => \App\Http\Middleware\RedirectIfUnsynced::class,
+        'sync.incomplete' => \App\Http\Middleware\RedirectIfSynced::class,
         'throttle' => \Illuminate\Routing\Middleware\ThrottleRequests::class,
         'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
     ];

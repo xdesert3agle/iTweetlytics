@@ -4,7 +4,7 @@
             <div class="row no-gutters card-row">
                 <div class="col-md-4 col-12">
                     <graph-card id="friends"
-                                :user="user" :stat_endpoint="'/ajax/profile/' + d_user.current_twitter_profile[0].id + '/reports/friends/'"
+                                :user="user" :stat_endpoint="'/ajax/profile/' + user.current_twitter_profile[0].id + '/reports/friends/'"
                                 card_title="Seguidos"
                                 modal_title="Seguidos">
 
@@ -15,7 +15,7 @@
                 </div>
                 <div class="col-md-4 col-12">
                     <graph-card id="befriends"
-                                :user="user" :stat_endpoint="'/ajax/profile/' + d_user.current_twitter_profile[0].id + '/reports/befriends/'"
+                                :user="user" :stat_endpoint="'/ajax/profile/' + user.current_twitter_profile[0].id + '/reports/befriends/'"
                                 card_title="Seguidos"
                                 modal_title="Seguidos">
 
@@ -26,7 +26,7 @@
                 </div>
                 <div class="col-md-4 col-12">
                     <graph-card id="unfriends"
-                                :user="user" :stat_endpoint="'/ajax/profile/' + d_user.current_twitter_profile[0].id + '/reports/unfriends/'"
+                                :user="user" :stat_endpoint="'/ajax/profile/' + user.current_twitter_profile[0].id + '/reports/unfriends/'"
                                 card_title="Dejados de seguir"
                                 modal_title="Dejados de seguir">
 
@@ -45,42 +45,6 @@
         props: [
             'user'
         ],
-        data() {
-            return {
-                d_user: this.user
-            }
-        },
-        methods: {
-            unfollowUser(screen_name, index) {
-                axios.post('/ajax/profile/unfollow', {
-                    'screen_name': screen_name,
-                    'twitter_profile_id': this.d_user.current_twitter_profile[0].id
-                }).then((response) => {
-                    if (response.data.status == 'success') {
-                        this.twitterProfile = response.data.data;
-                        this.$toast.success(response.data.message);
-                    } else {
-                        this.$toast.error(response.data.message);
-                    }
-                });
-            },
-            followUser(screen_name, index) {
-                axios.post('/ajax/profile/follow', {
-                    'screen_name': screen_name,
-                    'twitter_profile_id': this.d_user.current_twitter_profile[0].id
-                }).then((response) => {
-                    if (response.data.status == 'success') {
-                        this.twitterProfile = response.data.data;
-                        this.$toast.success(response.data.message);
-
-                        this.d_user.current_twitter_profile[0].friends.splice(index, 1);
-                        $('#element-' + screen_name).remove();
-                    } else {
-                        this.$toast.error(response.data.message);
-                    }
-                });
-            }
-        }
     }
 </script>
 
@@ -89,121 +53,25 @@
     $primaryColor: #7642FF;
     $textColor: #3E396B;
 
-    div[class*="col"] {
-        display: flex;
-        flex-direction: column;
+    .card-row {
+        div[class*="col"] {
+            display: flex;
+            flex-direction: column;
+
+            &:not(:first-child) {
+                padding-left: 10px;
+            }
+        }
 
         &:not(:first-child) {
-            padding-left: 10px;
+            margin-top: 10px;
         }
-    }
-
-    .card-row {
-        //flex: 1;
 
         @media (max-width: 768px) {
             div[class*="col"]:not(:first-child) {
                 margin-top: 10px!important;
                 padding-left: 0!important;
             }
-        }
-
-        .stat-amount {
-            font-size: 32pt;
-            font-weight: bold;
-            color: $primaryColor;
-            line-height: initial;
-            display: flex;
-            flex: 1;
-            flex-direction: column-reverse;
-        }
-
-        .profiles-list {
-            li {
-                &:not(:first-child) {
-                    margin-top: 15px;
-                }
-
-                .profile-link {
-
-                    a {
-                        text-decoration: none;
-                    }
-
-                    img {
-                        border-radius: 50%;
-                    }
-
-                    .name {
-                        display: flex;
-                        align-items: center;
-
-                        font-weight: bold !important;
-                        line-height: initial;
-
-                        > :first-child {
-                            color: $textColor;
-                        }
-
-                        span.badge {
-                            margin-left: 7px;
-                        }
-                    }
-
-                    .screen-name {
-                        font-weight: normal;
-                        display: block;
-                        color: #a7a2ce;
-                        margin-top: 4px;
-                        line-height: initial;
-                    }
-
-                }
-
-                button {
-                    display: flex;
-                    justify-content: center;
-                    align-items: center;
-                    width: 95%;
-
-                    padding: 7px 0 !important;
-
-                    background: transparent;
-
-                    text-transform: uppercase;
-
-                    &.btn-follow {
-                        color: $primaryColor;
-                        border-color: $primaryColor;
-                        transition: 150ms;
-
-                        &:hover {
-                            background-color: $primaryColor;
-                            color: white;
-                        }
-                    }
-
-                    &.btn-unfollow {
-                        color: #c80000;
-                        border-color: #c80000;
-                        transition: 150ms;
-
-                        &:hover {
-                            background-color: #c80000;
-                            color: white;
-                        }
-                    }
-
-                    i {
-                        margin-right: 7px;
-                        margin-bottom: 1px;
-                    }
-                }
-            }
-        }
-
-        &:not(:first-child) {
-            margin-top: 10px;
         }
     }
 

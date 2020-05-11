@@ -21,7 +21,7 @@ Route::get('/', 'LandingPageController@index')->middleware('guest');
 Route::get('test', 'TestController@test')->middleware('guest');
 
 Route::group(['middleware' => 'auth'], function () {
-    Route::group(['middleware' => 'sync'], function() {
+    Route::group(['middleware' => 'sync.completed'], function() {
         Route::prefix('ajax')->group(function () {
             Route::prefix('user')->group(function () {
                 Route::get('refresh/{profileId}', 'UserController@refresh');
@@ -68,7 +68,7 @@ Route::group(['middleware' => 'auth'], function () {
         });
     });
 
-    Route::get('sync', 'SyncController@index')->name('profile.sync');
+    Route::get('sync', 'SyncController@index')->name('profile.sync')->middleware('sync.incomplete');
 
     Route::get('twitter/login', 'LoginWithTwitterController@requestLogin')->name('twitter.login');
     Route::get('twitter/callback', 'LoginWithTwitterController@getTwitterCallback')->name('twitter.callback');

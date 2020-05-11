@@ -24,13 +24,15 @@
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#" @click="$refs.logoutForm.submit()">
+                        <a class="nav-link" href="#" @click="askForLogout">
                             <i class="fas fa-lg fa-sign-out-alt"></i>
                         </a>
                         <form id="logout-form" ref="logoutForm" action="/logout" method="POST">
                             <csrf></csrf>
                         </form>
-                    </li>>
+                        {
+                    </li>
+                    >
                 </ul>
             </aside>
             <div class="col-md col-12">
@@ -68,6 +70,22 @@
                 csrf: document.querySelector('meta[name="csrf-token"]').getAttribute('content')
             }
         },
+        methods: {
+            askForLogout() {
+                this.$swal({
+                    title: '¿Deseas cerrar sesión?',
+                    icon: 'question',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    confirmButtonText: 'Cerrar sesión',
+                    cancelButtonText: 'Cancelar'
+                }).then((result) => {
+                    if (result.value) {
+                        this.$refs.logoutForm.submit();
+                    }
+                });
+            }
+        }
     }
 </script>
 

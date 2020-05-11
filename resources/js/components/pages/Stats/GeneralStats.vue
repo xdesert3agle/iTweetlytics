@@ -1,17 +1,16 @@
- <template>
+<template>
     <div class="row">
         <div class="col-12">
             <div class="row no-gutters card-row">
                 <div class="col-md-4 col-12">
-                    <graph-card id="followers" :user="user" :stat_endpoint="'/ajax/profile/' + d_user.current_twitter_profile[0].id + '/reports/f2f_ratio/'" card_title="Ratio seguidores/seguidos">
-                    </graph-card>
+                    <graph-card id="followers" :user="user" :stat_endpoint="'/ajax/profile/' + d_user.current_twitter_profile[0].id + '/reports/f2f_ratio/'" card_title="Ratio seguidores/seguidos"></graph-card>
                 </div>
                 <div class="col-md-4 col-12 small-cards-container">
                     <div class="row no-gutters">
                         <div class="col-md-6 col-12">
                             <div class="card small-card">
                                 <div class="card-body">
-                                    <h4 class="card-title">Porcentaje de seguidos que te siguen de vuelta</h4>
+                                    <h4 class="card-title">Porcentaje de tus seguidos que te siguen de vuelta</h4>
                                     <div class="row card-content">
                                         <div class="col">
                                             <span class="stat-amount">{{ d_user.current_twitter_profile[0].reports[d_user.current_twitter_profile[0].reports.length - 1].followers_followback_percent.toFixed(2).toString().replace('.', ',') }}%</span>
@@ -23,7 +22,7 @@
                         <div class="col-md-6 col-12">
                             <div class="card small-card">
                                 <div class="card-body">
-                                    <h4 class="card-title">Porcentaje de seguidores que sigues de vuelta</h4>
+                                    <h4 class="card-title">Porcentaje de tus seguidores que sigues de vuelta</h4>
                                     <div class="row">
                                         <div class="col">
                                             <span class="stat-amount">{{ d_user.current_twitter_profile[0].reports[d_user.current_twitter_profile[0].reports.length - 1].user_followback_percent.toFixed(2).toString().replace('.', ',') }}%</span>
@@ -111,14 +110,14 @@
                 padding-left: 10px;
 
                 @media (max-width: 768px) {
-                    padding-left: 0!important;
-                    margin-top: 10px!important;
+                    padding-left: 0 !important;
+                    margin-top: 10px !important;
                 }
             }
 
             @media (max-width: 768px) {
                 &:not(.small-cards-container):not(:first-child) {
-                    margin-top: 10px!important;
+                    margin-top: 10px !important;
                 }
             }
         }
@@ -129,16 +128,16 @@
             margin-top: 10px;
 
             @media (max-width: 768px) {
-                margin-top: 0!important;
+                margin-top: 0 !important;
             }
         }
 
         @media (max-width: 768px) {
-            margin-top: 0!important;
-            padding-top: 0!important;
+            margin-top: 0 !important;
+            padding-top: 0 !important;
 
             .row:not(:first-child) {
-                margin-top: 10px!important;
+                margin-top: 10px !important;
             }
         }
     }
@@ -224,7 +223,7 @@
                     align-items: center;
                     width: 95%;
 
-                    padding: 7px 0!important;
+                    padding: 7px 0 !important;
 
                     background: transparent;
 

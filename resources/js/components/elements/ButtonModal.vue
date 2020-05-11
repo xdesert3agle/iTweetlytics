@@ -55,8 +55,11 @@
                 max-width: 600px;
 
                 .modal-content {
+                    max-height: 90vh;
+
                     @media (max-width: 768px) {
                         height: calc(100vh - 15px);
+                        max-height: calc(100vh - 15px);
                     }
 
                     .modal-body {

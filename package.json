@@ -31,6 +31,7 @@
         "vue-expandable-image": "^0.1.0",
         "vue-google-charts": "^0.3.2",
         "vue-plyr": "^6.0.4",
+        "vue-sweetalert2": "^3.0.5",
         "vue-toastification": "^1.6.0",
         "vue-toastr": "^2.1.2",
         "vue2-datepicker": "^3.5.0"

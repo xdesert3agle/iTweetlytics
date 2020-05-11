@@ -9,7 +9,7 @@
                         </div>
                     </div>
                     <div class="row">
-                        <twitter-profile-card v-for="(tw_profile, i) in user.twitter_profiles" :key="tw_profile.id" :twitterProfile="tw_profile" :colSize="4"></twitter-profile-card>
+                        <twitter-profile-card v-for="(tw_profile, i) in user.twitter_profiles" :key="tw_profile.id" :twitterProfile="tw_profile" :colSize="3"></twitter-profile-card>
                     </div>
                 </div>
                 <div v-else class="first-profile-container">
@@ -20,8 +20,7 @@
                     <div class="col">
                         <form action="/twitter/login">
                             <button type="submit" class="btn btn-primary">
-                                <i class="fa fa-plus"></i>
-                                <span>Añadir perfil de Twitter</span>
+                                Añadir un nuevo perfil de Twitter
                             </button>
                         </form>
                     </div>
@@ -49,7 +48,4 @@
 
 <style lang="scss" scoped>
 
-    .btn-add-tw-profile {
-        margin-bottom: 1em;
-    }
 </style>

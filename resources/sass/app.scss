@@ -52,6 +52,10 @@ input ~ label {
     font-weight: normal !important;
 }
 
+textarea:focus {
+    outline: 0!important;
+}
+
 .form-control {
     border-radius: 3px !important;
     border-color: #aeaeaf !important;
@@ -92,4 +96,8 @@ h1 {
 .ms-200 {
     -webkit-animation-duration: 200ms;
     animation-duration: 200ms;
+}
+
+.welcome-message {
+    font-size: 27pt!important;
 }

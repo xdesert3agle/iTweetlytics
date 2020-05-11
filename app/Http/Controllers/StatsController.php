@@ -21,7 +21,6 @@ class StatsController extends Controller {
         $startTime = "";
         $now = Carbon::now();
         $weekAgo = Carbon::now()->subWeek()->startOfDay();
-        $twoWeeksAgo = Carbon::now()->subWeeks(2)->startOfDay();
         $monthAgo = Carbon::now()->subMonth()->startOfDay();
         $yearAgo = Carbon::now()->subYear()->startOfDay();
 
@@ -71,7 +70,7 @@ class StatsController extends Controller {
 
                 case 'f2f_ratio':
                     $attr = 'friends_to_followers_ratio';
-                    $is_accum = true;
+                    $is_accum = false;
                     $target_model = null;
                     break;
             }
@@ -81,11 +80,6 @@ class StatsController extends Controller {
             switch ($timeInterval) {
                 case 'weekly':
                     $startTime = $weekAgo;
-                    $group_by_format = "d-m";
-                    break;
-
-                case 'biweekly':
-                    $startTime = $twoWeeksAgo;
                     $group_by_format = "d-m";
                     break;
 

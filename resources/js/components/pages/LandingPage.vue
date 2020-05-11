@@ -424,6 +424,7 @@
                 axios.post('register', this.newUser)
                     .then((data) => {
                         this.user = data.data;
+                        window.location.href = "/sync";
                     })
                     .catch((error) => {
                         this.errors = error.response.data.errors;

@@ -34,13 +34,14 @@
                                             Usuario o contraseña <span class="bold">incorrectos</span>.
                                         </div>
 
-                                        <button @click="attemptLogin" class="btn btn-primary btn-block">Iniciar sesión</button>
+                                        <button @click="attemptLogin" class="btn btn-primary btn-block">Iniciar sesión
+                                        </button>
                                     </div>
                                 </div>
                                 <span class="form-small-msg">
-                                        ¿Aún no tienes una cuenta? Únete
-                                        <a href="/">aquí</a>.
-                                    </span>
+                                    ¿Aún no tienes una cuenta? Únete
+                                    <a href="/">aquí</a>.
+                                </span>
                             </div>
                         </div>
                     </div>
@@ -65,8 +66,19 @@
             attemptLogin: function () {
                 this.loginError = false;
 
-                axios.post('login', this.user).then((data) => {
-                    window.location.href = '/app/0/';
+                axios.post('login', this.user).then((response) => {
+                    this.$swal({
+                        html: '<span class="welcome-message">¡Bienvenido, ' + response.data + '!</h1>',
+                        icon: 'success',
+                        timer: 1600,
+                        showCancelButton: false,
+                        showConfirmButton: false,
+                        allowOutsideClick: false,
+                        allowEscapeKey: false,
+                        onClose: function () {
+                            window.location.href = '/app/0/';
+                        }
+                    });
                 }).catch((error) => {
                     this.loginError = true;
                 });

@@ -1,3 +1,5 @@
+$primary-button-color: #7642FF;
+
 button:not(.close), a.btn{
     padding: 8px 20px!important;
     border-radius: 8px!important;
@@ -5,6 +7,14 @@ button:not(.close), a.btn{
     font-size: 12pt;
     text-transform: none!important;
     transition: 200ms;
+
+    &.btn-primary {
+        background-color: $primary-button-color;
+
+        &:hover {
+            background-color: darken($primary-button-color, 7%)
+        }
+    }
 
     &.btn-icon {
         i:first-child {

@@ -8,23 +8,27 @@
                             <h4 class="card-title">{{ card_title }}{{stat.is_accumulated ? ' en ' + timeIntervalString :
                                 ""}}</h4>
                         </div>
-                        <div v-if="stat.is_accumulated" class="col-auto text-right">
+                        <div class="col-auto text-right">
                             <select class="form-control" @input="timeIntervalChanged">
                                 <option value="weekly" selected>7 días</option>
-                                <option value="biweekly">14 días</option>
                                 <option value="monthly">30 días</option>
                                 <option value="yearly">1 año</option>
                             </select>
                         </div>
                     </div>
                     <div class="stat-container">
-                        <span class="stat-amount">{{ stat.value }}</span>
-                        <span v-if="!stat.is_accumulated" class="stat-variation" :class="{'increase': stat.variation > 0, 'decrease': stat.variation < 0, 'no-variation': stat.variation == 0}">
-                            <i v-if="stat.variation > 0" class="fa fa-lg fa-caret-up"></i>
-                            <i v-else-if="stat.variation == 0" class="fa fa-sm fa-equals"></i>
-                            <i v-else-if="stat.variation < 0" class="fa fa-lg fa-caret-down"></i>
-                            {{ stat.variation != 0 ? Math.abs(stat.variation) : '' }}
-                        </span>
+                        <div class="stat-wrapper">
+                            <span class="stat-amount">{{ stat.value }}</span>
+
+                            <div v-if="!stat.is_accumulated" class="stat-variation-container" :class="{'increase': stat.variation > 0, 'decrease': stat.variation < 0, 'no-variation': stat.variation == 0}">
+                                <i v-if="stat.variation > 0" class="fa fa-lg fa-caret-up"></i>
+                                <i v-else-if="stat.variation === 0" class="fa fa-sm fa-equals"></i>
+                                <i v-else-if="stat.variation < 0" class="fa fa-lg fa-caret-down"></i>
+                                <span class="variation-amount">
+                                    {{ stat.variation !== 0 ? Math.abs(stat.variation) : '' }}
+                                </span>
+                            </div>
+                        </div>
                     </div>
                     <div v-if="modal_title" class="row no-gutters modal-trigger-row">
                         <div class="col">
@@ -33,7 +37,7 @@
                                     <slot name="modal-trigger"></slot>
                                 </template>
                                 <template slot="modal-body">
-                                    <ul class="profiles-list">
+                                    <ul v-if="profilesList.length > 0" class="profiles-list">
                                         <li v-for="(profile, i) in profilesList" :id="'element-' + profile.screen_name">
                                             <div class="row profile-link">
                                                 <a :href="'https://twitter.com/' + profile.screen_name" class="col-auto">
@@ -62,6 +66,7 @@
                                             </div>
                                         </li>
                                     </ul>
+                                    <span v-else>No hay información disponible.</span>
                                 </template>
                             </button-modal>
                         </div>
@@ -104,9 +109,6 @@
                 switch (this.timeInterval) {
                     case 'weekly':
                         return "los últimos 7 días";
-
-                    case 'biweekly':
-                        return "los últimos 14 días";
 
                     case 'monthly':
                         return "los últimos 30 días";
@@ -156,12 +158,26 @@
                 }).then((response) => {
                     if (response.data.status == 'success') {
                         this.twitterProfile = response.data.data;
-                        this.$toast.success(response.data.message);
+                        this.$toastr.Add({
+                            msg: response.data.message,
+                            clickClose: true,
+                            timeout: 4000,
+                            type: 'success',
+                            preventDuplicates: true,
+                            classNames: ['animated', 'slideInRight', 'ms-300'],
+                        });
 
                         this.d_user.current_twitter_profile[0].friends.splice(index, 1);
                         $('#element-' + screen_name).remove();
                     } else {
-                        this.$toast.error(response.data.message);
+                        this.$toastr.Add({
+                            msg: response.data.message, // Toast Message
+                            clickClose: true,
+                            timeout: 4000,
+                            type: 'error',
+                            preventDuplicates: true,
+                            classNames: ['animated', 'slideInRight', 'ms-300'],
+                        });
                     }
                 });
             }
@@ -175,6 +191,7 @@
 
     .card {
         height: 400px;
+
         .card-body {
             display: flex;
             flex-direction: column;
@@ -282,35 +299,47 @@
                         align-items: flex-start;
                         flex: 1;
 
-                        .stat-amount {
-                            color: $primaryColor;
-                            line-height: initial;
+                        .stat-wrapper {
+                            display: flex;
+                            align-items: center;
 
-                            font-size: 32pt;
-                            font-weight: bold;
-                        }
+                            .stat-amount {
+                                color: $primaryColor;
+                                line-height: initial;
 
-                        .stat-variation {
-                            align-self: center;
-
-                            color: $primaryColor;
-                            line-height: initial;
-
-                            font-size: 20pt;
-                            font-weight: 500;
-
-                            margin-left: 5px;
-
-                            &.no-variation {
-                                color: rgba(40, 41, 41, 0.96);
+                                font-size: 32pt;
+                                font-weight: bold;
                             }
 
-                            &.increase {
-                                color: #4BB543;
-                            }
+                            .stat-variation-container {
+                                display: flex;
+                                align-items: center;
+                                flex-direction: column;
 
-                            &.decrease {
-                                color: #F2262D;
+                                margin-left: 5px;
+
+                                i {
+                                    font-size: 23pt;
+                                    line-height: 16pt;
+                                }
+
+                                .variation-amount {
+                                    line-height: initial;
+                                    font-size: 16pt;
+                                    font-weight: 500;
+                                }
+
+                                &.no-variation {
+                                    color: rgba(40, 41, 41, 0.96);
+                                }
+
+                                &.increase {
+                                    color: #4BB543;
+                                }
+
+                                &.decrease {
+                                    color: #F2262D;
+                                }
                             }
                         }
                     }
