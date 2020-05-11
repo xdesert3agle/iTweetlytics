@@ -12,10 +12,10 @@ use App\Unfollow;
 use App\Unfriend;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
-use function GuzzleHttp\Promise\queue;
 
 class StatsController extends Controller {
     public function getStat($profileId, $stat, $timeInterval) {
+        setlocale(LC_TIME, '');
 
         // Intervalos de tiempo
         $startTime = "";
@@ -80,17 +80,17 @@ class StatsController extends Controller {
             switch ($timeInterval) {
                 case 'weekly':
                     $startTime = $weekAgo;
-                    $group_by_format = "d-m";
+                    $group_by_format = "%d/%m";
                     break;
 
                 case 'monthly':
                     $startTime = $monthAgo;
-                    $group_by_format = "d";
+                    $group_by_format = "%d";
                     break;
 
                 case 'yearly':
                     $startTime = $yearAgo;
-                    $group_by_format = "m";
+                    $group_by_format = "%B";
 
                     break;
             }
@@ -99,7 +99,7 @@ class StatsController extends Controller {
                 ->where('twitter_profile_id', $profileId)
                 ->get()
                 ->groupBy(function ($val) use ($group_by_format) {
-                    return Carbon::parse($val->created_at)->format($group_by_format);
+                    return Carbon::parse($val->created_at)->formatLocalized($group_by_format);
                 });
 
             $graph_data = [];

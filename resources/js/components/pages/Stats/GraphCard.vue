@@ -321,6 +321,11 @@
                                 i {
                                     font-size: 23pt;
                                     line-height: 16pt;
+
+                                    &.fa-equals {
+                                        font-size: 18pt!important;
+                                        margin-left: 4px;
+                                    }
                                 }
 
                                 .variation-amount {
