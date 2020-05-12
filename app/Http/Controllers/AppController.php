@@ -46,60 +46,6 @@ class AppController extends Controller {
         ]);
     }
 
-    public function getParsedFollows($profile) {
-        $yearAgo = Carbon::now()->subWeek()->startOfDay();
-        $monthAgo = Carbon::now()->subWeek()->startOfDay();
-        $weekAgo = Carbon::now()->subWeek()->startOfDay();
-        $now = Carbon::now();
-
-        $follows['weekly'] = Follow::whereBetween('created_at', [$weekAgo, $now])
-            ->where('twitter_profile_id', $profile->id)
-            ->orderBy('created_at')
-            ->get()
-            ->toArray();
-
-        $follows['monthly'] = Follow::whereBetween('created_at', [$monthAgo, $now])
-            ->where('twitter_profile_id', $profile->id)
-            ->orderBy('created_at')
-            ->get()
-            ->toArray();
-
-        $follows['yearly'] = Follow::whereBetween('created_at', [$yearAgo, $now])
-            ->where('twitter_profile_id', $profile->id)
-            ->orderBy('created_at')
-            ->get()
-            ->toArray();
-
-        return $follows;
-    }
-
-    public function getParsedUnfollows($profile) {
-        $yearAgo = Carbon::now()->subWeek()->startOfDay();
-        $monthAgo = Carbon::now()->subWeek()->startOfDay();
-        $weekAgo = Carbon::now()->subWeek()->startOfDay();
-        $now = Carbon::now();
-
-        $unfollows['weekly'] = Unfollow::whereBetween('created_at', [$weekAgo, $now])
-            ->where('twitter_profile_id', $profile->id)
-            ->orderBy('created_at')
-            ->get()
-            ->toArray();
-
-        $unfollows['monthly'] = Unfollow::whereBetween('created_at', [$monthAgo, $now])
-            ->where('twitter_profile_id', $profile->id)
-            ->orderBy('created_at')
-            ->get()
-            ->toArray();
-
-        $unfollows['yearly'] = Unfollow::whereBetween('created_at', [$yearAgo, $now])
-            ->where('twitter_profile_id', $profile->id)
-            ->orderBy('created_at')
-            ->get()
-            ->toArray();
-
-        return $unfollows;
-    }
-
     public function postTweet(Request $r) {
         if (!$r->scheduleTime) {
             Twitter::postTweet(['status' => $r->text]);

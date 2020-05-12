@@ -69,7 +69,7 @@ class UpdateFriendsJob implements ShouldQueue {
             $rate_reset_timestamp = $rate_limits['resources']['users']['/users/lookup']['reset'];
 
             if ($available_requests >= $needed_requests) {
-                $fetchedFriendsLookup = $this->getLookupFromIdArray($newFriends);
+                $fetchedFriendsLookup = array_reverse($this->getLookupFromIdArray($newFriends));
 
             } else {
 
@@ -94,7 +94,8 @@ class UpdateFriendsJob implements ShouldQueue {
                         'screen_name' => $fetchedFriendsLookup[$i]->screen_name,
                         'followers_count' => $fetchedFriendsLookup[$i]->followers_count,
                         'profile_image_url' => $fetchedFriendsLookup[$i]->profile_image_url,
-                        'location' => $fetchedFriendsLookup[$i]->location
+                        'location' => $fetchedFriendsLookup[$i]->location,
+                        'hidden' => false
                     ];
 
                     $array = array_merge($array, $additional_fields);

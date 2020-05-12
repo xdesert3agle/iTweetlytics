@@ -15,9 +15,7 @@ class UserController extends Controller {
         $user = User::where('id', Auth::id())
             ->with('twitter_profiles')
             ->with(['current_twitter_profile' => function ($query) use ($profileIndex) {
-                $query->with(['followers' => function ($query) {
-                    $query->orderBy('followers.id')->get();
-                }])
+                $query->with('followers')
                     ->with('follows')
                     ->with('unfollows')
                     ->with(['friends' => function ($query) {
@@ -46,6 +44,7 @@ class UserController extends Controller {
         $followers = $user->current_twitter_profile[0]->followers->mapWithKeys(function ($item) {
             return [$item['id_str'] => $item];
         });
+
         unset($user->current_twitter_profile[0]->followers);
         $user->current_twitter_profile[0]->followers = $followers;
 
@@ -56,52 +55,6 @@ class UserController extends Controller {
         $user->current_twitter_profile[0]->friends = $friends;
 
         return $user;
-    }
-
-    public static function getFromRequest(Request $r) {
-        $now = Carbon::now();
-        $weekAgo = Carbon::now()->subWeek()->startOfDay();
-        $twoWeeksAgo = Carbon::now()->subWeeks(2)->startOfDay();
-        $monthAgo = Carbon::now()->subMonth()->startOfDay();
-        $yearAgo = Carbon::now()->subYear()->startOfDay();
-
-        switch ($r->timeInterval) {
-            case 'weekly':
-                $fromTime = $weekAgo;
-                break;
-
-            case 'biweekly':
-                $fromTime = $twoWeeksAgo;
-                break;
-
-            case 'monthly':
-                $fromTime = $monthAgo;
-                break;
-
-            case 'yearly':
-                $fromTime = $yearAgo;
-                break;
-        }
-
-        $profileIndex = $r->profile_index;
-
-        return User::find(Auth::id())
-            ->with('twitter_profiles')
-            ->with(['current_twitter_profile' => function ($query) use ($profileIndex, $fromTime, $now) {
-                $query->with('followers')
-                    ->with(['reports' => function ($query) use ($fromTime, $now) {
-                        $query->whereBetween('created_at', [$fromTime, $now]);
-                    }])
-                    ->with(['follows' => function ($query) use ($fromTime, $now) {
-                        $query->whereBetween('created_at', [$fromTime, $now]);
-                    }])
-                    ->with(['unfollows' => function ($query) use ($fromTime, $now) {
-                        $query->whereBetween('created_at', [$fromTime, $now]);
-                    }])
-                    ->orderBy('created_at')
-                    ->skip($profileIndex)->take(1);
-            }])
-            ->first();
     }
 
     public function refresh($profileId) {
