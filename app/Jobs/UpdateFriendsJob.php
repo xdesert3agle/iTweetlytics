@@ -95,7 +95,7 @@ class UpdateFriendsJob implements ShouldQueue {
                         'followers_count' => $fetchedFriendsLookup[$i]->followers_count,
                         'profile_image_url' => $fetchedFriendsLookup[$i]->profile_image_url,
                         'location' => $fetchedFriendsLookup[$i]->location,
-                        'hidden' => false
+                        'hidden' => 0
                     ];
 
                     $array = array_merge($array, $additional_fields);
