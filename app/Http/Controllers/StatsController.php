@@ -99,7 +99,7 @@ class StatsController extends Controller {
                 ->where('twitter_profile_id', $profileId)
                 ->get()
                 ->groupBy(function ($val) use ($group_by_format) {
-                    return Carbon::parse($val->created_at)->formatLocalized($group_by_format);
+                    return Carbon::parse($val->report_date)->formatLocalized($group_by_format);
                 });
 
             $graph_data = [];
