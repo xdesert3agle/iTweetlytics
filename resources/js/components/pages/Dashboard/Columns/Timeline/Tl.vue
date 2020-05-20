@@ -3,7 +3,7 @@
         <div class="col">
             <div class="row no-gutters">
                 <div class="col-12">
-                    <h4 class="column-title">Timeline2</h4>
+                    <h4 class="column-title">Timeline</h4>
                     <button-new-tweet :user="user" class="btn-new-tweet"></button-new-tweet>
                 </div>
             </div>
