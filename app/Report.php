@@ -4,7 +4,6 @@ namespace App;
 
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Facades\Storage;
 
 class Report extends Model {
     protected $fillable = ['id', 'twitter_profile_id', 'follows', 'unfollows', 'followers_variation', 'befriends', 'unfriends', 'total_followers', 'total_friends', 'followers_followback_percent', 'user_followback_percent', 'friends_to_followers_ratio', 'report_date', 'created_at', 'updated_at'];
@@ -45,7 +44,7 @@ class Report extends Model {
             'followers_followback_percent' => self::calcFollowbackPercentage($profile, $total_followers_count),
             'user_followback_percent' => self::calcUserFollowbackPercentage($profile, $total_friends_count),
             'friends_to_followers_ratio' => self::calcFriendsToFollowersRatio($total_friends_count, $total_followers_count),
-            'report_date' => Carbon::today()->subDay()->toDateString(),
+            'report_date' => "2020-05-20",
         ]);
     }
 
