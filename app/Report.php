@@ -35,7 +35,7 @@ class Report extends Model {
         Report::create([
             'twitter_profile_id' => $profile->id,
             'follows' => $follows_count,
-            'unfollows' => $unfollows_count,
+            'unfollows' => 2424,//$unfollows_count,
             'followers_variation' => $follows_count - $unfollows_count,
             'befriends' => $befriends_count,
             'unfriends' => $unfriends_count,
