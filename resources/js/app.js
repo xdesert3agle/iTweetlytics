@@ -43,6 +43,8 @@ Vue.component('Stats', require('./components/pages/Stats/Stats.vue').default);
     Vue.component('FriendsStats', require('./components/pages/Stats/FriendsStats.vue').default);
     Vue.component('GraphCard', require('./components/pages/Stats/GraphCard.vue').default);
 Vue.component('Login', require('./components/pages/Login.vue').default);
+Vue.component('PasswordReset', require('./components/pages/PasswordReset.vue').default);
+Vue.component('NewPassword', require('./components/pages/NewPassword.vue').default);
 
 // Elements
 Vue.component('TwitterProfileCard', require('./components/elements/TwitterProfileCard.vue').default);
