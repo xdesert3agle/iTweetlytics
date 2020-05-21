@@ -49,18 +49,16 @@
                             <a class="nav-link" href="/#features">Características</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="/#pricing">Pricing</a>
+                            <a class="nav-link" href="/#pricing">Planes</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" href="/#">Contacto</a>
                         </li>
 
                         <li class="nav-item text-center">
-                            <a href="login" class="btn align-middle btn-outline-primary">Iniciar sesión</a>
+                            <a href="/login" class="btn align-middle btn-outline-primary">Iniciar sesión</a>
                         </li>
-
                     </ul>
-
                 </div>
             </div>
         </nav>

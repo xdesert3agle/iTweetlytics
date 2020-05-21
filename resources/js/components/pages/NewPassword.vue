@@ -67,7 +67,7 @@
             bottom: 0;
             background-image: url('/images/backgrounds/bg-password-recover.jpg');
             background-position: center;
-            background-color: #dd6451;
+            background-color: #c95b4a;
             background-size: cover;
         }
     }
