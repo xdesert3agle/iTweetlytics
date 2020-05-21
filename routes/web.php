@@ -70,10 +70,12 @@ Route::group(['middleware' => 'auth'], function () {
 
     Route::get('sync', 'SyncController@index')->name('profile.sync')->middleware('sync.incomplete');
 
-    Route::get('twitter/login', 'LoginWithTwitterController@requestLogin')->name('twitter.login');
-    Route::get('twitter/callback', 'LoginWithTwitterController@getTwitterCallback')->name('twitter.callback');
-    Route::get('twitter/error', 'LoginWithTwitterController@error')->name('twitter.error');
-    Route::get('twitter/logout', 'LoginWithTwitterController@logout')->name('twitter.logout');
+    Route::prefix('twitter')->group(function () {
+        Route::get('login', 'LoginWithTwitterController@requestLogin')->name('twitter.login');
+        Route::get('callback', 'LoginWithTwitterController@getTwitterCallback')->name('twitter.callback');
+        Route::get('error', 'LoginWithTwitterController@error')->name('twitter.error');
+        Route::get('logout', 'LoginWithTwitterController@logout')->name('twitter.logout');
+    });
 });
 
 Auth::routes();

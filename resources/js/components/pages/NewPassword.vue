@@ -25,7 +25,7 @@
                                     </div>
                                     <div class="row">
                                         <div class="col">
-                                            <button type="submit" class="btn btn-primary btn-block">
+                                            <button type="submit" class="btn btn-neutral btn-block">
                                                 Cambiar contraseña
                                             </button>
                                         </div>
@@ -65,9 +65,9 @@
             right: 0;
             left: 0;
             bottom: 0;
-            background-image: url('/images/bg-login-min.jpg');
+            background-image: url('/images/backgrounds/bg-password-recover.jpg');
             background-position: center;
-            background-color: #89c8e4;
+            background-color: #dd6451;
             background-size: cover;
         }
     }

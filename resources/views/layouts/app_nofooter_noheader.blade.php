@@ -23,8 +23,8 @@
     <link href="https://fonts.googleapis.com/css?family=Product+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600;1,700&display=swap" rel="stylesheet">
 
     <!-- Styles -->
-    <link href="{{ asset('css/app.css') }}" rel="stylesheet">
-    <link rel="stylesheet" href="css/template.css">
+    <link href="{{ asset('/css/app.css') }}" rel="stylesheet">
+    <link rel="stylesheet" href="/css/template.css">
 
     <!-- Plugins -->
     <link rel="stylesheet" href="css/global/plugins/icon-font.css">

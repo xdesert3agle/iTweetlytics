@@ -23,8 +23,8 @@
     <link href="https://fonts.googleapis.com/css?family=Product+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600;1,700&display=swap" rel="stylesheet">
 
     <!-- Styles -->
-    <link href="{{ asset('css/app.css') }}" rel="stylesheet">
-    <link rel="stylesheet" href="css/template.css">
+    <link href="{{ asset('/css/app.css') }}" rel="stylesheet">
+    <link rel="stylesheet" href="/css/template.css">
 
     <!-- Plugins -->
     <link rel="stylesheet" href="css/global/plugins/icon-font.css">
@@ -46,13 +46,13 @@
                 <div class="collapse navbar-collapse" id="site-nav">
                     <ul class="navbar-nav text-sm-left ml-auto">
                         <li class="nav-item">
-                            <a class="nav-link" href="#features">Características</a>
+                            <a class="nav-link" href="/#features">Características</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="#pricing">Pricing</a>
+                            <a class="nav-link" href="/#pricing">Pricing</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="#">Contacto</a>
+                            <a class="nav-link" href="/#">Contacto</a>
                         </li>
 
                         <li class="nav-item text-center">

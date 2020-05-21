@@ -16,7 +16,7 @@
                                     </div>
                                     <div class="row">
                                         <div class="col">
-                                            <button type="submit" class="btn btn-primary btn-block">
+                                            <button type="submit" class="btn btn-neutral btn-block">
                                                 Solicitar recuperación de contraseña
                                             </button>
                                         </div>
@@ -38,27 +38,6 @@
             return {
                 csrf: document.querySelector('meta[name="csrf-token"]').getAttribute('content')
             }
-        },
-        methods: {
-            attemptLogin: function () {
-                this.loginError = false;
-                axios.post('login', this.user).then((response) => {
-                    this.$swal({
-                        html: '<span class="welcome-message">¡Bienvenido, ' + response.data + '!</h1>',
-                        icon: 'success',
-                        timer: 1600,
-                        showCancelButton: false,
-                        showConfirmButton: false,
-                        allowOutsideClick: false,
-                        allowEscapeKey: false,
-                        onClose: function () {
-                            window.location.href = '/app/0/';
-                        }
-                    });
-                }).catch((error) => {
-                    this.loginError = true;
-                });
-            }
         }
     }
 </script>
@@ -73,9 +52,9 @@
             right: 0;
             left: 0;
             bottom: 0;
-            background-image: url('/images/bg-login-min.jpg');
+            background-image: url('/images/backgrounds/bg-password-recover.jpg');
             background-position: center;
-            background-color: #89c8e4;
+            background-color: #dd6451;
             background-size: cover;
         }
     }
@@ -85,27 +64,15 @@
         position: relative;
         z-index: 1;
         box-shadow: rgba(0, 0, 0, 0.2) 0 0.25em 0.25em;
-
         h3 {
             margin-bottom: 0.7em;
             font-size: 1.5rem;
         }
-
         .form-small-msg {
             font-size: 11pt;
         }
-
         button {
             margin-bottom: 5px;
-        }
-    }
-
-    .alert {
-        border: none;
-        border-left: 8px solid #cd2b2b;
-
-        i {
-            margin-right: 0.5em;
         }
     }
 </style>

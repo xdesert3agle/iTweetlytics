@@ -1,4 +1,6 @@
 $primary-button-color: #7642FF;
+$neutral-button-color: #e9e9e9;
+$neutral-button-font-color: #444;
 
 button:not(.close), a.btn{
     padding: 8px 20px!important;
@@ -49,6 +51,16 @@ button:not(.close), a.btn{
         background-color: #7642FF;
         border-color: #7642FF;
         background-image: none;
+    }
+
+    &.btn-neutral {
+        color: $neutral-button-font-color;
+        background-color: $neutral-button-color;
+        border-color: $neutral-button-color;
+
+        &:hover {
+            background-color: darken($neutral-button-color, 7%)
+        }
     }
 }
 

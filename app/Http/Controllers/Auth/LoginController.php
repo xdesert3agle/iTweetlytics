@@ -34,4 +34,8 @@ class LoginController extends Controller {
     protected function authenticated(Request $request, $user) {
         return $user->name;
     }
+
+    protected function index() {
+        return view('auth.login');
+    }
 }

@@ -15,7 +15,7 @@
                                 </div>
 
                                 <div class="form-group">
-                                    <label for="email" class="required">Contraseña</label>
+                                    <label for="password" class="required">Contraseña</label>
                                     <input v-model="user.password" id="password" type="password" class="form-control" placeholder="Contraseña" required autocomplete="current-password">
                                 </div>
 
@@ -94,9 +94,9 @@
             right: 0;
             left: 0;
             bottom: 0;
-            background-image: url('/images/bg-login-min.jpg');
+            background-image: url('/images/backgrounds/bg-login-min.jpg');
             background-position: center;
-            background-color: #89c8e4;
+            background-color: #376cc8;
             background-size: cover;
         }
     }
