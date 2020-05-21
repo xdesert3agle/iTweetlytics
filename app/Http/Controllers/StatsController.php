@@ -20,6 +20,7 @@ class StatsController extends Controller {
         // Intervalos de tiempo
         $startTime = "";
         $now = Carbon::now();
+        $yesterday = Carbon::now()->startOfDay();
         $weekAgo = Carbon::now()->subWeek()->startOfDay();
         $monthAgo = Carbon::now()->subMonth()->startOfDay();
         $yearAgo = Carbon::now()->subYear()->startOfDay();
@@ -78,6 +79,11 @@ class StatsController extends Controller {
             $group_by_format = ""; // ¿Cömo se agrupan los datos de la gráfica?
 
             switch ($timeInterval) {
+                case 'yesterday':
+                    $startTime = $yesterday;
+                    $group_by_format = "ayer (%d/%m)";
+                    break;
+
                 case 'weekly':
                     $startTime = $weekAgo;
                     $group_by_format = "%d/%m";

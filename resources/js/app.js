@@ -34,6 +34,7 @@ Vue.component('App', require('./components/pages/App.vue').default);
             Vue.component('Chat', require('./components/pages/Dashboard/Columns/Chats/Chat.vue').default);
 
     Vue.component('Tweet', require('./components/pages/Dashboard/Columns/Tweet.vue').default);
+    Vue.component('ReplyButton', require('./components/pages/Dashboard/Columns/ReplyButton.vue').default);
 
 Vue.component('ScheduledTweets', require('./components/pages/ScheduledTweets.vue').default);
 Vue.component('Profiles', require('./components/pages/Profiles.vue').default);

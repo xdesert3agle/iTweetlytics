@@ -10,6 +10,7 @@
                         </div>
                         <div class="col-auto text-right">
                             <select class="form-control" @input="timeIntervalChanged">
+                                <option value="yesterday">1 día</option>
                                 <option value="weekly" selected>7 días</option>
                                 <option value="monthly">30 días</option>
                                 <option value="yearly">1 año</option>
@@ -107,6 +108,9 @@
         computed: {
             timeIntervalString() {
                 switch (this.timeInterval) {
+                    case 'yesterday':
+                        return "el último día";
+
                     case 'weekly':
                         return "los últimos 7 días";
 
