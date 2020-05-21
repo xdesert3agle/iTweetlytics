@@ -30,9 +30,8 @@
                             <i class="fas fa-calendar-day"></i>
                             {{ formattedScheduleTime }}
                         </span>
-                        <button @click="isScheduling = true" type="button" class="btn btn-info btn-round">Programar
-                        </button>
-                        <button @click="sendTweet" type="button" class="btn btn-primary btn-round">Twittear</button>
+                        <button @click="isScheduling = true" type="button" class="btn btn-info btn-round">Programar</button>
+                        <button @click="sendTweet" type="button" class="btn btn-primary btn-round">{{ scheduleTime == null ? 'Twittear' : 'Enviar tweet programado' }}</button>
                     </div>
                 </div>
                 <div v-else class="modal-content">
@@ -172,6 +171,9 @@
         }
 
         .modal-footer {
+            display: block;
+            text-align: right;
+
             border: none;
 
             .btn-info {
@@ -185,8 +187,11 @@
             }
 
             .scheduled-date {
-                flex: 1;
+                display: block!important;
+                padding-right: 5px;
+
                 font-weight: 500;
+                text-align: right;
                 color: $textColor;
             }
         }
