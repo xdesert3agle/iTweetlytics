@@ -45,8 +45,6 @@ class UpdateFollowersJob implements ShouldQueue {
             $followers = Twitter::getFollowersIds(['screen_name' => $this->profile->screen_name, 'cursor' => $cursor, 'count' => 5000, 'stringify_ids' => 'true']);
             $cursor = $followers->next_cursor;
 
-            Storage::put('file.txt', print_r($fetchedFollowers, true));
-
             $fetchedFollowers = array_merge($fetchedFollowers, $followers->ids);
         } while ($cursor != 0 && ++$count < self::MAX_CONSECUTIVE_REQUESTS); // Hasta que el cursor sea 0 o hasta límite de repeticiones
 
@@ -74,27 +72,31 @@ class UpdateFollowersJob implements ShouldQueue {
         $fetchedUsersLookup = array_reverse($this->getFetchedUsersLookup($newFollowers));
 
         foreach ($fetchedUsersLookup as $user) {
+            $user_tags = self::getTagsFromProfile($user);
 
-            // Se registra el cambio
-            $follow = new Follow;
-            $follow->twitter_profile_id = $this->profile->id;
-            $follow->id_str = $user->id_str;
-            $follow->name = $user->name;
-            $follow->screen_name = $user->screen_name;
-            $follow->profile_image_url = $user->profile_image_url;
-            $follow->save();
+            $fields = [
+                'twitter_profile_id' => $this->profile->id,
+                'id_str' => $user->id_str,
+                'name' => $user->name,
+                'screen_name' => $user->screen_name,
+                'description' => $user->description,
+                'followers_count' => $user->followers_count,
+                'profile_image_url' => $user->profile_image_url,
+                'location' => $user->location,
+                'tags' => $user->location,
+            ];
 
-            // Nuevo follower a la lista
-            $follower = new Follower;
-            $follower->twitter_profile_id = $this->profile->id;
-            $follower->id_str = $user->id_str;
-            $follower->name = $user->name;
-            $follower->screen_name = $user->screen_name;
-            $follower->profile_image_url = $user->profile_image_url;
-            $follower->followers_count = $user->followers_count;
-            $follower->location = $user->location;
-            $follower->save();
+            // Se inserta el follow
+            Follow::create($fields);
+
+            // Se inserta el follower
+            Follower::create($fields);
         }
+    }
+
+    protected static function getTagsFromProfile($profile) {
+        $tags = ['youtuber', 'streamer', 'periodismo'];
+        $words = [['youtube', 'videos'], ['twitch', 'mixer'], ['period', 'blog', 'review']];
     }
 
     protected function registerUnfollows($dbFollowers, $fetchedFollowers) {
