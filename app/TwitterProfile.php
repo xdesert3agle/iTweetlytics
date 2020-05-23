@@ -89,6 +89,10 @@ class TwitterProfile extends Model {
         return $this->hasMany('App\ScheduledTweet');
     }
 
+    public function tags() {
+        return $this->hasMany('App\TwitterProfilesTags');
+    }
+
     // ------------------------------------------------ MUTATORS ------------------------------------------------ //
     public function getProfileImageUrlAttribute($value) {
         return str_replace('_normal', '', $value);

@@ -24,6 +24,7 @@
         "vue-template-compiler": "^2.6.10"
     },
     "dependencies": {
+        "@johmun/vue-tags-input": "^2.1.0",
         "animate.css": "^3.7.2",
         "chart.js": "^2.9.3",
         "plyr": "^3.6.1",

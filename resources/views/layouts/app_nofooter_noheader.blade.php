@@ -38,11 +38,12 @@
     <!-- JS Files -->
     <!-- build:js js/app.min.js -->
     <!-- jQuery first, then Tether, then Bootstrap JS. -->
-    <script src="js/global/jquery-3.2.1.min.js"></script>
+    <!-- jQuery first, then Tether, then Bootstrap JS. -->
+    <script src="/js/global/jquery-3.2.1.min.js"></script>
     <!-- Bootstrap JS -->
-    <script src="js/global/bootstrap.bundle.min.js"></script>
+    <script src="/js/global/bootstrap.bundle.min.js"></script>
     <!-- Main JS -->
-    <script src="js/script.js"></script>
+    <script src="/js/script.js"></script>
     <!-- /build -->
 </body>
 </html>

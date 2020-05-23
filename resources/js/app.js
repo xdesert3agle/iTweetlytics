@@ -37,6 +37,7 @@ Vue.component('App', require('./components/pages/App.vue').default);
     Vue.component('ReplyButton', require('./components/pages/Dashboard/Columns/ReplyButton.vue').default);
 
 Vue.component('ScheduledTweets', require('./components/pages/ScheduledTweets.vue').default);
+Vue.component('Settings', require('./components/pages/Settings.vue').default);
 Vue.component('Profiles', require('./components/pages/Profiles.vue').default);
 Vue.component('Stats', require('./components/pages/Stats/Stats.vue').default);
     Vue.component('GeneralStats', require('./components/pages/Stats/GeneralStats.vue').default);
@@ -61,6 +62,7 @@ Vue.use(VueToastr);
 import VueSweetalert2 from 'vue-sweetalert2';
 import 'sweetalert2/dist/sweetalert2.min.css';
 Vue.use(VueSweetalert2);
+
 
 
 /**

@@ -38,7 +38,7 @@
                                     <slot name="modal-trigger"></slot>
                                 </template>
                                 <template slot="modal-body">
-                                    <ul v-if="profilesList.length > 0" class="profiles-list">
+                                    <ul v-if="profilesList && profilesList.length > 0" class="profiles-list">
                                         <li v-for="(profile, i) in profilesList" :id="'element-' + profile.screen_name">
                                             <div class="row profile-link">
                                                 <a :href="'https://twitter.com/' + profile.screen_name" class="col-auto">

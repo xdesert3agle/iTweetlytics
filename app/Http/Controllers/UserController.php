@@ -28,9 +28,16 @@ class UserController extends Controller {
                         $query->where('status', '!=', 'sent')
                             ->get();
                     }])
+                    ->with('tags')
                     ->skip($profileIndex)->take(1);
             }])
             ->first();
+
+        $tags = $user->current_twitter_profile[0]->tags->mapWithKeys(function ($item) {
+            return [$item['tag'] => $item];
+        });
+        unset($user->current_twitter_profile[0]->$tags);
+        $user->current_twitter_profile[0]->tags = $tags->toArray();
 
         if ($user->current_twitter_profile[0]->scheduled_tweets->count() > 0) {
             foreach ($user->current_twitter_profile[0]->scheduled_tweets as $tweet) {
@@ -53,6 +60,8 @@ class UserController extends Controller {
         });
         unset($user->current_twitter_profile[0]->friends);
         $user->current_twitter_profile[0]->friends = $friends;
+
+
 
         return $user;
     }

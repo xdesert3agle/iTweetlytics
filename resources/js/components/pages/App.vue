@@ -19,6 +19,11 @@
                         </a>
                     </li>
                     <li class="nav-item">
+                        <a class="nav-link" id="pills-settings-tab" data-toggle="pill" href="#pills-settings" role="tab" aria-controls="pills-settings" aria-selected="false">
+                            <i class="fas fa-lg fa-sliders-h"></i>
+                        </a>
+                    </li>
+                    <li class="nav-item">
                         <a :class="{'active': user.twitter_profiles.length == 0}" class="nav-link" id="pills-profiles-tab" data-toggle="pill" href="#pills-profiles" role="tab" aria-controls="pills-profiles" aria-selected="false">
                             <i class="fas fa-lg fa-address-card"></i>
                         </a>
@@ -30,9 +35,7 @@
                         <form id="logout-form" ref="logoutForm" action="/logout" method="POST">
                             <csrf></csrf>
                         </form>
-                        {
                     </li>
-                    >
                 </ul>
             </aside>
             <div class="col-md col-12">
@@ -45,6 +48,9 @@
                     </div>
                     <div class="tab-pane" id="pills-scheduled-tweets" role="tabpanel" aria-labelledby="pills-scheduled-tweets-tab">
                         <scheduled-tweets :user="user"></scheduled-tweets>
+                    </div>
+                    <div class="tab-pane" id="pills-settings" role="tabpanel" aria-labelledby="pills-settings-tab">
+                        <settings :user="user"></settings>
                     </div>
                     <div class="tab-pane" :class="{'active': user.twitter_profiles.length == 0}" id="pills-profiles" role="tabpanel" aria-labelledby="pills-profiles-tab">
                         <profiles :user="user"></profiles>
@@ -114,6 +120,13 @@
                 color: #64707e;
                 border-radius: 0;
                 transition: 75ms;
+                width: 100%;
+                text-align: center;
+                padding: 18px 13px;
+
+                > .fa-lg {
+                    font-size: 1.5em;
+                }
 
                 &.active {
                     background-color: #21435a;

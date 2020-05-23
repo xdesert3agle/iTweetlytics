@@ -13,8 +13,14 @@ class TestController extends Controller {
     const USERS_LOOKUP_AMOUNT_PER_REQUEST = 100;
 
     public function test() {
-        $tags = ['youtuber', 'streamer', 'periodismo'];
-        $words = [['youtube', 'video'], ['twitch', 'mixer'], ['escribo', 'period', 'blog', 'review', 'report']];
+
+        $words = ["hola", "que tal"];
+        dd(implode(", ", $words));
+
+
+        /*$tags = ['youtuber', 'streamer', 'periodismo'];
+        $words = [['youtube', 'videos'], ['twitch', 'mixer'], ['escribo', 'period', 'blog', 'review', 'report']];
+        $found_tags = [];
 
         $followers = Friend::all();
 
@@ -31,7 +37,7 @@ class TestController extends Controller {
             }
         }
 
-        dd($found_tags);
+        dd($found_tags);*/
     }
 
     public function update() {
@@ -46,7 +52,7 @@ class TestController extends Controller {
 
         }*/
 
-        foreach($unfriends as $j => $unfriend) {
+        foreach ($unfriends as $j => $unfriend) {
             foreach ($befriends as $k => $befriend) {
                 if ($unfriend->id_str == $befriend->id_str) {
                     $unfriend->description = $befriend->description;

@@ -57,6 +57,16 @@ Route::group(['middleware' => 'auth'], function () {
                 });
 
                 Route::post('scheduled_tweet/delete', 'AppController@deleteScheduledTweet');
+
+                Route::prefix('tags')->group(function () {
+                    Route::post('add', 'TwitterProfileController@addTag');
+                    Route::post('delete', 'TwitterProfileController@deleteTag');
+
+                    Route::prefix('words')->group(function () {
+                        Route::post('update', 'TwitterProfileController@updateWords');
+                    });
+                });
+
                 Route::post('unfollow', 'AppController@unfollowUser');
                 Route::post('follow', 'AppController@followUser');
             });
