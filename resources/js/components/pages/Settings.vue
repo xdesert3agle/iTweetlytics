@@ -93,8 +93,6 @@
                 });
             },
             deleteTag(obj) {
-                console.log(obj.tag.text);
-
                 axios.post('/ajax/profile/tags/delete', {
                     twitter_profile_id: this.user.current_twitter_profile[0].id,
                     tag: obj.tag.text

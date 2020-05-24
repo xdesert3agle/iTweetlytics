@@ -25,10 +25,10 @@ class Report extends Model {
     ];
 
     public static function generateDailyReport($profile) {
-        Report::create(self::getReportData());
+        Report::create(self::getReportData($profile));
     }
 
-    public static function getReportData() {
+    public static function getReportData($profile) {
 
         // Followers
         $all_followers = Follower::where('twitter_profile_id', $profile->id)->get();
