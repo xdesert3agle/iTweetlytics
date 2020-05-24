@@ -11,31 +11,7 @@ class TwitterProfile extends Model {
     const REFRESH_COOLDOWN_SECS = 300;
     const REFRESH_COOLDOWN_MINS = 5;
 
-    protected $fillable = [
-        'id',
-        'user_id',
-        'name',
-        'screen_name',
-        'location',
-        'description',
-        'protected',
-        'followers_count',
-        'friends_count',
-        'listed_count',
-        'favourites_count',
-        'time_zone',
-        'geo_enabled',
-        'verified',
-        'statuses_count',
-        'profile_background_color',
-        'profile_image_url',
-        'profile_banner_url',
-        'profile_link_color',
-        'lang',
-        'suspended',
-        'oauth_token',
-        'oauth_token_secret'
-    ];
+    protected $guarded = [];
 
     /**
      * The attributes that should be hidden for arrays.

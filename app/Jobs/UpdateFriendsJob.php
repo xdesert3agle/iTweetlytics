@@ -92,6 +92,7 @@ class UpdateFriendsJob implements ShouldQueue {
                     $additional_fields = [
                         'name' => $fetchedFriendsLookup[$i]->name,
                         'screen_name' => $fetchedFriendsLookup[$i]->screen_name,
+                        'description' => $fetchedFriendsLookup[$i]->description,
                         'followers_count' => $fetchedFriendsLookup[$i]->followers_count,
                         'profile_image_url' => $fetchedFriendsLookup[$i]->profile_image_url,
                         'location' => $fetchedFriendsLookup[$i]->location,
@@ -116,14 +117,16 @@ class UpdateFriendsJob implements ShouldQueue {
         foreach ($oldFriends as $oldFriendId) {
             $friend = Friend::where('id_str', $oldFriendId)->first();
 
-            $unfriend = new Unfriend;
-            $unfriend->twitter_profile_id = $this->profile->id;
-            $unfriend->id_str = $friend->id_str;
-            $unfriend->name = $friend->name;
-            $unfriend->screen_name = $friend->screen_name;
-            $unfriend->profile_image_url = $friend->profile_image_url;
-            $unfriend->location = $friend->location;
-            $unfriend->save();
+            Unfriend::create([
+                'twitter_profile_id' => $this->profile->id,
+                'id_str' => $friend->id_str,
+                'name' => $friend->name,
+                'screen_name' => $friend->screen_name,
+                'description' => $friend->description,
+                'followers_count' => $friend->followers_count,
+                'profile_image_url' => $friend->profile_image_url,
+                'location' => $friend->location,
+            ]);
 
             $friend->delete();
         }

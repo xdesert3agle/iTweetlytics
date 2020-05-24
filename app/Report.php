@@ -6,23 +6,7 @@ use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 
 class Report extends Model {
-    protected $fillable = [
-        'id',
-        'twitter_profile_id',
-        'follows',
-        'unfollows',
-        'followers_variation',
-        'befriends',
-        'unfriends',
-        'total_followers',
-        'total_friends',
-        'followers_followback_percent',
-        'user_followback_percent',
-        'friends_to_followers_ratio',
-        'report_date',
-        'created_at',
-        'updated_at'
-    ];
+    protected $guarded = [];
 
     public static function generateDailyReport($profile) {
         Report::create(self::getReportData($profile));
@@ -45,7 +29,7 @@ class Report extends Model {
         return [
             'twitter_profile_id' => $profile->id,
             'follows' => $follows_count,
-            'unfollows' => $unfollows_count,
+            'unfollows' => $unfollows_count,t
             'followers_variation' => $follows_count - $unfollows_count,
             'befriends' => $befriends_count,
             'unfriends' => $unfriends_count,
