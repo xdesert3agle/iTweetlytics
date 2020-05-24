@@ -29,7 +29,7 @@ class Report extends Model {
         return [
             'twitter_profile_id' => $profile->id,
             'follows' => $follows_count,
-            'unfollows' => $unfollows_count,t
+            'unfollows' => $unfollows_count,
             'followers_variation' => $follows_count - $unfollows_count,
             'befriends' => $befriends_count,
             'unfriends' => $unfriends_count,

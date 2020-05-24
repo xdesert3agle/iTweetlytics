@@ -3,6 +3,7 @@
 namespace App;
 
 use App\Helpers\ApiHelper;
+use App\Helpers\UtilHelper;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Thujohn\Twitter\Facades\Twitter;
@@ -11,7 +12,31 @@ class TwitterProfile extends Model {
     const REFRESH_COOLDOWN_SECS = 300;
     const REFRESH_COOLDOWN_MINS = 5;
 
-    protected $guarded = [];
+    protected $fillable = [
+        'id',
+        'user_id',
+        'name',
+        'screen_name',
+        'location',
+        'description',
+        'protected',
+        'followers_count',
+        'friends_count',
+        'listed_count',
+        'favourites_count',
+        'time_zone',
+        'geo_enabled',
+        'verified',
+        'statuses_count',
+        'profile_background_color',
+        'profile_image_url',
+        'profile_banner_url',
+        'profile_link_color',
+        'lang',
+        'suspended',
+        'oauth_token',
+        'oauth_token_secret'
+    ];
 
     /**
      * The attributes that should be hidden for arrays.
@@ -109,5 +134,57 @@ class TwitterProfile extends Model {
         ApiHelper::reconfig($this);
         $this->fill(collect(Twitter::getCredentials())->toArray());
         $this->save();
+    }
+
+    public static function getUserUrlExpanded($user) {
+        $urls = ProfilesUrls::where('profile_id', $user->id);
+
+        foreach ($urls as $url) {
+            if ($user->url == $url->short_url) {
+                return $url->expanded_url;
+            }
+        }
+
+        return null;
+    }
+
+    public static function getTagsFromProfile($profile, $target_user) {
+        $user_tags = TwitterProfilesTags::where('twitter_profile_id', $profile->id);
+        $tags = $user_tags->pluck('tag');
+        $words = TwitterProfilesTags::parseWordsToString($user_tags);
+        $found_tags = [];
+
+        $targets[] = $target_user->description; // Descripción
+        $targets[] = TwitterProfile::getUserUrlExpanded($target_user); // Url expandida
+
+        foreach ($tags as $j => $tag) {
+            foreach ($words[$j] as $word) {
+                $contains_word = false;
+
+                foreach ($targets as $target) {
+                    if (strpos(strtolower($target), $word) !== false) {
+                        $contains_word = true;
+                    }
+                }
+
+                if ($contains_word) {
+                    $found_tags[] = $tag;
+                    break;
+                }
+            }
+        }
+
+        return implode(", ", $found_tags);
+    }
+
+    public function refreshTags($tables = []) {
+        foreach ($tables as $table) {
+            $records = $table::where('twitter_profile_id', $this->id)->get();
+
+            foreach ($records as $record) {
+                $record->tags = self::getTagsFromProfile($this, $record);
+                $record->save();
+            }
+        }
     }
 }

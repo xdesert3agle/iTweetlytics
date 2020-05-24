@@ -6,6 +6,9 @@ use App\Follower;
 use App\Follow;
 use App\Friend;
 use App\Helpers\ApiHelper;
+use App\ProfilesUrls;
+use App\TwitterProfile;
+use App\TwitterProfilesTags;
 use App\Unfollow;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -71,19 +74,18 @@ class UpdateFollowersJob implements ShouldQueue {
         $newFollowers = array_diff($fetchedFollowers, $dbFollowers);
         $fetchedUsersLookup = array_reverse($this->getFetchedUsersLookup($newFollowers));
 
-        foreach ($fetchedUsersLookup as $user) {
-            $user_tags = self::getTagsFromProfile($user);
-
+        foreach ($fetchedUsersLookup as $new_follower) {
             $fields = [
                 'twitter_profile_id' => $this->profile->id,
-                'id_str' => $user->id_str,
-                'name' => $user->name,
-                'screen_name' => $user->screen_name,
-                'description' => $user->description,
-                'followers_count' => $user->followers_count,
-                'profile_image_url' => $user->profile_image_url,
-                'location' => $user->location,
-                'tags' => $user->location,
+                'id_str' => $new_follower->id_str,
+                'name' => $new_follower->name,
+                'screen_name' => $new_follower->screen_name,
+                'description' => $new_follower->description,
+                'followers_count' => $new_follower->followers_count,
+                'profile_image_url' => $new_follower->profile_image_url,
+                'location' => $new_follower->location,
+                'url' => $new_follower->url,
+                'tags' => "",
             ];
 
             // Se inserta el follow
@@ -91,34 +93,34 @@ class UpdateFollowersJob implements ShouldQueue {
 
             // Se inserta el follower
             Follower::create($fields);
-        }
-    }
 
-    protected static function getTagsFromProfile($profile) {
-        $tags = ['youtuber', 'streamer', 'periodismo'];
-        $words = [['youtube', 'videos'], ['twitch', 'mixer'], ['period', 'blog', 'review']];
+            ProfilesUrls::insertProfileUrls($new_follower);
+        }
     }
 
     protected function registerUnfollows($dbFollowers, $fetchedFollowers) {
         $newUnfollowers = array_diff($dbFollowers, $fetchedFollowers);
-
         $newUnfollowersHydrated = Follower::whereIn('id_str', $newUnfollowers)->get();
 
-        foreach ($newUnfollowersHydrated as $user) {
+        foreach ($newUnfollowersHydrated as $unfollower) {
 
             // Se registra el unfollow
-            $unfollow = new Unfollow;
-            $unfollow->twitter_profile_id = $this->profile->id;
-            $unfollow->id_str = $user->id_str;
-            $unfollow->name = $user->name;
-            $unfollow->screen_name = $user->screen_name;
-            $unfollow->profile_image_url = $user->profile_image_url;
-            $unfollow->save();
+            Unfollow::create([
+                'twitter_profile_id' => $this->profile->id,
+                'id_str' => $unfollower->id_str,
+                'name' => $unfollower->name,
+                'screen_name' => $unfollower->screen_name,
+                'description' => $unfollower->description,
+                'followers_count' => $unfollower->followers_count,
+                'profile_image_url' => $unfollower->profile_image_url,
+                'location' => $unfollower->location,
+                'tags' => TwitterProfile::getTagsFromProfile($this->profile, $unfollower)
+            ]);
 
             // Se elimina el usuario de la lista de followers
             Follower::where([
                 ['twitter_profile_id', $this->profile->id],
-                ['id_str', $user->id_str]
+                ['id_str', $unfollower->id_str]
             ])->delete();
         }
     }

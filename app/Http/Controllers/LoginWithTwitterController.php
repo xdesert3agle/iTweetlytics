@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Providers\RouteServiceProvider;
 use App\TwitterProfile;
-use App\User;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Redirect;

@@ -3,9 +3,14 @@
 namespace App\Jobs;
 
 use App\Befriend;
+use App\Follow;
+use App\Follower;
 use App\Friend;
 use App\Helpers\ApiHelper;
+use App\ProfilesUrls;
 use App\Report;
+use App\TwitterProfile;
+use App\Unfollow;
 use App\Unfriend;
 use Carbon\Carbon;
 use Illuminate\Bus\Queueable;
@@ -55,6 +60,7 @@ class UpdateFriendsJob implements ShouldQueue {
 
         // Si es el último job => Se genera el reporte diario
         if ($this->is_last_job) {
+            $this->profile->refreshTags([Follower::class, Follow::class, Unfollow::class, Friend::class, Befriend::class, Unfriend::class]);
             Report::generateDailyReport($this->profile);
         }
     }
@@ -82,7 +88,7 @@ class UpdateFriendsJob implements ShouldQueue {
             }
 
             foreach ($newFriends as $i => $newFriendId) {
-                $array = [
+                $user_fields = [
                     'twitter_profile_id' => $this->profile->id,
                     'id_str' => $newFriendId,
                 ];
@@ -96,17 +102,18 @@ class UpdateFriendsJob implements ShouldQueue {
                         'followers_count' => $fetchedFriendsLookup[$i]->followers_count,
                         'profile_image_url' => $fetchedFriendsLookup[$i]->profile_image_url,
                         'location' => $fetchedFriendsLookup[$i]->location,
-                        'hidden' => 0
+                        'tags' => TwitterProfile::getTagsFromProfile($this->profile, $fetchedFriendsLookup[$i])
                     ];
 
-                    $array = array_merge($array, $additional_fields);
+                    $user_fields = array_merge($user_fields, $additional_fields);
                 }
 
-                $friend = new Friend;
-                $befriend = new Befriend;
+                Befriend::create($user_fields);
 
-                $friend->fill($array)->save();
-                $befriend->fill($array)->save();
+                $additional_fields['hidden'] = 0;
+                Friend::create($user_fields);
+
+                ProfilesUrls::insertProfileUrls($fetchedFriendsLookup[$i]);
             }
         }
     }
@@ -126,6 +133,7 @@ class UpdateFriendsJob implements ShouldQueue {
                 'followers_count' => $friend->followers_count,
                 'profile_image_url' => $friend->profile_image_url,
                 'location' => $friend->location,
+                'tags' => $friend->tags
             ]);
 
             $friend->delete();
