@@ -24,8 +24,6 @@ class AppController extends Controller {
         $user = UserController::get($selectedProfileIndex);
         $user->profile_index = $selectedProfileIndex;
 
-        dd($user->toArray());
-
         // Se reconfigura la API para realizar las peticiones con el perfil activo
         ApiHelper::reconfig($user->current_twitter_profile[0]);
 
