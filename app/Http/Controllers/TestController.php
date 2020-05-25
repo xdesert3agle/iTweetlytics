@@ -4,7 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Follower;
 use App\Helpers\UtilHelper;
+use App\ProfilesUrls;
 use App\TwitterProfile;
+use Thujohn\Twitter\Facades\Twitter;
 
 
 class TestController extends Controller {
@@ -12,11 +14,13 @@ class TestController extends Controller {
 
     public function test() {
         $profile = TwitterProfile::find(286561116);
-        //$profile->refreshTags([Follower::class]);
-        $startTime = microtime(true);
-        for ($i = 0; $i < 10; $i++) {
-            get_headers("https://t.co/BpDoA9z3Kp", 0);
+        $user = Twitter::getUsersLookup(['screen_name' => 'Elmiillor', 'format' => 'object']);
+        $user = $user[0];
+
+        foreach ($user->entities as $urlPlace) {
+            foreach ($urlPlace->urls as $url) {
+                echo $url->expanded_url;
+            }
         }
-        dd(microtime(true) - $startTime);
     }
 }

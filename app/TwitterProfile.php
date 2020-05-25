@@ -154,8 +154,8 @@ class TwitterProfile extends Model {
         $words = TwitterProfilesTags::parseWordsToString($user_tags);
         $found_tags = [];
 
+        $targets = $profile->getExpandedUrls(); // Url expandida
         $targets[] = $target_user->description; // Descripción
-        $targets[] = TwitterProfile::getUserUrlExpanded($target_user); // Url expandida
 
         foreach ($tags as $j => $tag) {
             foreach ($words[$j] as $word) {
@@ -186,5 +186,9 @@ class TwitterProfile extends Model {
                 $record->save();
             }
         }
+    }
+
+    public function getExpandedUrls() {
+        return ProfilesUrls::where('profile_id', $this->id)->get()->pluck('expanded_url')->toArray();
     }
 }
