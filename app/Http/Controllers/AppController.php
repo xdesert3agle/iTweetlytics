@@ -9,7 +9,7 @@ use App\Helpers\ApiHelper;
 use App\Jobs\ScheduledTweetJob;
 use App\Report;
 use App\ScheduledTweet;
-use App\TwitterProfile;
+use App\SyncedProfile;
 use App\Unfollow;
 use App\Unfriend;
 use App\User;
@@ -23,6 +23,8 @@ class AppController extends Controller {
 
         $user = UserController::get($selectedProfileIndex);
         $user->profile_index = $selectedProfileIndex;
+
+        dd($user->toArray());
 
         // Se reconfigura la API para realizar las peticiones con el perfil activo
         ApiHelper::reconfig($user->current_twitter_profile[0]);
@@ -56,7 +58,7 @@ class AppController extends Controller {
             ];
         } else {
             $scheduledTweet = new ScheduledTweet;
-            $scheduledTweet->twitter_profile_id = $r->twitter_profile_id;
+            $scheduledTweet->synced_profile_id = $r->synced_profile_id;
             $scheduledTweet->tweet_content = $r->text;
             $scheduledTweet->schedule_time = $r->scheduleTime;
             $scheduledTweet->status = 'queued';
@@ -159,7 +161,7 @@ class AppController extends Controller {
 
         if ($response) {
             $friend = Friend::where([
-                ['twitter_profile_id', $r->twitter_profile_id],
+                ['synced_profile_id', $r->synced_profile_id],
                 ['screen_name', $r->screen_name]
             ])->first();
 

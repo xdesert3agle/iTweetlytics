@@ -3,6 +3,8 @@
 namespace App\Jobs;
 
 use App\Friend;
+use App\Helpers\ApiHelper;
+use App\TwitterProfile;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
@@ -18,42 +20,48 @@ class FetchRemainingFriendsLookups implements ShouldQueue {
 
     protected $profile;
 
-    /**
-     * Create a new job instance.
-     *
-     * @return void
-     */
     public function __construct($profile) {
         $this->profile = $profile;
     }
 
-    /**
-     * Execute the job.
-     *
-     * @return void
-     */
     public function handle() {
-        $dbFriends = Friend::where('twitter_profile_id', $this->profile->id)
+        $db_friends_ids = TwitterProfile::where('added_by', $this->profile->id)
             ->whereNull('screen_name')
-            ->get();
+            ->get()
+            ->pluck('id_str')
+            ->toArray();
 
-        $dbFriendsIds = $dbFriends->pluck('id_str')->toArray();
+        ApiHelper::reconfig($this->profile);
 
-        $fetchedFriendsLookup = [];
-        $needed_lookup_requests = count($dbFriendsIds) / self::USERS_LOOKUP_AMOUNT_PER_REQUEST;
+        $fetched_friends_lookups = [];
+        $needed_lookup_requests = count($db_friends_ids) / self::USERS_LOOKUP_AMOUNT_PER_REQUEST;
 
         for ($i = 0; $i < ceil($needed_lookup_requests); $i++)
-            $fetchedFriendsLookup = $this->getLookupFromIdArray($dbFriendsIds);
+            $fetched_friends_lookups = $this->getLookupsFromIdArray($db_friends_ids);
 
-        foreach ($fetchedFriendsLookup as $i => $fetchedFriend) {
-            $dbFriends[$i]->name = $fetchedFriend->name;
-            $dbFriends[$i]->screen_name = $fetchedFriend->screen_name;
-            $dbFriends[$i]->profile_image_url = $fetchedFriend->profile_image_url;
-            $dbFriends[$i]->save();
+        foreach ($fetched_friends_lookups as $i => $fetched_friend) {
+            TwitterProfile::where('id', $fetched_friend->id_str)
+                ->update([
+                    'name' => $fetched_friend->name,
+                    'screen_name' => $fetched_friend->screen_name,
+                    'description' => $fetched_friend->description,
+                    'url' => $fetched_friend->url,
+                    'location' => $fetched_friend->location,
+                    'friends_count' => $fetched_friend->friends_count,
+                    'followers_count' => $fetched_friend->followers_count,
+                    'statuses_count' => $fetched_friend->statuses_count,
+                    'listed_count' => $fetched_friend->listed_count,
+                    'profile_image_url' => $fetched_friend->profile_image_url,
+                    'profile_banner_url' => $fetched_friend->profile_banner_url,
+                    'protected' => $fetched_friend->protected,
+                    'verified' => $fetched_friend->verified,
+                    'suspended' => 0,
+                    'lang' => $fetched_friend->lang
+                ]);
         }
     }
 
-    protected function getLookupFromIdArray($array) {
+    protected function getLookupsFromIdArray($array) {
         $fetched_lookups = [];
         $needed_lookup_requests = count($array) / self::USERS_LOOKUP_AMOUNT_PER_REQUEST;
 

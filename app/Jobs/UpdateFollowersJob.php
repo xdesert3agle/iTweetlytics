@@ -6,9 +6,10 @@ use App\Follower;
 use App\Follow;
 use App\Friend;
 use App\Helpers\ApiHelper;
-use App\ProfilesUrls;
 use App\TwitterProfile;
-use App\TwitterProfilesTags;
+use App\Url;
+use App\SyncedProfile;
+use App\Tag;
 use App\Unfollow;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -35,7 +36,7 @@ class UpdateFollowersJob implements ShouldQueue {
     }
 
     public function handle() {
-        $dbFollowers = Follower::where('twitter_profile_id', $this->profile->id)->get()->pluck('id_str')->toArray();
+        $db_followers = Follower::where('synced_profile_id', $this->profile->id)->get()->pluck('twitter_profile_id')->toArray();
         $cursor = $this->profile->next_followers_cursor;
         $count = 0;
         $fetchedFollowers = [];
@@ -55,8 +56,8 @@ class UpdateFollowersJob implements ShouldQueue {
         $this->profile->next_followers_cursor = $cursor != 0 ? $cursor : -1;
         $this->profile->save();
 
-        $this->registerFollows($dbFollowers, $fetchedFollowers);
-        $this->registerUnfollows($dbFollowers, $fetchedFollowers);
+        $this->registerFollows($db_followers, $fetchedFollowers);
+        $this->registerUnfollows($db_followers, $fetchedFollowers);
 
         if ($this->is_last_job) {
             $needed_friends_jobs = ceil($this->profile->friends_count / (self::MAX_CONSECUTIVE_REQUESTS * self::IDS_PER_REQUEST));
@@ -70,22 +71,18 @@ class UpdateFollowersJob implements ShouldQueue {
         }
     }
 
-    protected function registerFollows($dbFollowers, $fetchedFollowers) {
-        $newFollowers = array_diff($fetchedFollowers, $dbFollowers);
-        $fetchedUsersLookup = array_reverse($this->getFetchedUsersLookup($newFollowers));
+    protected function registerFollows($db_followers, $fetched_followers) {
+        $new_followers = array_diff($fetched_followers, $db_followers);
+        $fetched_users_lookup = array_reverse($this->getFetchedUsersLookup($new_followers));
 
-        foreach ($fetchedUsersLookup as $new_follower) {
+        foreach ($fetched_users_lookup as $new_follower) {
+            TwitterProfile::insertIfNew($this->profile, $new_follower);
+            Url::insertProfileUrls($new_follower);
+
             $fields = [
-                'twitter_profile_id' => $this->profile->id,
-                'id_str' => $new_follower->id_str,
-                'name' => $new_follower->name,
-                'screen_name' => $new_follower->screen_name,
-                'description' => $new_follower->description,
-                'followers_count' => $new_follower->followers_count,
-                'profile_image_url' => $new_follower->profile_image_url,
-                'location' => $new_follower->location,
-                'url' => $new_follower->url,
-                'tags' => "",
+                'synced_profile_id' => $this->profile->id,
+                'twitter_profile_id' => $new_follower->id_str,
+                'tags' => SyncedProfile::getTagsFromProfile($this->profile, $new_follower)
             ];
 
             // Se inserta el follow
@@ -93,46 +90,38 @@ class UpdateFollowersJob implements ShouldQueue {
 
             // Se inserta el follower
             Follower::create($fields);
-
-            ProfilesUrls::insertProfileUrls($new_follower);
         }
     }
 
-    protected function registerUnfollows($dbFollowers, $fetchedFollowers) {
-        $newUnfollowers = array_diff($dbFollowers, $fetchedFollowers);
-        $newUnfollowersHydrated = Follower::whereIn('id_str', $newUnfollowers)->get();
+    protected function registerUnfollows($db_followers, $fetched_followers) {
+        $new_unfollowers = array_diff($db_followers, $fetched_followers);
+        $new_unfollowers_hydrated = Follower::whereIn('id', $new_unfollowers)->get();
 
-        foreach ($newUnfollowersHydrated as $unfollower) {
+        foreach ($new_unfollowers_hydrated as $unfollower) {
 
             // Se registra el unfollow
             Unfollow::create([
-                'twitter_profile_id' => $this->profile->id,
-                'id_str' => $unfollower->id_str,
-                'name' => $unfollower->name,
-                'screen_name' => $unfollower->screen_name,
-                'description' => $unfollower->description,
-                'followers_count' => $unfollower->followers_count,
-                'profile_image_url' => $unfollower->profile_image_url,
-                'location' => $unfollower->location,
-                'tags' => TwitterProfile::getTagsFromProfile($this->profile, $unfollower)
+                'synced_profile_id' => $this->profile->id,
+                'twitter_profile_id' => $unfollower->id,
+                'tags' => $unfollower->tags
             ]);
 
             // Se elimina el usuario de la lista de followers
             Follower::where([
-                ['twitter_profile_id', $this->profile->id],
-                ['id_str', $unfollower->id_str]
+                ['synced_profile_id', $this->profile->id],
+                ['id', $unfollower->id]
             ])->delete();
         }
     }
 
-    protected function getFetchedUsersLookup($newFollowers) {
-        $fetchedUsersLookup = [];
-        $neededNamesReqCount = count($newFollowers) / self::USERS_LOOKUP_AMOUNT_PER_REQUEST;
+    protected function getFetchedUsersLookup($users_array) {
+        $fetched_users_lookup = [];
+        $needed_lookups_request_count = count($users_array) / self::USERS_LOOKUP_AMOUNT_PER_REQUEST;
 
-        if ($neededNamesReqCount > 0)
-            for ($i = 0; $i < ceil($neededNamesReqCount); $i++)
-                $fetchedUsersLookup = array_merge($fetchedUsersLookup, Twitter::getUsersLookup(['user_id' => array_slice($newFollowers, $i * self::USERS_LOOKUP_AMOUNT_PER_REQUEST, self::USERS_LOOKUP_AMOUNT_PER_REQUEST)]));
+        if ($needed_lookups_request_count > 0)
+            for ($i = 0; $i < ceil($needed_lookups_request_count); $i++)
+                $fetched_users_lookup = array_merge($fetched_users_lookup, Twitter::getUsersLookup(['user_id' => array_slice($users_array, $i * self::USERS_LOOKUP_AMOUNT_PER_REQUEST, self::USERS_LOOKUP_AMOUNT_PER_REQUEST)]));
 
-        return $fetchedUsersLookup;
+        return $fetched_users_lookup;
     }
 }

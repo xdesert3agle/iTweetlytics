@@ -2,7 +2,7 @@
 
 namespace App\Jobs;
 
-use App\TwitterProfile;
+use App\SyncedProfile;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
@@ -16,9 +16,9 @@ class UpdateTwitterProfileRelationshipsJob implements ShouldQueue {
 
     /**
      * UpdateTwitterProfileRelationshipsJob constructor.
-     * @param TwitterProfile $profile
+     * @param SyncedProfile $profile
      */
-    public function __construct(TwitterProfile $profile) {
+    public function __construct(SyncedProfile $profile) {
         $this->profile = $profile;
     }
 

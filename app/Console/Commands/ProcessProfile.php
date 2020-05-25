@@ -3,7 +3,7 @@
 namespace App\Console\Commands;
 
 use App\Jobs\UpdateFollowersJob;
-use App\TwitterProfile;
+use App\SyncedProfile;
 use Illuminate\Console\Command;
 use Illuminate\Support\Str;
 use Thujohn\Twitter\Twitter;
@@ -44,14 +44,14 @@ class ProcessProfile extends Command {
     public function handle() {
         switch ($this->argument('target')) {
             case "all":
-                $target = TwitterProfile::all();
+                $target = SyncedProfile::all();
                 break;
 
             default:
                 if (Str::startsWith($this->argument('target'), '@')) {
-                    $target = TwitterProfile::where('screen_name', $this->argument('target'))->first();
+                    $target = SyncedProfile::where('screen_name', $this->argument('target'))->first();
                 } else {
-                    $target = TwitterProfile::where('id', $this->argument('target'))->get();
+                    $target = SyncedProfile::where('id', $this->argument('target'))->get();
                 }
 
                 break;

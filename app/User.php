@@ -39,15 +39,15 @@ class User extends Authenticatable {
         'email_verified_at' => 'datetime',
     ];
 
-    public function twitter_profiles() {
-        return $this->hasMany('App\TwitterProfile');
+    public function synced_profiles() {
+        return $this->hasMany('App\SyncedProfile');
     }
 
-    public function current_twitter_profile() {
-        return $this->hasMany('App\TwitterProfile');
+    public function current_synced_profile() {
+        return $this->hasMany('App\SyncedProfile');
     }
 
     public function hasSyncProfiles() {
-        return $this->twitter_profiles->count() > 0;
+        return $this->synced_profiles->count() > 0;
     }
 }

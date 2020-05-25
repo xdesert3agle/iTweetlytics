@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use Abraham\TwitterOAuth\TwitterOAuth;
-use App\TwitterProfile;
+use App\SyncedProfile;
 use App\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -13,8 +13,8 @@ use Thujohn\Twitter\Facades\Twitter;
 class UserController extends Controller {
     public static function get($profileIndex) {
         $user = User::where('id', Auth::id())
-            ->with('twitter_profiles')
-            ->with(['current_twitter_profile' => function ($query) use ($profileIndex) {
+            ->with('synced_profiles')
+            ->with(['current_synced_profile' => function ($query) use ($profileIndex) {
                 $query->with('followers')
                     ->with('follows')
                     ->with('unfollows')
@@ -33,35 +33,33 @@ class UserController extends Controller {
             }])
             ->first();
 
-        $tags = $user->current_twitter_profile[0]->tags->mapWithKeys(function ($item) {
+        $tags = $user->current_synced_profile[0]->tags->mapWithKeys(function ($item) {
             return [$item['tag'] => $item];
         });
-        unset($user->current_twitter_profile[0]->$tags);
-        $user->current_twitter_profile[0]->tags = $tags->toArray();
+        unset($user->current_synced_profile[0]->$tags);
+        $user->current_synced_profile[0]->tags = $tags->toArray();
 
-        if ($user->current_twitter_profile[0]->scheduled_tweets->count() > 0) {
-            foreach ($user->current_twitter_profile[0]->scheduled_tweets as $tweet) {
+        if ($user->current_synced_profile[0]->scheduled_tweets->count() > 0) {
+            foreach ($user->current_synced_profile[0]->scheduled_tweets as $tweet) {
                 $formatted_scheduled_tweets[Carbon::createFromTimestamp($tweet->schedule_time / 1000)->format('d/m/Y')][] = $tweet;
             }
 
-            unset($user->current_twitter_profile[0]->scheduled_tweets);
-            $user->current_twitter_profile[0]->scheduled_tweets = $formatted_scheduled_tweets;
+            unset($user->current_synced_profile[0]->scheduled_tweets);
+            $user->current_synced_profile[0]->scheduled_tweets = $formatted_scheduled_tweets;
         }
 
-        $followers = $user->current_twitter_profile[0]->followers->mapWithKeys(function ($item) {
+        $followers = $user->current_synced_profile[0]->followers->mapWithKeys(function ($item) {
             return [$item['id_str'] => $item];
         });
 
-        unset($user->current_twitter_profile[0]->followers);
-        $user->current_twitter_profile[0]->followers = $followers;
+        unset($user->current_synced_profile[0]->followers);
+        $user->current_synced_profile[0]->followers = $followers->toArray();
 
-        $friends = $user->current_twitter_profile[0]->friends->mapWithKeys(function ($item) {
+        $friends = $user->current_synced_profile[0]->friends->mapWithKeys(function ($item) {
             return [$item['id_str'] => $item];
         });
-        unset($user->current_twitter_profile[0]->friends);
-        $user->current_twitter_profile[0]->friends = $friends;
-
-
+        unset($user->current_synced_profile[0]->friends);
+        $user->current_synced_profile[0]->friends = $friends;
 
         return $user;
     }
@@ -69,7 +67,7 @@ class UserController extends Controller {
     public function refresh($profileId) {
         $user = Auth::user();
 
-        $twProfile = TwitterProfile::find($profileId);
+        $twProfile = SyncedProfile::find($profileId);
 
         if ($twProfile->belongsToUser($user->id) && $twProfile->canBeRefreshed()) {
             Twitter::reconfig([

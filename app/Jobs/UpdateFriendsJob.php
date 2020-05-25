@@ -7,9 +7,10 @@ use App\Follow;
 use App\Follower;
 use App\Friend;
 use App\Helpers\ApiHelper;
-use App\ProfilesUrls;
-use App\Report;
 use App\TwitterProfile;
+use App\Url;
+use App\Report;
+use App\SyncedProfile;
 use App\Unfollow;
 use App\Unfriend;
 use Carbon\Carbon;
@@ -35,7 +36,7 @@ class UpdateFriendsJob implements ShouldQueue {
     }
 
     public function handle() {
-        $db_friends = Friend::where('twitter_profile_id', $this->profile->id)->get()->pluck('id_str')->toArray();
+        $db_friends = Friend::where('synced_profile_id', $this->profile->id)->get()->pluck('id')->toArray();
         $cursor = $this->profile->next_friends_cursor;
         $count = 0;
         $fetched_friends = [];
@@ -55,8 +56,8 @@ class UpdateFriendsJob implements ShouldQueue {
         $this->profile->next_friends_cursor = $cursor != 0 ? $cursor : -1;
         $this->profile->save();
 
-        $this->insertNewFriends($db_friends, $fetched_friends);
-        $this->deleteOldFriends($db_friends, $fetched_friends);
+        $this->registerNewFriends($db_friends, $fetched_friends);
+        $this->registerUnfriends($db_friends, $fetched_friends);
 
         // Si es el último job => Se genera el reporte diario
         if ($this->is_last_job) {
@@ -65,75 +66,91 @@ class UpdateFriendsJob implements ShouldQueue {
         }
     }
 
-    protected function insertNewFriends($dbFriends, $fetchedFriendsIds) {
-        $newFriends = array_values(array_diff($fetchedFriendsIds, $dbFriends));
+    protected function registerNewFriends($db_friends, $fetched_friends_ids) {
+        $new_friends = array_values(array_diff($fetched_friends_ids, $db_friends));
 
-        if (!empty($newFriends)) {
+        if (!empty($new_friends)) {
             $rate_limits = Twitter::getAppRateLimit(['format' => 'array']);
             $available_requests = $rate_limits['resources']['users']['/users/lookup']['remaining'];
-            $needed_requests = count($newFriends) / self::USERS_LOOKUP_AMOUNT_PER_REQUEST;
+            $needed_requests = count($new_friends) / self::USERS_LOOKUP_AMOUNT_PER_REQUEST;
             $rate_reset_timestamp = $rate_limits['resources']['users']['/users/lookup']['reset'];
 
             if ($available_requests >= $needed_requests) {
-                $fetchedFriendsLookup = array_reverse($this->getLookupFromIdArray($newFriends));
+                $fetched_friends_lookup = array_reverse($this->getLookupFromIdArray($new_friends));
 
-            } else {
+                foreach ($fetched_friends_lookup as $i => $fetched_friend) {
+                    $friend_fields = [
+                        'id' => $fetched_friends_lookup,
+                        'added_by' => $this->profile->id,
+                        'name' => $fetched_friend->name,
+                        'screen_name' => $fetched_friend->screen_name,
+                        'description' => $fetched_friend->description,
+                        'url' => $fetched_friend->url,
+                        'location' => $fetched_friend->location,
+                        'friends_count' => $fetched_friend->friends_count,
+                        'followers_count' => $fetched_friend->followers_count,
+                        'statuses_count' => $fetched_friend->statuses_count,
+                        'listed_count' => $fetched_friend->listed_count,
+                        'profile_image_url' => $fetched_friend->profile_image_url,
+                        'profile_banner_url' => isset($fetched_friend->profile_banner_url) ? $fetched_friend->profile_banner_url : "",
+                        'protected' => $fetched_friend->protected,
+                        'verified' => $fetched_friend->verified,
+                        'suspended' => 0,
+                        'lang' => $fetched_friend->lang,
+                    ];
+                    TwitterProfile::insertIfNew($this->profile, $fetched_friend);
+                    Url::insertProfileUrls($fetched_friend);
 
-                if ($this->is_last_job) {
-                    $lookup_reset_time = Carbon::createFromTimestamp($rate_reset_timestamp);
-                    $delay = $lookup_reset_time->diffInSeconds(Carbon::now());
-
-                    FetchRemainingFriendsLookups::dispatch($this->profile)->delay($delay);
-                }
-            }
-
-            foreach ($newFriends as $i => $newFriendId) {
-                $user_fields = [
-                    'twitter_profile_id' => $this->profile->id,
-                    'id_str' => $newFriendId,
-                ];
-
-                // Si se han fetcheado los campos extra se añaden al array
-                if (!empty($fetchedFriendsLookup)) {
-                    $additional_fields = [
-                        'name' => $fetchedFriendsLookup[$i]->name,
-                        'screen_name' => $fetchedFriendsLookup[$i]->screen_name,
-                        'description' => $fetchedFriendsLookup[$i]->description,
-                        'followers_count' => $fetchedFriendsLookup[$i]->followers_count,
-                        'profile_image_url' => $fetchedFriendsLookup[$i]->profile_image_url,
-                        'location' => $fetchedFriendsLookup[$i]->location,
-                        'tags' => TwitterProfile::getTagsFromProfile($this->profile, $fetchedFriendsLookup[$i])
+                    $relationship_basic_fields = [
+                        'synced_profile_id' => $this->profile->id,
+                        'twitter_profile_id' => $fetched_friend->id_str,
+                        'tags' => SyncedProfile::getTagsFromProfile($this->profile, $fetched_friend)
                     ];
 
-                    $user_fields = array_merge($user_fields, $additional_fields);
+                    Befriend::create($relationship_basic_fields);
+
+                    $relationship_basic_fields['hidden'] = 0;
+                    Friend::create($relationship_basic_fields);
                 }
 
-                Befriend::create($user_fields);
+            } elseif ($this->is_last_job) {
+                $lookup_reset_time = Carbon::createFromTimestamp($rate_reset_timestamp);
+                $delay = $lookup_reset_time->diffInSeconds(Carbon::now());
 
-                $additional_fields['hidden'] = 0;
-                Friend::create($user_fields);
+                FetchRemainingFriendsLookups::dispatch($this->profile)->delay($delay);
 
-                ProfilesUrls::insertProfileUrls($fetchedFriendsLookup[$i]);
+                foreach ($new_friends as $i => $new_friend_id) {
+                    $basic_fields = [
+                        'id' => $new_friend_id,
+                        'added_by' => $this->profile->id,
+                    ];
+
+                    TwitterProfile::insertIfNewReduced($this->profile, $basic_fields);
+
+                    $relationship_basic_fields = [
+                        'synced_profile_id' => $this->profile->id,
+                        'twitter_profile_id' => $new_friend_id,
+                        'tags' => ""
+                    ];
+
+                    Befriend::create($relationship_basic_fields);
+
+                    $relationship_basic_fields['hidden'] = 0;
+                    Friend::create($relationship_basic_fields);
+                }
             }
         }
     }
 
-    protected function deleteOldFriends($dbFriends, $fetchedFriendsIds) {
-        $oldFriends = array_diff($dbFriends, $fetchedFriendsIds);
+    protected function registerUnfriends($db_friends, $fetched_friends_ids) {
+        $no_longer_friends_ids = array_diff($db_friends, $fetched_friends_ids);
+        $no_longer_friends = Friend::whereIn('twitter_profile_id', $no_longer_friends_ids)->get();
 
-        foreach ($oldFriends as $oldFriendId) {
-            $friend = Friend::where('id_str', $oldFriendId)->first();
-
+        foreach ($no_longer_friends as $exfriend) {
             Unfriend::create([
-                'twitter_profile_id' => $this->profile->id,
-                'id_str' => $friend->id_str,
-                'name' => $friend->name,
-                'screen_name' => $friend->screen_name,
-                'description' => $friend->description,
-                'followers_count' => $friend->followers_count,
-                'profile_image_url' => $friend->profile_image_url,
-                'location' => $friend->location,
-                'tags' => $friend->tags
+                'synced_profile_id' => $this->profile->id,
+                'twitter_profile_id' => $exfriend->id,
+                'tags' => $exfriend->tags
             ]);
 
             $friend->delete();

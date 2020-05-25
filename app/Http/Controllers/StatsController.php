@@ -7,7 +7,7 @@ use App\Follow;
 use App\Follower;
 use App\Friend;
 use App\Report;
-use App\TwitterProfile;
+use App\SyncedProfile;
 use App\Unfollow;
 use App\Unfriend;
 use Carbon\Carbon;
@@ -25,7 +25,7 @@ class StatsController extends Controller {
         $monthAgo = Carbon::now()->subMonth()->startOfDay();
         $yearAgo = Carbon::now()->subYear()->startOfDay();
 
-        $isUserOwnerOfProfile = TwitterProfile::find($profileId)->belongsToUser(Auth::id());
+        $isUserOwnerOfProfile = SyncedProfile::find($profileId)->belongsToUser(Auth::id());
 
         $attr = ""; // Campo del modelo Report que se va a obtener
         $is_accum = false; // ¿El campo es acumulado sobre el tiempo?
@@ -102,7 +102,7 @@ class StatsController extends Controller {
             }
 
             $reports = Report::whereBetween('created_at', [$startTime, $now])
-                ->where('twitter_profile_id', $profileId)
+                ->where('synced_profile_id', $profileId)
                 ->get()
                 ->groupBy(function ($val) use ($group_by_format) {
                     return Carbon::parse($val->report_date)->formatLocalized($group_by_format);
@@ -134,7 +134,7 @@ class StatsController extends Controller {
             if ($target_model != null) {
 
                 // Si es acumulado significa que la lista va a estar acotada sobre un periodo de tiempo
-                $users_list = $target_model::where('twitter_profile_id', $profileId)
+                $users_list = $target_model::where('synced_profile_id', $profileId)
                     ->when($is_accum, function ($query) use ($startTime, $now) {
                         $query->whereBetween('created_at', [$startTime, $now]);
                     })

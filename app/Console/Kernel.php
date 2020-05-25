@@ -3,7 +3,7 @@
 namespace App\Console;
 
 use App\Jobs\UpdateFollowersJob;
-use App\TwitterProfile;
+use App\SyncedProfile;
 use Carbon\Carbon;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
