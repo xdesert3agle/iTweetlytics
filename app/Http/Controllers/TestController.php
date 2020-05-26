@@ -3,21 +3,13 @@
 namespace App\Http\Controllers;
 
 use App\Follower;
-use App\Helpers\UtilHelper;
-use App\TwitterProfile;
-use App\Url;
-use App\SyncedProfile;
-use Illuminate\Support\Facades\Hash;
-use Thujohn\Twitter\Facades\Twitter;
-
 
 class TestController extends Controller {
-    const USERS_LOOKUP_AMOUNT_PER_REQUEST = 100;
-
     public function test() {
-        $elm = Twitter::getUsersLookup(['screen_name' => 'elmiillor']);
-        $elm = $elm[0];
+        $users_list = Follower::where('synced_profile_id', 286561116)
+            ->with('twitter_profile')
+            ->get();
 
-        TwitterProfile::insertIfNew($elm);
+        dd($users_list->toArray());
     }
 }

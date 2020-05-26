@@ -63,27 +63,23 @@
         methods: {
             refreshProfile: function() {
                 axios.get(this.refreshProfileUrl).then((response) => {
+                    let toastType;
+
                     if (response.data.status == 'success') {
+                        toastType = 'success';
                         this.twitterProfile = response.data.data;
-                        this.$toastr.Add({
-                            msg: response.data.message, // Toast Message
-                            clickClose: true, // Click Close Disable
-                            timeout: 4000, // Remember defaultTimeout is 5 sec.(5000) in this case the toast won't close automatically
-                            //progressBarValue: 50, // Manually update progress bar value later; null (not 0) is default
-                            type: "success", // Toast type,
-                            preventDuplicates: true, //Default is false,
-                            classNames: ["animated", "slideInRight", "ms-300"],
-                        });
                     } else {
-                        this.$toastr.Add({
-                            msg: response.data.message, // Toast Message
-                            clickClose: true, // Click Close Disable
-                            timeout: 4000, // Remember defaultTimeout is 5 sec.(5000) in this case the toast won't close automatically
-                            type: "error", // Toast type,
-                            preventDuplicates: true, //Default is false,
-                            classNames: ["animated", "slideInRight", "ms-300"],
-                        });
+                        toastType = 'error';
                     }
+
+                    this.$toastr.Add({
+                        msg: response.data.message,
+                        clickClose: true,
+                        timeout: 4000,
+                        type: toastType,
+                        preventDuplicates: true,
+                        classNames: ["animated", "slideInRight", "ms-300"],
+                    });
                 });
             },
             activateTooltips: function() {

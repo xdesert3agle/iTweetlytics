@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Abraham\TwitterOAuth\TwitterOAuth;
+use App\Helpers\ApiHelper;
 use App\SyncedProfile;
 use App\User;
 use Carbon\Carbon;
@@ -29,65 +30,37 @@ class UserController extends Controller {
                             ->get();
                     }])
                     ->with('tags')
-                    ->skip($profileIndex)->take(1);
+                    ->skip($profileIndex)->take(1)->first();
             }])
             ->first();
 
-        $tags = $user->current_synced_profile[0]->tags->mapWithKeys(function ($item) {
-            return [$item['tag'] => $item];
-        });
-        unset($user->current_synced_profile[0]->$tags);
-        $user->current_synced_profile[0]->tags = $tags->toArray();
-
-        if ($user->current_synced_profile[0]->scheduled_tweets->count() > 0) {
-            foreach ($user->current_synced_profile[0]->scheduled_tweets as $tweet) {
-                $formatted_scheduled_tweets[Carbon::createFromTimestamp($tweet->schedule_time / 1000)->format('d/m/Y')][] = $tweet;
-            }
-
-            unset($user->current_synced_profile[0]->scheduled_tweets);
-            $user->current_synced_profile[0]->scheduled_tweets = $formatted_scheduled_tweets;
-        }
-
-        $followers = $user->current_synced_profile[0]->followers->mapWithKeys(function ($item) {
-            return [$item['id_str'] => $item];
-        });
-
-        unset($user->current_synced_profile[0]->followers);
-        $user->current_synced_profile[0]->followers = $followers->toArray();
-
-        $friends = $user->current_synced_profile[0]->friends->mapWithKeys(function ($item) {
-            return [$item['id_str'] => $item];
-        });
-        unset($user->current_synced_profile[0]->friends);
-        $user->current_synced_profile[0]->friends = $friends;
+        $aux = $user->current_synced_profile[0];
+        unset($user->current_synced_profile);
+        $user->current_synced_profile = $aux;
 
         return $user;
     }
 
     public function refresh($profileId) {
         $user = Auth::user();
+        $profile = SyncedProfile::find($profileId);
 
-        $twProfile = SyncedProfile::find($profileId);
+        if ($profile->belongsToUser($user->id) && $profile->canBeRefreshed()) {
+            ApiHelper::reconfig($profile);
 
-        if ($twProfile->belongsToUser($user->id) && $twProfile->canBeRefreshed()) {
-            Twitter::reconfig([
-                "token" => $twProfile->oauth_token,
-                "secret" => $twProfile->oauth_token_secret,
-            ]);
-
-            $twProfile->fill(collect(Twitter::getCredentials())->toArray());
-            $twProfile->save();
+            $profile->fill(collect(Twitter::getCredentials())->toArray());
+            $profile->save();
 
             return [
                 'status' => 'success',
-                'message' => 'El perfil @' . $twProfile->screen_name . ' ha sido actualizado',
-                'data' => $twProfile
+                'message' => 'El perfil @' . $profile->screen_name . ' ha sido actualizado',
+                'data' => $profile
             ];
         } else {
             return [
                 'status' => 'error',
                 'error' => 'Not enough time',
-                'message' => 'Por favor, espera ' . $twProfile->secsUntilRefresh() . ' segundos para poder refrescar este perfil de nuevo.'
+                'message' => 'Por favor, espera ' . $profile->secsUntilRefresh() . ' segundos para poder refrescar este perfil de nuevo.'
             ];
         }
     }

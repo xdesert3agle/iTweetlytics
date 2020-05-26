@@ -5,8 +5,8 @@
                 <div class="col">
                     <div class="row">
                         <div class="col">
-                            <h4 class="card-title">{{ card_title }}{{stat.is_accumulated ? ' en ' + timeIntervalString :
-                                ""}}</h4>
+                            <h4 class="card-title">{{ card_title }}{{ stat.is_accumulated ? ' en ' + timeIntervalString
+                                : "" }}</h4>
                         </div>
                         <div class="col-auto text-right">
                             <select class="form-control" @input="timeIntervalChanged">
@@ -39,28 +39,28 @@
                                 </template>
                                 <template slot="modal-body">
                                     <ul v-if="profilesList && profilesList.length > 0" class="profiles-list">
-                                        <li v-for="(profile, i) in profilesList" :id="'element-' + profile.screen_name">
-                                            <div class="row profile-link">
-                                                <a :href="'https://twitter.com/' + profile.screen_name" class="col-auto">
-                                                    <img :src="profile.profile_image_url" :alt="'Foto de perfil de @' + profile.screen_name">
+                                        <li v-for="(profile, i) in profilesList" :id="'element-' + profile.twitter_profile.screen_name">
+                                            <div class="row no-gutters profile-link">
+                                                <a :href="'https://twitter.com/' + profile.twitter_profile.screen_name" class="col-auto">
+                                                    <img :src="profile.twitter_profile.profile_image_url" :alt="'Foto de perfil de @' + profile.twitter_profile.screen_name">
                                                 </a>
                                                 <div class="col">
                                                     <span class="name">
-                                                        <a :href="'https://twitter.com/' + profile.screen_name">
-                                                            {{ profile.name }}
+                                                        <a :href="'https://twitter.com/' + profile.twitter_profile.screen_name">
+                                                            {{ profile.twitter_profile.name }}
                                                         </a>
-                                                        <span @click.prevent v-if="shouldShowFollowingStat && d_user.current_twitter_profile[0].followers[profile.id_str]" class="badge badge-success">Te sigue</span>
-                                                            <span @click.prevent v-else-if="shouldShowFollowingStat && !d_user.current_twitter_profile[0].followers[profile.id_str]" class="badge badge-danger">No te sigue</span>
+                                                        <span @click.prevent v-if="shouldShowFollowingStat && d_user.current_synced_profile.followers[profile.twitter_profile.id]" class="badge badge-success">Te sigue</span>
+                                                        <span @click.prevent v-else-if="shouldShowFollowingStat && !d_user.current_synced_profile.followers[profile.twitter_profile.id]" class="badge badge-danger">No te sigue</span>
                                                     </span>
-                                                    <span class="screen-name text-muted">@{{ profile.screen_name }}</span>
+                                                    <span class="screen-name text-muted">@{{ profile.twitter_profile.screen_name }}</span>
                                                 </div>
-                                                <div v-if="d_user.current_twitter_profile[0].friends[profile.id_str]" class="col-4">
-                                                    <button @click="unfollowUser(profile.screen_name, i)" class="btn btn-sm btn-unfollow">
+                                                <div v-if="d_user.current_synced_profile.friends[profile.twitter_profile.id]" class="col-4">
+                                                    <button @click="unfollowUser(profile.twitter_profile.screen_name, i)" class="btn btn-sm btn-unfollow">
                                                         Dejar de seguir
                                                     </button>
                                                 </div>
                                                 <div v-else class="col-4">
-                                                    <button @click="followUser(profile.screen_name, i)" class="btn btn-sm btn-follow">
+                                                    <button @click="followUser(profile.twitter_profile.screen_name, i)" class="btn btn-sm btn-follow">
                                                         Seguir
                                                     </button>
                                                 </div>
@@ -110,13 +110,10 @@
                 switch (this.timeInterval) {
                     case 'yesterday':
                         return "el último día";
-
                     case 'weekly':
                         return "los últimos 7 días";
-
                     case 'monthly':
                         return "los últimos 30 días";
-
                     case 'yearly':
                         return "el último año";
                 }
@@ -139,13 +136,12 @@
             },
             timeIntervalChanged($event) {
                 this.timeInterval = $event.target.value;
-
                 this.fetchData();
             },
             unfollowUser(screen_name, index) {
                 axios.post('/ajax/profile/unfollow', {
                     'screen_name': screen_name,
-                    'twitter_profile_id': this.d_user.current_twitter_profile[0].id
+                    'synced_profile_id': this.d_user.current_synced_profile.id
                 }).then((response) => {
                     if (response.data.status == 'success') {
                         this.twitterProfile = response.data.data;
@@ -158,7 +154,7 @@
             followUser(screen_name, index) {
                 axios.post('/ajax/profile/follow', {
                     'screen_name': screen_name,
-                    'twitter_profile_id': this.d_user.current_twitter_profile[0].id
+                    'synced_profile_id': this.d_user.current_synced_profile.id
                 }).then((response) => {
                     if (response.data.status == 'success') {
                         this.twitterProfile = response.data.data;
@@ -170,8 +166,7 @@
                             preventDuplicates: true,
                             classNames: ['animated', 'slideInRight', 'ms-300'],
                         });
-
-                        this.d_user.current_twitter_profile[0].friends.splice(index, 1);
+                        this.d_user.current_synced_profile.friends.splice(index, 1);
                         $('#element-' + screen_name).remove();
                     } else {
                         this.$toastr.Add({
@@ -192,7 +187,6 @@
 <style lang="scss" scoped>
     $primaryColor: #7642FF;
     $textColor: #3E396B;
-
     .card {
         height: 400px;
 
@@ -221,6 +215,14 @@
                             }
 
                             .profile-link {
+                                align-items: center;
+
+                                div[class*="col"] {
+                                    &:not(:first-child) {
+                                        margin-left: 15px;
+                                        margin-bottom: 7px;
+                                    }
+                                }
 
                                 a {
                                     text-decoration: none;
@@ -228,12 +230,14 @@
 
                                 img {
                                     border-radius: 50%;
+                                    width: 65px;
+                                    height: 65px;
+                                    object-fit: cover;
                                 }
 
                                 .name {
                                     display: flex;
                                     align-items: center;
-
                                     font-weight: bold !important;
                                     line-height: initial;
 
@@ -253,7 +257,6 @@
                                     margin-top: 4px;
                                     line-height: initial;
                                 }
-
                             }
 
                             button {
@@ -261,11 +264,8 @@
                                 justify-content: center;
                                 align-items: center;
                                 width: 95%;
-
                                 padding: 7px 0 !important;
-
                                 background: transparent;
-
                                 text-transform: uppercase;
 
                                 &.btn-follow {
@@ -310,7 +310,6 @@
                             .stat-amount {
                                 color: $primaryColor;
                                 line-height: initial;
-
                                 font-size: 32pt;
                                 font-weight: bold;
                             }
@@ -319,7 +318,6 @@
                                 display: flex;
                                 align-items: center;
                                 flex-direction: column;
-
                                 margin-left: 5px;
 
                                 i {
@@ -327,7 +325,7 @@
                                     line-height: 16pt;
 
                                     &.fa-equals {
-                                        font-size: 18pt!important;
+                                        font-size: 18pt !important;
                                         margin-left: 4px;
                                     }
                                 }

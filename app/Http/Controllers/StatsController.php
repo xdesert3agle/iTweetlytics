@@ -25,13 +25,13 @@ class StatsController extends Controller {
         $monthAgo = Carbon::now()->subMonth()->startOfDay();
         $yearAgo = Carbon::now()->subYear()->startOfDay();
 
-        $isUserOwnerOfProfile = SyncedProfile::find($profileId)->belongsToUser(Auth::id());
+        $is_user_owner_of_profile = SyncedProfile::find($profileId)->belongsToUser(Auth::id());
 
         $attr = ""; // Campo del modelo Report que se va a obtener
         $is_accum = false; // ¿El campo es acumulado sobre el tiempo?
         $target_model = "";
 
-        if ($isUserOwnerOfProfile) {
+        if ($is_user_owner_of_profile) {
             switch ($stat) {
                 case 'followers':
                     $attr = 'total_followers';
@@ -135,6 +135,7 @@ class StatsController extends Controller {
 
                 // Si es acumulado significa que la lista va a estar acotada sobre un periodo de tiempo
                 $users_list = $target_model::where('synced_profile_id', $profileId)
+                    ->with('twitter_profile')
                     ->when($is_accum, function ($query) use ($startTime, $now) {
                         $query->whereBetween('created_at', [$startTime, $now]);
                     })

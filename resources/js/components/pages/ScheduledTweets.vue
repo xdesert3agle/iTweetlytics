@@ -8,8 +8,8 @@
                     </div>
                 </div>
 
-                <div v-if="user.current_twitter_profile[0].scheduled_tweets.length > 0" class="row no-gutters">
-                    <div class="col-3" v-for="(tweetGroup, date) in user.current_twitter_profile[0].scheduled_tweets">
+                <div v-if="user.current_synced_profile.scheduled_tweets.length > 0" class="row no-gutters">
+                    <div class="col-3" v-for="(tweetGroup, date) in user.current_synced_profile.scheduled_tweets">
                         <h5>{{ date }}</h5>
                         <div v-for="(tweet, j) in tweetGroup" class="row tweet-container">
                             <div class="col-md-12 tweet-wrapper">
@@ -17,15 +17,15 @@
                                     <div class="card-body">
                                         <div class="row no-gutters">
                                             <div class="col-2">
-                                                <img :src="user.current_twitter_profile[0].profile_image_url" class="tweet-user-avatar" alt="Tu avatar">
+                                                <img :src="user.current_synced_profile.profile_image_url" class="tweet-user-avatar" alt="Tu avatar">
                                             </div>
                                             <div class="col">
                                                 <div class="row">
                                                     <div class="col">
-                                                        <a :href="'https://twitter.com/' + user.current_twitter_profile[0].screen_name" class="tweet-author">
-                                                            <span class="name">{{ user.current_twitter_profile[0].name }}</span>
+                                                        <a :href="'https://twitter.com/' + user.current_synced_profile.screen_name" class="tweet-author">
+                                                            <span class="name">{{ user.current_synced_profile.name }}</span>
                                                             <span class="screen-name text-muted">
-                                                                @{{ user.current_twitter_profile[0].screen_name }}
+                                                                @{{ user.current_synced_profile.screen_name }}
                                                             </span>
                                                         </a>
                                                     </div>

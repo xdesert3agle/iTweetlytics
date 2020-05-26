@@ -36,7 +36,7 @@
                         </div>
                     </div>
                 </div>
-                <chat v-else @back="goBack" class="col-12 animated slideInRight fastest" :chat="clickedChat" :userId="user.twitter_profiles.id"></chat>
+                <chat v-else @back="goBack" class="col-12 animated slideInRight fastest" :chat="clickedChat" :userId="user.synced_profiles.id"></chat>
             </div>
         </div>
     </div>
@@ -77,7 +77,7 @@
         .chat-list-container {
             height: calc(100vh - 39.82px - 15px * 2 - 4px);
             overflow-x: hidden;
-            overflow-y: scroll!important;
+            overflow-y: auto!important;
 
             .chat-preview-container {
                 cursor: pointer;

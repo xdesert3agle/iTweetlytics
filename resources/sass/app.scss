@@ -52,7 +52,7 @@ input ~ label {
     font-weight: normal !important;
 }
 
-textarea:focus {
+*:not(input):not(button):focus {
     outline: 0!important;
 }
 

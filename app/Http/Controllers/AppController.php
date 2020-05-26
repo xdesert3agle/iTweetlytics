@@ -21,11 +21,12 @@ class AppController extends Controller {
     public function index($selectedProfileIndex) {
         $startTime = microtime(true);
 
+        $startTime = microtime(true);
         $user = UserController::get($selectedProfileIndex);
         $user->profile_index = $selectedProfileIndex;
 
         // Se reconfigura la API para realizar las peticiones con el perfil activo
-        ApiHelper::reconfig($user->current_twitter_profile[0]);
+        ApiHelper::reconfig($user->current_synced_profile);
 
         // Se realizan las peticiones de la timeline, las menciones, los dms y las listas del perfil
         $timeline = Twitter::getHomeTimeline(['count' => 40, 'tweet_mode' => 'extended', 'format' => 'json']);
@@ -55,12 +56,12 @@ class AppController extends Controller {
                 'message' => 'El tweet ha sido publicado.'
             ];
         } else {
-            $scheduledTweet = new ScheduledTweet;
-            $scheduledTweet->synced_profile_id = $r->synced_profile_id;
-            $scheduledTweet->tweet_content = $r->text;
-            $scheduledTweet->schedule_time = $r->scheduleTime;
-            $scheduledTweet->status = 'queued';
-            $scheduledTweet->save();
+            $scheduledTweet = ScheduledTweet::create([
+                'synced_profile_id' => $r->synced_profile_id,
+                'tweet_content' => $r->text,
+                'schedule_time' => $r->scheduleTime,
+                'status' => 'queued'
+            ]);
 
             $now = Carbon::createFromTimestamp($r->now);
             $target_date = Carbon::createFromTimestamp($r->scheduleTime / 1000);

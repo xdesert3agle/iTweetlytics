@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class ScheduledTweet extends Model {
     protected $appends = ['formatted_schedule_time', 'schedule_hour'];
+    protected $guarded = [];
 
     public function getFormattedScheduleTimeAttribute() {
         return Carbon::createFromTimestamp($this->schedule_time / 1000)->format('d-m-Y H:i:s');

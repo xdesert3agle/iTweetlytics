@@ -78,6 +78,7 @@ class DatabaseRework extends Migration {
         });
 
         Schema::create('followers', function (Blueprint $table) {
+            $table->bigIncrements('id');
             $table->string('synced_profile_id', 25);
             $table->string('twitter_profile_id', 25);
             $table->string('tags')->nullable();
@@ -88,6 +89,7 @@ class DatabaseRework extends Migration {
         });
 
         Schema::create('follows', function (Blueprint $table) {
+            $table->bigIncrements('id');
             $table->string('synced_profile_id', 25);
             $table->string('twitter_profile_id', 25);
             $table->string('tags')->nullable();
@@ -98,6 +100,7 @@ class DatabaseRework extends Migration {
         });
 
         Schema::create('unfollows', function (Blueprint $table) {
+            $table->bigIncrements('id');
             $table->string('synced_profile_id', 25);
             $table->string('twitter_profile_id', 25);
             $table->string('tags')->nullable();
@@ -108,6 +111,7 @@ class DatabaseRework extends Migration {
         });
 
         Schema::create('friends', function (Blueprint $table) {
+            $table->bigIncrements('id');
             $table->string('synced_profile_id', 25);
             $table->string('twitter_profile_id', 25);
             $table->string('tags')->nullable();
@@ -119,6 +123,7 @@ class DatabaseRework extends Migration {
         });
 
         Schema::create('befriends', function (Blueprint $table) {
+            $table->bigIncrements('id');
             $table->string('synced_profile_id', 25);
             $table->string('twitter_profile_id', 25);
             $table->string('tags')->nullable();
@@ -129,6 +134,7 @@ class DatabaseRework extends Migration {
         });
 
         Schema::create('unfriends', function (Blueprint $table) {
+            $table->bigIncrements('id');
             $table->string('synced_profile_id', 25);
             $table->string('twitter_profile_id', 25);
             $table->string('tags')->nullable();

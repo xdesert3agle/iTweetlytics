@@ -33,7 +33,7 @@
         .tweet-list-container {
             height: calc(100vh - 39.82px - 15px * 2 - 4px);
             overflow-x: hidden;
-            overflow-y: scroll!important;
+            overflow-y: auto!important;
 
             border-top: 1px solid rgba(0, 0, 0, 0.125);
         }

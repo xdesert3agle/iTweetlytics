@@ -36,7 +36,7 @@ class UpdateFriendsJob implements ShouldQueue {
     }
 
     public function handle() {
-        $db_friends = Friend::where('synced_profile_id', $this->profile->id)->get()->pluck('id')->toArray();
+        $db_friends = Friend::where('synced_profile_id', $this->profile->id)->get()->pluck('twitter_profile_id')->toArray();
         $cursor = $this->profile->next_friends_cursor;
         $count = 0;
         $fetched_friends = [];

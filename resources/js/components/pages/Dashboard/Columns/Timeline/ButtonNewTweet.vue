@@ -18,7 +18,7 @@
                     <div class="modal-body">
                         <div class="row no-gutters">
                             <div class="col-2 user-profile-img-container">
-                                <img :src="user.current_twitter_profile[0].profile_image_url" class="user-profile-img" alt="Tu imagen de perfil">
+                                <img :src="user.current_synced_profile.profile_image_url" class="user-profile-img" alt="Tu imagen de perfil">
                             </div>
                             <div class="col">
                                 <textarea class="js-autoresize" v-model="newTweetText" maxlength="280" placeholder="¿Qué está pasando?"></textarea>
@@ -100,15 +100,28 @@
         methods: {
             sendTweet() {
                 axios.post('/ajax/tweets/new', {
-                    'twitter_profile_id': this.user.current_twitter_profile[0].id,
+                    'synced_profile_id': this.user.current_synced_profile.id,
                     'text': this.newTweetText,
                     'scheduleTime': this.scheduleTime,
                     'now': Date.now()
                 }).then((response) => {
+                    let toastType;
+
                     if (response.data.status == 'success') {
-                        this.$toast.success(response.data.message);
+                        toastType = 'success';
                         this.newTweetText = "";
+                    } else {
+                        toastType = 'error';
                     }
+
+                    this.$toastr.Add({
+                        msg: response.data.message,
+                        clickClose: true,
+                        timeout: 4000,
+                        type: toastType,
+                        preventDuplicates: true,
+                        classNames: ["animated", "slideInRight", "ms-300"],
+                    });
                 });
             }
         }
