@@ -144,45 +144,6 @@ class TwitterProfile extends Model {
         return null;
     }
 
-    public static function getTagsFromProfile($profile, $target_user) {
-        $user_tags = Tag::where('synced_profile_id', $profile->id);
-        $tags = $user_tags->pluck('tag');
-        $words = Tag::parseWordsToString($user_tags);
-        $found_tags = [];
-
-        $targets = $profile->getExpandedUrls(); // Url expandida
-        $targets[] = $target_user->description; // Descripción
-
-        foreach ($tags as $j => $tag) {
-            foreach ($words[$j] as $word) {
-                $contains_word = false;
-
-                foreach ($targets as $target) {
-                    if (strpos(strtolower($target), $word) !== false) {
-                        $contains_word = true;
-                    }
-                }
-
-                if ($contains_word) {
-                    $found_tags[] = $tag;
-                    break;
-                }
-            }
-        }
-
-        return implode(", ", $found_tags);
-    }
-
-    public function refreshTags($tables = []) {
-        foreach ($tables as $table) {
-            $records = $table::where('synced_profile_id', $this->id)->get();
-
-            foreach ($records as $record) {
-                $record->tags = self::getTagsFromProfile($this, $record);
-                $record->save();
-            }
-        }
-    }
 
     public function getExpandedUrls() {
         return Url::where('profile_id', $this->id)->get()->pluck('expanded_url')->toArray();

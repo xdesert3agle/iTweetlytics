@@ -159,26 +159,24 @@ class SyncedProfile extends Model {
     }
 
     public static function getTagsFromProfile($profile, $target_user) {
-        $user_tags = Tag::where('synced_profile_id', $profile->id);
-        $tags = $user_tags->pluck('tag');
-        $words = Tag::parseWordsToString($user_tags);
+        $user_tags = Tag::where('synced_profile_id', $profile->id)->get();
         $found_tags = [];
 
-        $targets = $profile->getExpandedUrls(); // Url expandida
-        $targets[] = $target_user->description; // Descripción
+        $targets = $profile->getExpandedUrls(); // Urls
+        $targets[] = $target_user->twitter_profile->description; // Descripción
 
-        foreach ($tags as $j => $tag) {
-            foreach ($words[$j] as $word) {
-                $contains_word = false;
+        foreach ($user_tags as $j => $tag) {
+            foreach ($targets as $target) {
 
-                foreach ($targets as $target) {
-                    if (strpos(strtolower($target), $word) !== false) {
-                        $contains_word = true;
-                    }
+                // Comparación con las palabras
+                if ($tag->words != null && preg_match($tag->words, strtolower($target))) {
+                    $found_tags[] = $tag->tag;
+                    break;
                 }
 
-                if ($contains_word) {
-                    $found_tags[] = $tag;
+                // Comparación con las regexes
+                if ($tag->regexes != null && preg_match($tag->regexes, $target)) {
+                    $found_tags[] = $tag->tag;
                     break;
                 }
             }
@@ -189,7 +187,7 @@ class SyncedProfile extends Model {
 
     public function refreshTags($tables = []) {
         foreach ($tables as $table) {
-            $records = $table::where('synced_profile_id', $this->id)->get();
+            $records = $table::where('synced_profile_id', $this->id)->with('twitter_profile')->get();
 
             foreach ($records as $record) {
                 $record->tags = self::getTagsFromProfile($this, $record);

@@ -52,8 +52,11 @@ Route::group(['middleware' => 'auth'], function () {
             });
 
             Route::prefix('profile')->group(function () {
-                Route::prefix('{profileId}/reports')->group(function () {
-                    Route::get('{stat}/{timeInterval}', 'StatsController@getStat');
+                Route::prefix('{profileId}')->group(function () {
+                    Route::prefix('stats')->group(function () {
+                        Route::get('{stat}/{timeInterval}', 'StatsController@getStat');
+                        Route::get('tags', 'StatsController@getTagsData');
+                    });
                 });
 
                 Route::post('scheduled_tweet/delete', 'AppController@deleteScheduledTweet');
@@ -64,6 +67,9 @@ Route::group(['middleware' => 'auth'], function () {
 
                     Route::prefix('words')->group(function () {
                         Route::post('update', 'TwitterProfileController@updateWords');
+                    });
+                    Route::prefix('regexes')->group(function () {
+                        Route::post('update', 'TwitterProfileController@updateRegexes');
                     });
                 });
 

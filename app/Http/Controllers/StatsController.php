@@ -8,9 +8,11 @@ use App\Follower;
 use App\Friend;
 use App\Report;
 use App\SyncedProfile;
+use App\Tag;
 use App\Unfollow;
 use App\Unfriend;
 use Carbon\Carbon;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 class StatsController extends Controller {
@@ -164,6 +166,18 @@ class StatsController extends Controller {
                 ]);
             }
         }
+    }
+
+    public function getTagsData($profileId) {
+        $tags = Tag::where('synced_profile_id', $profileId)->get();
+        $graph_data = [];
+
+        foreach ($tags as $i => $tag) {
+            $graph_data[$i][] = $tag->tag;
+            $graph_data[$i][] = Friend::where('tags', 'like', "%$tag->tag%")->count();
+        }
+
+        return $graph_data;
     }
 }
 

@@ -24,6 +24,15 @@ class TwitterProfileController extends Controller {
         Tag::where([
             'synced_profile_id' => $r->synced_profile_id,
             'tag' => $r->tag
-        ])->update(['words' => implode(", ", $r->words)]);
+        ])->update(['words' => '/' . implode("|", $r->words) . '/']);
+    }
+
+    public function updateRegexes(Request $r) {
+        $formatted_regexes = $r->regexes != null ? '/' . implode("|", $r->regexes) . '/' : null;
+
+        Tag::where([
+            'synced_profile_id' => $r->synced_profile_id,
+            'tag' => $r->tag
+        ])->update(['regexes' => $formatted_regexes]);
     }
 }
