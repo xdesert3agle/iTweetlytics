@@ -12,7 +12,7 @@ class AddRegexToTags extends Migration {
      */
     public function up() {
         Schema::table('tags', function (Blueprint $table) {
-            $table->text'regexes')->after('words')->nullable();
+            $table->text('regexes')->after('words')->nullable();
         });
     }
 
