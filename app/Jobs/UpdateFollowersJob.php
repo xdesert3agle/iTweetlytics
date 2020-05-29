@@ -76,13 +76,13 @@ class UpdateFollowersJob implements ShouldQueue {
         $fetched_users_lookup = array_reverse($this->getFetchedUsersLookup($new_followers));
 
         foreach ($fetched_users_lookup as $new_follower) {
-            TwitterProfile::insertIfNew($this->profile, $new_follower);
+            $inserted_twitter_profile = TwitterProfile::insertIfNew($this->profile, $new_follower);
             Url::insertProfileUrls($new_follower);
 
             $fields = [
                 'synced_profile_id' => $this->profile->id,
                 'twitter_profile_id' => $new_follower->id_str,
-                'tags' => SyncedProfile::getTagsFromProfile($this->profile, $new_follower)
+                'tags' => SyncedProfile::getTagsFromProfile($this->profile, $inserted_twitter_profile)
             ];
 
             // Se inserta el follow

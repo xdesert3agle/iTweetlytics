@@ -26,16 +26,6 @@
                     </div>
                 </div>
             </div>
-            <div class="row no-gutters card-row">
-                <div class="col-md-4 col-12">
-                    <div class="card">
-                        <div class="card-body">
-                            <h4 class="card-title">Tags</h4>
-                            <column-chart :data="tagsData" width="100%" height="100%"></column-chart>
-                        </div>
-                    </div>
-                </div>
-            </div>
         </div>
     </div>
 </template>
@@ -48,11 +38,7 @@
         data() {
             return {
                 d_user: this.user,
-                tagsData: null
             }
-        },
-        created() {
-            this.fetchTagsChartData();
         },
         methods: {
             unfollowUser(screen_name, index) {
@@ -82,11 +68,6 @@
                     } else {
                         this.$toast.error(response.data.message);
                     }
-                });
-            },
-            fetchTagsChartData() {
-                axios.get('/ajax/profile/' + this.user.current_synced_profile.id + '/stats/tags').then((response) => {
-                    this.tagsData = response.data;
                 });
             }
         }

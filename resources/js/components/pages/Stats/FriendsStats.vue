@@ -36,6 +36,11 @@
                     </graph-card>
                 </div>
             </div>
+            <div class="row no-gutters card-row">
+                <div class="col-md-4 col-12">
+                    <tag-graph-card :user="user" target="friends"></tag-graph-card>
+                </div>
+            </div>
         </div>
     </div>
 </template>

@@ -54,22 +54,24 @@ Route::group(['middleware' => 'auth'], function () {
             Route::prefix('profile')->group(function () {
                 Route::prefix('{profileId}')->group(function () {
                     Route::prefix('stats')->group(function () {
+                        Route::prefix('tags')->group(function () {
+                            Route::get('{target}', 'StatsController@getTagsData');
+                        });
                         Route::get('{stat}/{timeInterval}', 'StatsController@getStat');
-                        Route::get('tags', 'StatsController@getTagsData');
                     });
                 });
 
                 Route::post('scheduled_tweet/delete', 'AppController@deleteScheduledTweet');
 
                 Route::prefix('tags')->group(function () {
-                    Route::post('add', 'TwitterProfileController@addTag');
-                    Route::post('delete', 'TwitterProfileController@deleteTag');
+                    Route::post('add', 'SyncedProfileController@addTag');
+                    Route::post('delete', 'SyncedProfileController@deleteTag');
 
                     Route::prefix('words')->group(function () {
-                        Route::post('update', 'TwitterProfileController@updateWords');
+                        Route::post('update', 'SyncedProfileController@updateWords');
                     });
                     Route::prefix('regexes')->group(function () {
-                        Route::post('update', 'TwitterProfileController@updateRegexes');
+                        Route::post('update', 'SyncedProfileController@updateRegexes');
                     });
                 });
 

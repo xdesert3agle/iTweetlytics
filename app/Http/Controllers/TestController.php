@@ -2,9 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\TwitterProfile;
+
 class TestController extends Controller {
     public function test() {
-        $regexes = "//";
-        dd(preg_match_all($regexes, 'mis huevos 33'));
+
     }
 }

@@ -79,25 +79,6 @@ class UpdateFriendsJob implements ShouldQueue {
                 $fetched_friends_lookup = array_reverse($this->getLookupFromIdArray($new_friends));
 
                 foreach ($fetched_friends_lookup as $i => $fetched_friend) {
-                    $friend_fields = [
-                        'id' => $fetched_friends_lookup,
-                        'added_by' => $this->profile->id,
-                        'name' => $fetched_friend->name,
-                        'screen_name' => $fetched_friend->screen_name,
-                        'description' => $fetched_friend->description,
-                        'url' => $fetched_friend->url,
-                        'location' => $fetched_friend->location,
-                        'friends_count' => $fetched_friend->friends_count,
-                        'followers_count' => $fetched_friend->followers_count,
-                        'statuses_count' => $fetched_friend->statuses_count,
-                        'listed_count' => $fetched_friend->listed_count,
-                        'profile_image_url' => $fetched_friend->profile_image_url,
-                        'profile_banner_url' => isset($fetched_friend->profile_banner_url) ? $fetched_friend->profile_banner_url : "",
-                        'protected' => $fetched_friend->protected,
-                        'verified' => $fetched_friend->verified,
-                        'suspended' => 0,
-                        'lang' => $fetched_friend->lang,
-                    ];
                     TwitterProfile::insertIfNew($this->profile, $fetched_friend);
                     Url::insertProfileUrls($fetched_friend);
 
@@ -144,16 +125,18 @@ class UpdateFriendsJob implements ShouldQueue {
 
     protected function registerUnfriends($db_friends, $fetched_friends_ids) {
         $no_longer_friends_ids = array_diff($db_friends, $fetched_friends_ids);
-        $no_longer_friends = Friend::whereIn('twitter_profile_id', $no_longer_friends_ids)->get();
+        $no_longer_friends = Friend::whereIn('twitter_profile_id', $no_longer_friends_ids)
+            ->with('twitter_profile')
+            ->get();
 
         foreach ($no_longer_friends as $exfriend) {
             Unfriend::create([
                 'synced_profile_id' => $this->profile->id,
-                'twitter_profile_id' => $exfriend->id,
+                'twitter_profile_id' => $exfriend->twitter_profile->id,
                 'tags' => $exfriend->tags
             ]);
 
-            $friend->delete();
+            $exfriend->delete();
         }
     }
 

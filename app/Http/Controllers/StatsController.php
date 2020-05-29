@@ -168,13 +168,23 @@ class StatsController extends Controller {
         }
     }
 
-    public function getTagsData($profileId) {
+    public function getTagsData($profileId, $target) {
         $tags = Tag::where('synced_profile_id', $profileId)->get();
         $graph_data = [];
 
+        switch ($target) {
+            case "followers":
+                $target_table = Follower::class;
+                break;
+
+            case "friends":
+                $target_table = Friend::class;
+                break;
+        }
+
         foreach ($tags as $i => $tag) {
             $graph_data[$i][] = $tag->tag;
-            $graph_data[$i][] = Friend::where('tags', 'like', "%$tag->tag%")->count();
+            $graph_data[$i][] = $target_table::where('tags', 'like', "%$tag->tag%")->count();
         }
 
         return $graph_data;

@@ -146,6 +146,10 @@ class SyncedProfile extends Model {
         $this->save();
     }
 
+    public function hasReports() {
+        return $this->reports->count() > 0;
+    }
+
     public static function getUserUrlExpanded($user) {
         $urls = Url::where('synced_profile_id', $user->id);
 
@@ -163,19 +167,23 @@ class SyncedProfile extends Model {
         $found_tags = [];
 
         $targets = $profile->getExpandedUrls(); // Urls
-        $targets[] = $target_user->twitter_profile->description; // Descripción
+
+        if (isset($target_user->twitter_profile))
+            $targets[] = $target_user->twitter_profile->description;
+        else
+            $targets[] = $target_user->description;
 
         foreach ($user_tags as $j => $tag) {
             foreach ($targets as $target) {
 
                 // Comparación con las palabras
-                if ($tag->words != null && preg_match($tag->words, strtolower($target))) {
+                if ($tag->words != null && preg_match_all($tag->words, strtolower($target))) {
                     $found_tags[] = $tag->tag;
                     break;
                 }
 
                 // Comparación con las regexes
-                if ($tag->regexes != null && preg_match($tag->regexes, $target)) {
+                if ($tag->regexes != null && preg_match_all($tag->regexes, $target)) {
                     $found_tags[] = $tag->tag;
                     break;
                 }

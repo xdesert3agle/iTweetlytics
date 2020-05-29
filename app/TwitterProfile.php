@@ -166,7 +166,7 @@ class TwitterProfile extends Model {
         if ($arr instanceof \stdClass) // Si el parámetro no es un array se convierte a array
             $arr = get_object_vars($arr);
 
-        TwitterProfile::firstOrCreate(
+        return TwitterProfile::firstOrCreate(
             ['id' => isset($arr['id_str']) ? $arr['id_str'] : $arr['id']],
             [
                 'id' => isset($arr['id_str']) ? $arr['id_str'] : $arr['id'],

@@ -13,18 +13,23 @@ class Report extends Model {
     }
 
     public static function getReportData($profile) {
-
-        // Followers
         $all_followers = Follower::where('synced_profile_id', $profile->id)->get();
         $total_followers_count = $all_followers->count();
-        $follows_count = Follow::where('synced_profile_id', $profile->id)->whereDate('created_at', Carbon::today())->count();
-        $unfollows_count = Unfollow::where('synced_profile_id', $profile->id)->whereDate('created_at', Carbon::today())->count();
-
-        // Friends
         $all_friends = Friend::where('synced_profile_id', $profile->id)->get();
         $total_friends_count = $all_friends->count();
-        $befriends_count = Befriend::where('synced_profile_id', $profile->id)->whereDate('created_at', Carbon::today())->count();
-        $unfriends_count = Unfriend::where('synced_profile_id', $profile->id)->whereDate('created_at', Carbon::today())->count();
+
+        if ($profile->hasReports()) {
+            $follows_count = Follow::where('synced_profile_id', $profile->id)->whereDate('created_at', Carbon::today())->count();
+            $unfollows_count = Unfollow::where('synced_profile_id', $profile->id)->whereDate('created_at', Carbon::today())->count();
+            $befriends_count = Befriend::where('synced_profile_id', $profile->id)->whereDate('created_at', Carbon::today())->count();
+            $unfriends_count = Unfriend::where('synced_profile_id', $profile->id)->whereDate('created_at', Carbon::today())->count();
+
+        } else {
+            $follows_count = 0;
+            $unfollows_count = 0;
+            $befriends_count = 0;
+            $unfriends_count = 0;
+        }
 
         return [
             'synced_profile_id' => $profile->id,

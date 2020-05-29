@@ -7,4 +7,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class Tag extends Model {
     protected $guarded = [];
+
+    public static function cleanWords($words) {
+        return preg_replace("/[^A-Za-z0-9 ]/", '', $words);
+    }
 }
