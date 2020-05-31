@@ -51,7 +51,7 @@ class ProcessProfile extends Command {
                 if (Str::startsWith($this->argument('target'), '@'))
                     $target = UserProfile::where('screen_name', $this->argument('target'))->with('twitter_profile')->first();
                 else
-                    $target = UserProfile::where('id', $this->argument('target'))->with('twitter_profile')->get();
+                    $target = UserProfile::where('twitter_profile_id', $this->argument('target'))->with('twitter_profile')->get();
 
                 break;
         }
