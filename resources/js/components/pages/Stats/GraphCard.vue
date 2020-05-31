@@ -49,12 +49,12 @@
                                                         <a :href="'https://twitter.com/' + profile.twitter_profile.screen_name">
                                                             {{ profile.twitter_profile.name }}
                                                         </a>
-                                                        <span @click.prevent v-if="shouldShowFollowingStat && d_user.current_synced_profile.followers[profile.twitter_profile.id]" class="badge badge-success">Te sigue</span>
-                                                        <span @click.prevent v-else-if="shouldShowFollowingStat && !d_user.current_synced_profile.followers[profile.twitter_profile.id]" class="badge badge-danger">No te sigue</span>
+                                                        <span @click.prevent v-if="shouldShowFollowingStat && d_user.current_user_profile.followers[profile.twitter_profile.id]" class="badge badge-success">Te sigue</span>
+                                                        <span @click.prevent v-else-if="shouldShowFollowingStat && !d_user.current_user_profile.followers[profile.twitter_profile.id]" class="badge badge-danger">No te sigue</span>
                                                     </span>
                                                     <span class="screen-name text-muted">@{{ profile.twitter_profile.screen_name }}</span>
                                                 </div>
-                                                <div v-if="d_user.current_synced_profile.friends[profile.twitter_profile.id]" class="col-4">
+                                                <div v-if="d_user.current_user_profile.friends[profile.twitter_profile.id]" class="col-4">
                                                     <button @click="unfollowUser(profile.twitter_profile.screen_name, i)" class="btn btn-sm btn-unfollow">
                                                         Dejar de seguir
                                                     </button>
@@ -141,7 +141,7 @@
             unfollowUser(screen_name, index) {
                 axios.post('/ajax/profile/unfollow', {
                     'screen_name': screen_name,
-                    'synced_profile_id': this.d_user.current_synced_profile.id
+                    'user_profile_id': this.d_user.current_user_profile.id
                 }).then((response) => {
                     if (response.data.status == 'success') {
                         this.twitterProfile = response.data.data;
@@ -154,7 +154,7 @@
             followUser(screen_name, index) {
                 axios.post('/ajax/profile/follow', {
                     'screen_name': screen_name,
-                    'synced_profile_id': this.d_user.current_synced_profile.id
+                    'user_profile_id': this.d_user.current_user_profile.id
                 }).then((response) => {
                     if (response.data.status == 'success') {
                         this.twitterProfile = response.data.data;
@@ -166,7 +166,7 @@
                             preventDuplicates: true,
                             classNames: ['animated', 'slideInRight', 'ms-300'],
                         });
-                        this.d_user.current_synced_profile.friends.splice(index, 1);
+                        this.d_user.current_user_profile.friends.splice(index, 1);
                         $('#element-' + screen_name).remove();
                     } else {
                         this.$toastr.Add({

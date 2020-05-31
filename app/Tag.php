@@ -11,4 +11,8 @@ class Tag extends Model {
     public static function cleanWords($words) {
         return preg_replace("/[^A-Za-z0-9 ]/", '', $words);
     }
+
+    public function tagged() {
+        return $this->belongsTo('App\UserProfileTaggedProfiles');
+    }
 }

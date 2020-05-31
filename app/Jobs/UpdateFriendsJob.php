@@ -3,15 +3,10 @@
 namespace App\Jobs;
 
 use App\Befriend;
-use App\Follow;
-use App\Follower;
 use App\Friend;
 use App\Helpers\ApiHelper;
 use App\TwitterProfile;
 use App\Url;
-use App\Report;
-use App\SyncedProfile;
-use App\Unfollow;
 use App\Unfriend;
 use Carbon\Carbon;
 use Illuminate\Bus\Queueable;
@@ -19,6 +14,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
+use Symfony\Component\Process\Process;
 use Thujohn\Twitter\Facades\Twitter;
 
 class UpdateFriendsJob implements ShouldQueue {
@@ -36,7 +32,7 @@ class UpdateFriendsJob implements ShouldQueue {
     }
 
     public function handle() {
-        $db_friends = Friend::where('synced_profile_id', $this->profile->id)->get()->pluck('twitter_profile_id')->toArray();
+        $db_friends = Friend::where('user_profile_id', $this->profile->id)->get()->pluck('twitter_profile_id')->toArray();
         $cursor = $this->profile->next_friends_cursor;
         $count = 0;
         $fetched_friends = [];
@@ -46,7 +42,7 @@ class UpdateFriendsJob implements ShouldQueue {
 
         // Se fetchean los seguidos
         do {
-            $friends = Twitter::getFriendsIds(['screen_name' => $this->profile->screen_name, 'cursor' => $cursor, 'count' => 5000, 'stringify_ids' => 'true']);
+            $friends = Twitter::getFriendsIds(['screen_name' => $this->profile->twitter_profile->screen_name, 'cursor' => $cursor, 'count' => 5000, 'stringify_ids' => 'true']);
             $cursor = $friends->next_cursor;
 
             $fetched_friends = array_merge($fetched_friends, $friends->ids);
@@ -59,10 +55,9 @@ class UpdateFriendsJob implements ShouldQueue {
         $this->registerNewFriends($db_friends, $fetched_friends);
         $this->registerUnfriends($db_friends, $fetched_friends);
 
-        // Si es el último job => Se genera el reporte diario
+        // Si es el último job de la cadena se manda el job para procesar los cambios en los tags
         if ($this->is_last_job) {
-            $this->profile->refreshTags([Follower::class, Follow::class, Unfollow::class, Friend::class, Befriend::class, Unfriend::class]);
-            Report::generateDailyReport($this->profile);
+            ProcessTagsJob::dispatch($this->profile);
         }
     }
 
@@ -83,9 +78,8 @@ class UpdateFriendsJob implements ShouldQueue {
                     Url::insertProfileUrls($fetched_friend);
 
                     $relationship_basic_fields = [
-                        'synced_profile_id' => $this->profile->id,
-                        'twitter_profile_id' => $fetched_friend->id_str,
-                        'tags' => SyncedProfile::getTagsFromProfile($this->profile, $fetched_friend)
+                        'user_profile_id' => $this->profile->id,
+                        'twitter_profile_id' => $fetched_friend->id_str
                     ];
 
                     Befriend::create($relationship_basic_fields);
@@ -109,9 +103,8 @@ class UpdateFriendsJob implements ShouldQueue {
                     TwitterProfile::insertIfNewReduced($this->profile, $basic_fields);
 
                     $relationship_basic_fields = [
-                        'synced_profile_id' => $this->profile->id,
-                        'twitter_profile_id' => $new_friend_id,
-                        'tags' => ""
+                        'user_profile_id' => $this->profile->id,
+                        'twitter_profile_id' => $new_friend_id
                     ];
 
                     Befriend::create($relationship_basic_fields);
@@ -131,9 +124,8 @@ class UpdateFriendsJob implements ShouldQueue {
 
         foreach ($no_longer_friends as $exfriend) {
             Unfriend::create([
-                'synced_profile_id' => $this->profile->id,
-                'twitter_profile_id' => $exfriend->twitter_profile->id,
-                'tags' => $exfriend->tags
+                'user_profile_id' => $this->profile->id,
+                'twitter_profile_id' => $exfriend->twitter_profile->id
             ]);
 
             $exfriend->delete();

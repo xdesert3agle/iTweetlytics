@@ -4,19 +4,15 @@ namespace App\Jobs;
 
 use App\Follower;
 use App\Follow;
-use App\Friend;
 use App\Helpers\ApiHelper;
 use App\TwitterProfile;
 use App\Url;
-use App\SyncedProfile;
-use App\Tag;
 use App\Unfollow;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
-use Illuminate\Support\Facades\Storage;
 use Thujohn\Twitter\Facades\Twitter;
 
 class UpdateFollowersJob implements ShouldQueue {
@@ -36,7 +32,7 @@ class UpdateFollowersJob implements ShouldQueue {
     }
 
     public function handle() {
-        $db_followers = Follower::where('synced_profile_id', $this->profile->id)->get()->pluck('twitter_profile_id')->toArray();
+        $db_followers = Follower::where('user_profile_id', $this->profile->id)->get()->pluck('twitter_profile_id')->toArray();
         $cursor = $this->profile->next_followers_cursor;
         $count = 0;
         $fetchedFollowers = [];
@@ -46,7 +42,7 @@ class UpdateFollowersJob implements ShouldQueue {
 
         // Se fetchean los seguidores
         do {
-            $followers = Twitter::getFollowersIds(['screen_name' => $this->profile->screen_name, 'cursor' => $cursor, 'count' => 5000, 'stringify_ids' => 'true']);
+            $followers = Twitter::getFollowersIds(['screen_name' => $this->profile->twitter_profile->screen_name, 'cursor' => $cursor, 'count' => 5000, 'stringify_ids' => 'true']);
             $cursor = $followers->next_cursor;
 
             $fetchedFollowers = array_merge($fetchedFollowers, $followers->ids);
@@ -59,8 +55,9 @@ class UpdateFollowersJob implements ShouldQueue {
         $this->registerFollows($db_followers, $fetchedFollowers);
         $this->registerUnfollows($db_followers, $fetchedFollowers);
 
+        // Si al terminar es el último job de la cadena se manda el job para refrescar los seguidos
         if ($this->is_last_job) {
-            $needed_friends_jobs = ceil($this->profile->friends_count / (self::MAX_CONSECUTIVE_REQUESTS * self::IDS_PER_REQUEST));
+            $needed_friends_jobs = ceil($this->profile->twitter_profile->friends_count / (self::MAX_CONSECUTIVE_REQUESTS * self::IDS_PER_REQUEST));
 
             for ($i = 0; $i < $needed_friends_jobs; $i++) {
                 $friends_delay = $i * self::REQUEST_WINDOW;
@@ -76,13 +73,12 @@ class UpdateFollowersJob implements ShouldQueue {
         $fetched_users_lookup = array_reverse($this->getFetchedUsersLookup($new_followers));
 
         foreach ($fetched_users_lookup as $new_follower) {
-            $inserted_twitter_profile = TwitterProfile::insertIfNew($this->profile, $new_follower);
+            $inserted_new_follower = TwitterProfile::insertIfNew($this->profile, $new_follower);
             Url::insertProfileUrls($new_follower);
 
             $fields = [
-                'synced_profile_id' => $this->profile->id,
-                'twitter_profile_id' => $new_follower->id_str,
-                'tags' => SyncedProfile::getTagsFromProfile($this->profile, $inserted_twitter_profile)
+                'user_profile_id' => $this->profile->id,
+                'twitter_profile_id' => $new_follower->id_str
             ];
 
             // Se inserta el follow
@@ -100,15 +96,14 @@ class UpdateFollowersJob implements ShouldQueue {
         foreach ($new_unfollowers_hydrated as $unfollower) {
 
             // Se registra el unfollow
-            Unfollow::create([
-                'synced_profile_id' => $this->profile->id,
-                'twitter_profile_id' => $unfollower->id,
-                'tags' => $unfollower->tags
+            $inserted_new_unfollower = Unfollow::create([
+                'user_profile_id' => $this->profile->id,
+                'twitter_profile_id' => $unfollower->id
             ]);
 
             // Se elimina el usuario de la lista de followers
             Follower::where([
-                ['synced_profile_id', $this->profile->id],
+                ['user_profile_id', $this->profile->id],
                 ['id', $unfollower->id]
             ])->delete();
         }

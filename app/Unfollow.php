@@ -10,4 +10,8 @@ class Unfollow extends Model {
     public function twitter_profile() {
         return $this->belongsTo(TwitterProfile::class);
     }
+
+    public function user_profile() {
+        return $this->belongsTo(UserProfile::class);
+    }
 }

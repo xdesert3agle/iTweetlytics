@@ -2,14 +2,14 @@
     <div class="container-fluid">
         <div class="row">
             <div class="col-12">
-                <div v-if="user.synced_profiles != null" class="dash-content">
+                <div v-if="user.user_profiles != null" class="dash-content">
                     <div class="row">
                         <div class="col">
-                            <h3 class="page-title">Perfiles sincronizados <small>- {{ user.synced_profiles.length }} perfiles</small></h3>
+                            <h3 class="page-title">Perfiles sincronizados <small>- {{ user.user_profiles.length }} perfiles</small></h3>
                         </div>
                     </div>
                     <div class="row">
-                        <twitter-profile-card v-for="(tw_profile, i) in user.synced_profiles" :key="tw_profile.id" :twitterProfile="tw_profile" :colSize="3"></twitter-profile-card>
+                        <twitter-profile-card v-for="(tw_profile, i) in user.user_profiles" :key="tw_profile.id" :twitterProfile="tw_profile" :colSize="3"></twitter-profile-card>
                     </div>
                 </div>
                 <div v-else class="first-profile-container">
@@ -37,7 +37,7 @@
         ],
         computed: {
             hasUserLinkedAProfile() {
-                return this.user.synced_profiles;
+                return this.user.user_profiles;
             },
             currentYear() {
                 return new Date().getFullYear();

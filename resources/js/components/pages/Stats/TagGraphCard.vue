@@ -23,7 +23,7 @@
         },
         methods: {
             fetchChartData() {
-                axios.get('/ajax/profile/' + this.user.current_synced_profile.id + '/stats/tags/' + this.target).then((response) => {
+                axios.get('/ajax/profile/' + this.user.current_user_profile.id + '/stats/tags/' + this.target).then((response) => {
                     this.graphData = response.data;
                 });
             }

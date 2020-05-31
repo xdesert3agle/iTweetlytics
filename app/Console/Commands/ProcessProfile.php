@@ -3,7 +3,7 @@
 namespace App\Console\Commands;
 
 use App\Jobs\UpdateFollowersJob;
-use App\SyncedProfile;
+use App\UserProfile;
 use Illuminate\Console\Command;
 use Illuminate\Support\Str;
 use Thujohn\Twitter\Twitter;
@@ -44,15 +44,14 @@ class ProcessProfile extends Command {
     public function handle() {
         switch ($this->argument('target')) {
             case "all":
-                $target = SyncedProfile::all();
+                $target = UserProfile::with('twitter_profile')->get();
                 break;
 
             default:
-                if (Str::startsWith($this->argument('target'), '@')) {
-                    $target = SyncedProfile::where('screen_name', $this->argument('target'))->first();
-                } else {
-                    $target = SyncedProfile::where('id', $this->argument('target'))->get();
-                }
+                if (Str::startsWith($this->argument('target'), '@'))
+                    $target = UserProfile::where('screen_name', $this->argument('target'))->with('twitter_profile')->first();
+                else
+                    $target = UserProfile::where('id', $this->argument('target'))->with('twitter_profile')->get();
 
                 break;
         }
@@ -60,7 +59,7 @@ class ProcessProfile extends Command {
         foreach ($target as $i => $profile) {
             $profile->refresh();
 
-            $needed_followers_jobs = ceil($profile->followers_count / (self::MAX_CONSECUTIVE_REQUESTS * self::FOLLOWERS_PER_REQUEST));
+            $needed_followers_jobs = ceil($profile->twitter_profile->followers_count / (self::MAX_CONSECUTIVE_REQUESTS * self::FOLLOWERS_PER_REQUEST));
 
             for ($j = 0; $j < $needed_followers_jobs; $j++) {
                 $followers_delay = $j * self::REQUEST_WINDOW;

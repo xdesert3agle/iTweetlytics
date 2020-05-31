@@ -3,7 +3,7 @@
         <div class="col-12">
             <div class="row no-gutters card-row">
                 <div class="col-md-4 col-12">
-                    <graph-card id="followers" :user="user" :stat_endpoint="'/ajax/profile/' + d_user.current_synced_profile.id + '/stats/f2f_ratio/'" card_title="Ratio seguidores/seguidos"></graph-card>
+                    <graph-card id="followers" :user="user" :stat_endpoint="'/ajax/profile/' + d_user.current_user_profile.id + '/stats/f2f_ratio/'" card_title="Ratio seguidores/seguidos"></graph-card>
                 </div>
                 <div class="col-md-4 col-12 small-cards-container">
                     <div class="row no-gutters">
@@ -11,7 +11,7 @@
                             <div class="card small-card">
                                 <div class="card-body">
                                     <h4 class="card-title">Seguidos que te siguen de vuelta</h4>
-                                    <span class="stat-amount">{{ d_user.current_synced_profile.reports[d_user.current_synced_profile.reports.length - 1].followers_followback_percent.toFixed(2).toString().replace('.', ',') }}%</span>
+                                    <span class="stat-amount">{{ d_user.current_user_profile.reports[d_user.current_user_profile.reports.length - 1].followers_followback_percent.toFixed(2).toString().replace('.', ',') }}%</span>
                                 </div>
                             </div>
                         </div>
@@ -19,7 +19,7 @@
                             <div class="card small-card">
                                 <div class="card-body">
                                     <h4 class="card-title">Seguidores que sigues de vuelta</h4>
-                                    <span class="stat-amount">{{ d_user.current_synced_profile.reports[d_user.current_synced_profile.reports.length - 1].user_followback_percent.toFixed(2).toString().replace('.', ',') }}%</span>
+                                    <span class="stat-amount">{{ d_user.current_user_profile.reports[d_user.current_user_profile.reports.length - 1].user_followback_percent.toFixed(2).toString().replace('.', ',') }}%</span>
                                 </div>
                             </div>
                         </div>
@@ -44,7 +44,7 @@
             unfollowUser(screen_name, index) {
                 axios.post('/ajax/profile/unfollow', {
                     'screen_name': screen_name,
-                    'synced_profile_id': this.d_user.current_synced_profile.id
+                    'user_profile_id': this.d_user.current_user_profile.id
                 }).then((response) => {
                     if (response.data.status == 'success') {
                         this.twitterProfile = response.data.data;
@@ -57,13 +57,13 @@
             followUser(screen_name, index) {
                 axios.post('/ajax/profile/follow', {
                     'screen_name': screen_name,
-                    'synced_profile_id': this.d_user.current_synced_profile.id
+                    'user_profile_id': this.d_user.current_user_profile.id
                 }).then((response) => {
                     if (response.data.status == 'success') {
                         this.twitterProfile = response.data.data;
                         this.$toast.success(response.data.message);
 
-                        this.d_user.current_synced_profile.friends.splice(index, 1);
+                        this.d_user.current_user_profile.friends.splice(index, 1);
                         $('#element-' + screen_name).remove();
                     } else {
                         this.$toast.error(response.data.message);

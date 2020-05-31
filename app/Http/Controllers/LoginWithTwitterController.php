@@ -3,7 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Providers\RouteServiceProvider;
-use App\SyncedProfile;
+use App\TwitterProfile;
+use App\UserProfile;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Redirect;
@@ -11,6 +12,9 @@ use Illuminate\Support\Facades\Session;
 use Thujohn\Twitter\Facades\Twitter;
 
 class LoginWithTwitterController extends Controller {
+    const TWITTER_ERROR = 1;
+    const PROFILE_ALREADY_LINKED = 2;
+
     public function requestLogin() {
         $this->logoutWithoutRedirect();
 
@@ -36,8 +40,6 @@ class LoginWithTwitterController extends Controller {
     }
 
     public function getTwitterCallback() {
-        // You should set this route on your Twitter Application settings as the callback
-        // https://apps.twitter.com/app/YOUR-APP-ID/settings
         if (Session::has('oauth_request_token')) {
             $request_token = [
                 'token' => Session::get('oauth_request_token'),
@@ -50,7 +52,6 @@ class LoginWithTwitterController extends Controller {
 
             if (request()->has('oauth_verifier')) {
                 $oauth_verifier = request()->get('oauth_verifier');
-                // getAccessToken() will reset the token for you
                 $tokens = Twitter::getAccessToken($oauth_verifier);
             }
 
@@ -61,26 +62,26 @@ class LoginWithTwitterController extends Controller {
             $credentials = Twitter::getCredentials();
 
             if (is_object($credentials) && !isset($credentials->error)) {
-                // $credentials contains the Twitter user object with all the info about the user.
-                // Add here your own user logic, store profiles, create new users on your tables...you name it!
-                // Typically you'll want to store at least, user id, name and access tokens
-                // if you want to be able to call the API on behalf of your users.
-
-                // This is also the moment to log in your users if you're using Laravel's Auth class
-                // Auth::login($user) should do the trick.
                 Session::put('access_token', $tokens);
 
                 // El perfil de Twitter no debe haberse sincronizado por alguien más
-                if (!SyncedProfile::find($credentials->id)) {
-                    SyncedProfile::assignToUser($credentials, $tokens);
+                if (!UserProfile::linkedByOtherUser($credentials)) {
+                    $new_twitter_profile = TwitterProfile::firstOrCreate(
+                        ['id' => $credentials->id_str],
+                        (array) $credentials
+                    );
+
+                    UserProfile::linkToUser($new_twitter_profile, $tokens);
 
                     // Se comineza el procesamiento de datos del perfil (seguidores, seguidos...)
                     Artisan::call('profile:process', [
                         'target' => $credentials->id_str
                     ]);
+                } else {
+                    return Redirect::route('twitter.error');
                 }
 
-                return Redirect::to(RouteServiceProvider::APP);
+                return Redirect::to(RouteServiceProvider::APP)->with('error', self::PROFILE_ALREADY_LINKED);
             }
 
             return Redirect::route('twitter.error');

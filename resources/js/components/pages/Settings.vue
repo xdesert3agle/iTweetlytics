@@ -90,8 +90,8 @@
                 let newWords = [];
                 let newRegexes = [];
 
-                if (this.user.current_synced_profile.tags[this.selectedTagIndex] && this.user.current_synced_profile.tags[this.selectedTagIndex].words) {
-                    this.user.current_synced_profile.tags[this.selectedTagIndex].words.slice(1, -1).split("|").forEach((word, index) => {
+                if (this.user.current_user_profile.tags[this.selectedTagIndex] && this.user.current_user_profile.tags[this.selectedTagIndex].words) {
+                    this.user.current_user_profile.tags[this.selectedTagIndex].words.slice(1, -1).split("|").forEach((word, index) => {
                         newWords.push({
                             text: word,
                             tiClasses: "ti-valid"
@@ -99,8 +99,8 @@
                     });
                 }
 
-                if (this.user.current_synced_profile.tags[this.selectedTagIndex] && this.user.current_synced_profile.tags[this.selectedTagIndex].regexes) {
-                    this.user.current_synced_profile.tags[this.selectedTagIndex].regexes.slice(1, -1).split("|").forEach((word, index) => {
+                if (this.user.current_user_profile.tags[this.selectedTagIndex] && this.user.current_user_profile.tags[this.selectedTagIndex].regexes) {
+                    this.user.current_user_profile.tags[this.selectedTagIndex].regexes.slice(1, -1).split("|").forEach((word, index) => {
                         newRegexes.push({
                             text: word,
                             tiClasses: "ti-valid"
@@ -115,13 +115,13 @@
                 obj.addTag();
 
                 axios.post('/ajax/profile/tags/add', {
-                    synced_profile_id: this.user.current_synced_profile.id,
+                    user_profile_id: this.user.current_user_profile.id,
                     tag: obj.tag.text
                 });
             },
             deleteTag(obj) {
                 axios.post('/ajax/profile/tags/delete', {
-                    synced_profile_id: this.user.current_synced_profile.id,
+                    user_profile_id: this.user.current_user_profile.id,
                     tag: obj.tag.text
                 });
 
@@ -132,7 +132,7 @@
                 this.words = newWords;
 
                 axios.post('/ajax/profile/tags/words/update', {
-                    synced_profile_id: this.user.current_synced_profile.id,
+                    user_profile_id: this.user.current_user_profile.id,
                     tag: this.selectedTag.text,
                     words: this.words.map(function (item) {
                         return item["text"];
@@ -143,7 +143,7 @@
                 this.regexes = newRegexes;
 
                 axios.post('/ajax/profile/tags/regexes/update', {
-                    synced_profile_id: this.user.current_synced_profile.id,
+                    user_profile_id: this.user.current_user_profile.id,
                     tag: this.selectedTag.text,
                     regexes: this.regexes.map(function (item) {
                         return item["text"];
@@ -151,7 +151,7 @@
                 });
             },
             getTags() {
-                this.user.current_synced_profile.tags.forEach((item, index) => {
+                this.user.current_user_profile.tags.forEach((item, index) => {
                     this.tags.push({
                         text: item.tag,
                         tiClasses: "ti-valid"

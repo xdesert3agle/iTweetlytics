@@ -3,7 +3,6 @@
 namespace App;
 
 use App\Helpers\ApiHelper;
-use App\Helpers\UtilHelper;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Thujohn\Twitter\Facades\Twitter;
@@ -14,7 +13,6 @@ class TwitterProfile extends Model {
 
     protected $fillable = [
         'id',
-        'added_by',
         'name',
         'screen_name',
         'description',
@@ -55,27 +53,27 @@ class TwitterProfile extends Model {
 
     // ---------------------------------------------- RELATIONSHIPS --------------------------------------------- //
     public function synced_profile() {
-        return $this->belongsToMany(SyncedProfile::class, 'followers', 'synced_profile_id', 'twitter_profile_id');
+        return $this->belongsToMany(UserProfile::class, 'followers', 'user_profile_id', 'twitter_profile_id');
     }
 
     public function friends() {
-        return $this->belongsToMany(SyncedProfile::class, 'followers', 'synced_profile_id', 'friends');
+        return $this->belongsToMany(UserProfile::class, 'followers', 'user_profile_id', 'friends');
     }
 
     public function follows() {
-        return $this->belongsToMany(SyncedProfile::class, 'followers', 'synced_profile_id', 'follows');
+        return $this->belongsToMany(UserProfile::class, 'followers', 'user_profile_id', 'follows');
     }
 
     public function unfollows() {
-        return $this->belongsToMany(SyncedProfile::class, 'followers', 'synced_profile_id', 'unfollows');
+        return $this->belongsToMany(UserProfile::class, 'followers', 'user_profile_id', 'unfollows');
     }
 
     public function befriends() {
-        return $this->belongsToMany(SyncedProfile::class, 'followers', 'synced_profile_id', 'befriends');
+        return $this->belongsToMany(UserProfile::class, 'followers', 'user_profile_id', 'befriends');
     }
 
     public function unfriends() {
-        return $this->belongsToMany(SyncedProfile::class, 'followers', 'synced_profile_id', 'unfriends');
+        return $this->belongsToMany(UserProfile::class, 'followers', 'user_profile_id', 'unfriends');
     }
 
     public function reports() {
@@ -146,20 +144,16 @@ class TwitterProfile extends Model {
 
 
     public function getExpandedUrls() {
-        return Url::where('profile_id', $this->id)->get()->pluck('expanded_url')->toArray();
+        return Url::where('twitter_profile_id', $this->id)->get()->pluck('expanded_url')->toArray();
     }
 
     public static function insertIfNewReduced($profile, $arr) {
         if ($arr instanceof \stdClass) // Si el parámetro no es un array se convierte a array
             $arr = get_object_vars($arr);
 
-        TwitterProfile::firstOrCreate(
-            ['id' => isset($arr['id_str']) ? $arr['id_str'] : $arr['id']],
-            [
-                'id' => isset($arr['id_str']) ? $arr['id_str'] : $arr['id'],
-                'added_by' => $profile->id,
-            ]
-        );
+        TwitterProfile::firstOrCreate([
+            'id' => isset($arr['id_str']) ? $arr['id_str'] : $arr['id']
+        ]);
     }
 
     public static function insertIfNew($profile, $arr) {
@@ -170,7 +164,6 @@ class TwitterProfile extends Model {
             ['id' => isset($arr['id_str']) ? $arr['id_str'] : $arr['id']],
             [
                 'id' => isset($arr['id_str']) ? $arr['id_str'] : $arr['id'],
-                'added_by' => $profile->id,
                 'name' => $arr['name'],
                 'screen_name' => $arr['screen_name'],
                 'description' => $arr['description'],

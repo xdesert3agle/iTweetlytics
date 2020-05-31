@@ -18,7 +18,7 @@
                     <div class="modal-body">
                         <div class="row no-gutters">
                             <div class="col-2 user-profile-img-container">
-                                <img :src="user.current_synced_profile.profile_image_url" class="user-profile-img" alt="Tu imagen de perfil">
+                                <img :src="user.current_user_profile.profile_image_url" class="user-profile-img" alt="Tu imagen de perfil">
                             </div>
                             <div class="col">
                                 <textarea class="js-autoresize" v-model="newTweetText" maxlength="280" placeholder="¿Qué está pasando?"></textarea>
@@ -100,7 +100,7 @@
         methods: {
             sendTweet() {
                 axios.post('/ajax/tweets/new', {
-                    'synced_profile_id': this.user.current_synced_profile.id,
+                    'user_profile_id': this.user.current_user_profile.id,
                     'text': this.newTweetText,
                     'scheduleTime': this.scheduleTime,
                     'now': Date.now()

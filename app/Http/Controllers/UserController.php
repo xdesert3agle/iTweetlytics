@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use Abraham\TwitterOAuth\TwitterOAuth;
 use App\Helpers\ApiHelper;
-use App\SyncedProfile;
+use App\UserProfile;
 use App\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -13,9 +13,10 @@ use Thujohn\Twitter\Facades\Twitter;
 
 class UserController extends Controller {
     public static function get($profileIndex) {
+        $startTime = microtime(true);
         $user = User::where('id', Auth::id())
-            ->with('synced_profiles')
-            ->with(['current_synced_profile' => function ($query) use ($profileIndex) {
+            ->with('user_profiles')
+            ->with(['current_user_profile' => function ($query) use ($profileIndex) {
                 $query->with('followers')
                     ->with('follows')
                     ->with('unfollows')
@@ -29,21 +30,33 @@ class UserController extends Controller {
                         $query->where('status', '!=', 'sent')
                             ->get();
                     }])
-                    ->with('tags')
-                    ->skip($profileIndex)->take(1)->first();
+                    ->skip($profileIndex)->take(1);
             }])
             ->first();
 
-        $aux = $user->current_synced_profile[0];
-        unset($user->current_synced_profile);
-        $user->current_synced_profile = $aux;
+        $aux = $user->current_user_profile[0];
+        unset($user->current_user_profile);
+        $user->current_user_profile = $aux;
+
+        $followers = $user->current_user_profile->followers->mapWithKeys(function ($item) {
+            return [$item['id'] => $item];
+        });
+
+        unset($user->current_user_profile->followers);
+        $user->current_user_profile->followers = $followers;
+
+        $friends = $user->current_user_profile->friends->mapWithKeys(function ($item) {
+            return [$item['id'] => $item];
+        });
+        unset($user->current_user_profile->friends);
+        $user->current_user_profile->friends = $friends;
 
         return $user;
     }
 
     public function refresh($profileId) {
         $user = Auth::user();
-        $profile = SyncedProfile::find($profileId);
+        $profile = UserProfile::find($profileId);
 
         if ($profile->belongsToUser($user->id) && $profile->canBeRefreshed()) {
             ApiHelper::reconfig($profile);

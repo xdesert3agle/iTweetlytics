@@ -7,10 +7,11 @@ use App\Follow;
 use App\Follower;
 use App\Friend;
 use App\Report;
-use App\SyncedProfile;
+use App\UserProfile;
 use App\Tag;
 use App\Unfollow;
 use App\Unfriend;
+use App\UserProfileTaggedProfiles;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -27,7 +28,7 @@ class StatsController extends Controller {
         $monthAgo = Carbon::now()->subMonth()->startOfDay();
         $yearAgo = Carbon::now()->subYear()->startOfDay();
 
-        $is_user_owner_of_profile = SyncedProfile::find($profileId)->belongsToUser(Auth::id());
+        $is_user_owner_of_profile = UserProfile::find($profileId)->belongsToUser(Auth::id());
 
         $attr = ""; // Campo del modelo Report que se va a obtener
         $is_accum = false; // ¿El campo es acumulado sobre el tiempo?
@@ -104,7 +105,7 @@ class StatsController extends Controller {
             }
 
             $reports = Report::whereBetween('created_at', [$startTime, $now])
-                ->where('synced_profile_id', $profileId)
+                ->where('user_profile_id', $profileId)
                 ->get()
                 ->groupBy(function ($val) use ($group_by_format) {
                     return Carbon::parse($val->report_date)->formatLocalized($group_by_format);
@@ -136,7 +137,7 @@ class StatsController extends Controller {
             if ($target_model != null) {
 
                 // Si es acumulado significa que la lista va a estar acotada sobre un periodo de tiempo
-                $users_list = $target_model::where('synced_profile_id', $profileId)
+                $users_list = $target_model::where('user_profile_id', $profileId)
                     ->with('twitter_profile')
                     ->when($is_accum, function ($query) use ($startTime, $now) {
                         $query->whereBetween('created_at', [$startTime, $now]);
@@ -169,7 +170,7 @@ class StatsController extends Controller {
     }
 
     public function getTagsData($profileId, $target) {
-        $tags = Tag::where('synced_profile_id', $profileId)->get();
+        $tags = Tag::where('user_profile_id', $profileId)->get();
         $graph_data = [];
 
         switch ($target) {
@@ -184,7 +185,10 @@ class StatsController extends Controller {
 
         foreach ($tags as $i => $tag) {
             $graph_data[$i][] = $tag->tag;
-            $graph_data[$i][] = $target_table::where('tags', 'like', "%$tag->tag%")->count();
+            $graph_data[$i][] = UserProfileTaggedProfiles::where('user_profile_id', $profileId)
+                ->where('tag_id', $tag->id)
+                ->whereIn('twitter_profile_id', $target_table::where('user_profile_id', $profileId)->get()->pluck('twitter_profile_id'))
+                ->count();
         }
 
         return $graph_data;
