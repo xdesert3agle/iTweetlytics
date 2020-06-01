@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use App\Tag;
 use Illuminate\Http\Request;
 
-class SyncedProfileController extends Controller {
+class TagsController extends Controller {
     public function addTag(Request $r) {
         Tag::create([
             'user_profile_id' => $r->user_profile_id,

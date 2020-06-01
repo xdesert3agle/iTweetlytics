@@ -30,6 +30,7 @@ class UserController extends Controller {
                         $query->where('status', '!=', 'sent')
                             ->get();
                     }])
+                    ->with('tags')
                     ->skip($profileIndex)->take(1);
             }])
             ->first();

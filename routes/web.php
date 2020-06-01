@@ -64,14 +64,14 @@ Route::group(['middleware' => 'auth'], function () {
                 Route::post('scheduled_tweet/delete', 'AppController@deleteScheduledTweet');
 
                 Route::prefix('tags')->group(function () {
-                    Route::post('add', 'SyncedProfileController@addTag');
-                    Route::post('delete', 'SyncedProfileController@deleteTag');
+                    Route::post('add', 'TagsController@addTag');
+                    Route::post('delete', 'TagsController@deleteTag');
 
                     Route::prefix('words')->group(function () {
-                        Route::post('update', 'SyncedProfileController@updateWords');
+                        Route::post('update', 'TagsController@updateWords');
                     });
                     Route::prefix('regexes')->group(function () {
-                        Route::post('update', 'SyncedProfileController@updateRegexes');
+                        Route::post('update', 'TagsController@updateRegexes');
                     });
                 });
 
