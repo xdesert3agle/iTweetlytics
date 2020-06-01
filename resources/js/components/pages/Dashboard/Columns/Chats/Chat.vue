@@ -73,6 +73,7 @@
     .chat-container {
         .chat-title-row {
             border: 1px solid rgba(0, 0, 0, 0.125);
+            background-color: white;
             padding: 10px;
 
             .back-button-container {
@@ -95,7 +96,7 @@
                     padding-right: 4px;
 
                     &:hover {
-                        background-color: lighten($primaryColor, 30%);
+                        background-color: lighten($primaryColor, 35%);
                     }
                 }
             }
@@ -118,7 +119,8 @@
         .chat {
             display: flex;
             flex-direction: column;
-            height: calc(100vh - 39.82px - 15px * 2 - 72.17px - 15px * 2 - 70.17px - 4.5px);
+            height: calc(100vh - 39.82px - 15px * 2 - 70px - 4px);
+            background-color: white!important;
 
             .message-list-container {
                 display: flex;
@@ -218,9 +220,14 @@
             .send-message-input-container {
                 padding: 15px;
                 border: 1px solid rgba(0, 0, 0, 0.125);
+                background: white;
 
                 input {
                     width: 100%;
+                    border-radius: 25px!important;
+                    background-color: #f5f5f5!important;
+                    border: 1px solid #f5f5f5!important;
+                    box-shadow: none!important;
                 }
 
                 i {
