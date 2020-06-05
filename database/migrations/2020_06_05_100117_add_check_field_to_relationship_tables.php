@@ -12,11 +12,11 @@ class AddCheckFieldToRelationshipTables extends Migration {
      */
     public function up() {
         Schema::table('followers', function (Blueprint $table) {
-            $table->boolean('is_present')->after('twitter_profile_id')->nullable();
+            $table->boolean('is_present')->after('twitter_profile_id')->default(true)->nullable();
         });
 
         Schema::table('friends', function (Blueprint $table) {
-            $table->boolean('is_present')->after('is_following_back')->nullable();
+            $table->boolean('is_present')->after('is_following_back')->default(true)->nullable();
         });
     }
 

@@ -28,6 +28,13 @@ class TestController extends Controller {
 
         ApiHelper::reconfig(UserProfile::where('id', 1)->first());
         $test = ApiHelper::getRateLimit('followers');
+
+        $goingToUpdate = ["1184522711432863749","1908468554","4188984616","3254447975","3429511017","999207379827875840","2985062835","1034878662804291585","458484717","394040494","2246988194","1565410238","4349396415","2962690182","286561116","721849189538406401"];
+
+        Follower::where('user_profile_id', 1)
+            ->whereIn('twitter_profile_id', $goingToUpdate)
+            ->update(['is_present' => true]);
+
         dd($test);
 
         $endTime = microtime(true);

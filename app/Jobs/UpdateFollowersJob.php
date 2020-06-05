@@ -34,17 +34,25 @@ class UpdateFollowersJob implements ShouldQueue {
     }
 
     public function handle() {
+        $this->writeToLog("Voy a fetchear");
         $this->fetchFollowers(); // El resultado se guarda en el campo fetched_followers de la clase
-        $this->processFollowers();
+        $this->writeToLog("He terminado de fetchear");
+
+        $this->writeToLog("¿Está vacio fetched?: " . !empty($this->fetched_followers_ids));
+        if (!empty($this->fetched_followers_ids)) { // Si se han recogido followers se procesan
+            $this->writeToLog("Voy a procesar followers");
+            $this->processFollowers();
+            $this->writeToLog("He terminado de procesar followers");
+        }
 
         // Si es el último job de la cadena se comienza el procesamiento
         if ($this->profile->next_followers_cursor == 0) {
             $this->profile->next_followers_cursor = -1;
             $this->profile->save();
 
-            $this->cleanExfriends();
+            $this->cleanExfollowers();
             $this->resetPresentAttribute();
-            $this->sendUpdateFriendsJob();
+            //$this->sendUpdateFriendsJob();
 
         } else { // Si no es el último job se manda uno más para que siga fetcheando
             $this->sendOneMoreJob();
@@ -56,19 +64,18 @@ class UpdateFollowersJob implements ShouldQueue {
     }
 
     protected function fetchFollowers() {
+        ApiHelper::reconfig($this->profile);
+
         $remaining_requests_count = ApiHelper::getRateLimit('followers', 'remaining');
         $cursor = $this->profile->next_followers_cursor;
         $count = 0;
 
-        // Se reconfigura la API de Twitter con los tokens de acceso del perfil
-        ApiHelper::reconfig($this->profile);
-
-        do { // Se fetchean los seguidores
+        while ($cursor != 0 && $count++ < $remaining_requests_count) {
             $followers = Twitter::getFollowersIds(['screen_name' => $this->profile->twitter_profile->screen_name, 'cursor' => $cursor, 'count' => 5000, 'stringify_ids' => 'true']);
             $cursor = $followers->next_cursor;
 
             $this->fetched_followers_ids = array_merge($this->fetched_followers_ids, $followers->ids);
-        } while ($cursor != 0 && ++$count < $remaining_requests_count); // Hasta que el cursor sea 0 o hasta límite de repeticiones
+        }
 
         // Se guarda el cursor si aún no se ha terminado de recorrer todas las páginas. Si no, se pone a -1
         $this->profile->next_followers_cursor = $cursor;
@@ -77,25 +84,91 @@ class UpdateFollowersJob implements ShouldQueue {
 
     protected function processFollowers() {
 
-        // El array se divide en dos chunks, ya que MySQL tiene problemas al manejar un array muy grande
-        $split_array = array_chunk($this->fetched_followers_ids, count($this->fetched_followers_ids) / 2);
+        // El array se divide en partes de 10.000 elementos, ya que MySQL tiene problemas al manejar un array muy grande
+        $this->writeToLog("Antes de chunkear:");
+        $this->writeToLog(json_encode($this->fetched_followers_ids));
+        $this->writeToLog("------------------------------------------------------------------------------------------------------------------------------");
+
+        $fetched_count = count($this->fetched_followers_ids);
+        $chunk_size = $fetched_count < 10000 ? $fetched_count : 10000;
+
+        $this->writeToLog("Se va a chunkear en trozos $chunk_size elementos cada uno");
+        $this->writeToLog("------------------------------------------------------------------------------------------------------------------------------");
+
+        $split_array = array_chunk($this->fetched_followers_ids, $chunk_size);
+        $this->writeToLog("Resultado");
+        $this->writeToLog(json_encode($split_array));
+        $this->writeToLog("------------------------------------------------------------------------------------------------------------------------------");
 
         foreach ($split_array as $chunk) {
+
+            $this->writeToLog("Chunk:");
+            $this->writeToLog(json_encode($chunk));
+            $this->writeToLog("------------------------------------------------------------------------------------------------------------------------------");
+
+            // Se "pasa lista" a los records del array que estén en la base de datos
             $fast_updated_ids = Follower::where([['user_profile_id', $this->profile->id], ['is_present', false]])
-                ->whereIn('id', $chunk)
-                ->pluck('twitter_profile_id')
-                ->toArray();
-
-            Follower::where('user_profile_id', $this->profile->id)
                 ->whereIn('twitter_profile_id', $chunk)
-                ->update([
-                    'is_present' => true
-                ]);
+                ->pluck('twitter_profile_id');
 
-            // Se evalúa a los que no están presentes
-            $not_present = array_diff($chunk, $fast_updated_ids);
+            $this->writeToLog("Fast updated ids primeras:");
+            $this->writeToLog(json_encode($chunk));
+            $this->writeToLog("------------------------------------------------------------------------------------------------------------------------------");
 
-            foreach ($not_present as $not_present_follower_id) {
+            $result = Follower::where('user_profile_id', $this->profile->id)
+                ->update(['is_present' => true]);
+
+            $fast_updated_ids = $fast_updated_ids->toArray();
+
+            $this->writeToLog("Resultado: $result");
+
+            $this->writeToLog("Fast updated");
+            $this->writeToLog(json_encode($fast_updated_ids));
+            $this->writeToLog("------------------------------------------------------------------------------------------------------------------------------");
+
+            // Los que no están en la base de datos son seguidores nuevos
+            $this->writeToLog("Updateados early:");
+            $this->writeToLog(json_encode($fast_updated_ids));
+            $this->writeToLog("------------------------------------------------------------------------------------------------------------------------------");
+            $new_followers = array_diff($chunk, $fast_updated_ids);
+            unset($fast_updated_ids);
+
+            $this->writeToLog("Nuevos followers:");
+            $this->writeToLog(json_encode($new_followers));
+            $this->writeToLog("------------------------------------------------------------------------------------------------------------------------------");
+
+            if (!empty($new_followers)) {
+
+                // Se obtienen los nuevos TwitterProfiles desacartando los que no son nuevos
+                $already_inserted_profiles = TwitterProfile::whereIn('id', $new_followers)->pluck('id')->toArray();
+                $new_twitter_profiles_ids = array_diff($new_followers, $already_inserted_profiles);
+                unset($already_inserted_profiles);
+
+                if (!empty($new_twitter_profiles_ids)) {
+                    foreach ($new_twitter_profiles_ids as $key => $new_twitter_profile_id) {
+                        $f_new_profiles[] = [
+                            'id' => $new_twitter_profile_id
+                        ];
+                    }
+
+                    TwitterProfile::insert($f_new_profiles); // Bulk insert de todos los nuevos TwitterProfiles
+                    unset($f_new_profiles);
+                }
+
+                // Se formatea el array para la inserción masiva de Follows y Followers
+                foreach ($new_followers as $key => $new_twitter_profiles_id) {
+                    $f_new_followers[] = [
+                        'user_profile_id' => $this->profile->id,
+                        'twitter_profile_id' => $new_twitter_profiles_id
+                    ];
+                }
+
+                Follow::insert($f_new_followers);
+                Follower::insert($f_new_followers);
+                unset($f_new_followers);
+            }
+
+            /*foreach ($new_followers as $not_present_follower_id) {
                 TwitterProfile::insertReducedIfNew($not_present_follower_id);
 
                 Follow::create([
@@ -110,11 +183,11 @@ class UpdateFollowersJob implements ShouldQueue {
                 ]);
 
                 $this->updateFriendRelationships($not_present_follower_id, 'follow');
-            }
+            }*/
         }
     }
 
-    protected function cleanExfriends() {
+    protected function cleanExfollowers() {
         $unfollowers_ids = Follower::where([
             ['user_profile_id', $this->profile->id],
             ['is_present', false],
