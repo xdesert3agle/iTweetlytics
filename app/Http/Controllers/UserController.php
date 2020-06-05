@@ -14,17 +14,28 @@ use Thujohn\Twitter\Facades\Twitter;
 class UserController extends Controller {
     public static function get($profileIndex) {
         $startTime = microtime(true);
+
         $user = User::where('id', Auth::id())
             ->with('user_profiles')
             ->with(['current_user_profile' => function ($query) use ($profileIndex) {
-                $query->with('followers')
-                    ->with('follows')
-                    ->with('unfollows')
+                $query->with(['followers' => function ($query) {
+                    $query->limit(500);
+                }])
+                    ->with(['follows' => function ($query) {
+                        $query->limit(500);
+                    }])
+                    ->with(['unfollows' => function ($query) {
+                        $query->limit(500);
+                    }])
                     ->with(['friends' => function ($query) {
                         $query->where('hidden', false);
                     }])
-                    ->with('befriends')
-                    ->with('unfriends')
+                    ->with(['befriends' => function ($query) {
+                        $query->limit(500);
+                    }])
+                    ->with(['unfriends' => function ($query) {
+                        $query->limit(500);
+                    }])
                     ->with('reports')
                     ->with(['scheduled_tweets' => function ($query) {
                         $query->where('status', '!=', 'sent')
@@ -53,6 +64,18 @@ class UserController extends Controller {
         $user->current_user_profile->friends = $friends;
 
         return $user;
+    }
+
+    public static function memory_usage() {
+        $mem_usage = memory_get_usage(true);
+        if ($mem_usage < 1024) {
+            $mem_usage .= ' bytes';
+        } elseif ($mem_usage < 1048576) {
+            $mem_usage = round($mem_usage / 1024, 2) . ' kilobytes';
+        } else {
+            $mem_usage = round($mem_usage / 1048576, 2) . ' megabytes';
+        }
+        echo($mem_usage);
     }
 
     public function refresh($profileId) {

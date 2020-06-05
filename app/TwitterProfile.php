@@ -147,16 +147,7 @@ class TwitterProfile extends Model {
         return Url::where('twitter_profile_id', $this->id)->get()->pluck('expanded_url')->toArray();
     }
 
-    public static function insertIfNewReduced($profile, $arr) {
-        if ($arr instanceof \stdClass) // Si el parámetro no es un array se convierte a array
-            $arr = get_object_vars($arr);
-
-        TwitterProfile::firstOrCreate([
-            'id' => isset($arr['id_str']) ? $arr['id_str'] : $arr['id']
-        ]);
-    }
-
-    public static function insertIfNew($profile, $arr) {
+    public static function insertIfNew($arr) {
         if ($arr instanceof \stdClass) // Si el parámetro no es un array se convierte a array
             $arr = get_object_vars($arr);
 
@@ -182,4 +173,26 @@ class TwitterProfile extends Model {
             ]
         );
     }
+
+    public static function insertReducedIfNew($profile) {
+        switch(gettype($profile)) {
+            case 'string':
+                $id = $profile;
+                break;
+
+            case 'array':
+                $id = isset($profile['id_str']) ? $profile['id_str'] : $profile['id'];
+                break;
+
+            case 'object':
+                $profile = get_object_vars($profile);
+                $id = isset($profile['id_str']) ? $profile['id_str'] : $profile['id'];
+                break;
+        }
+
+        TwitterProfile::firstOrCreate([
+            'id' => $id
+        ]);
+    }
+
 }

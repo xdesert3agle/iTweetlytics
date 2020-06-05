@@ -2,7 +2,6 @@
 
 namespace App\Jobs;
 
-use App\Report;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
@@ -17,7 +16,6 @@ class GenerateDailyReportJob implements ShouldQueue {
     public function __construct($profile) {
         $this->profile = $profile;
     }
-
 
     public function handle() {
         $this->profile->generateDailyReport();

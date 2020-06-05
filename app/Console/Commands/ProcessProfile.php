@@ -2,11 +2,11 @@
 
 namespace App\Console\Commands;
 
+use App\Jobs\FetchRemainingFriendsLookups;
 use App\Jobs\UpdateFollowersJob;
 use App\UserProfile;
 use Illuminate\Console\Command;
 use Illuminate\Support\Str;
-use Thujohn\Twitter\Twitter;
 
 class ProcessProfile extends Command {
     const REQUEST_WINDOW = 15;
@@ -58,15 +58,7 @@ class ProcessProfile extends Command {
 
         foreach ($target as $i => $profile) {
             $profile->refresh();
-
-            $needed_followers_jobs = ceil($profile->twitter_profile->followers_count / (self::MAX_CONSECUTIVE_REQUESTS * self::FOLLOWERS_PER_REQUEST));
-
-            for ($j = 0; $j < $needed_followers_jobs; $j++) {
-                $followers_delay = $j * self::REQUEST_WINDOW;
-                $is_last_job = $j == ($needed_followers_jobs - 1) ? true : false;
-
-                UpdateFollowersJob::dispatch($profile, $is_last_job)->delay(now()->addMinutes($followers_delay));
-            }
+            UpdateFollowersJob::dispatch($profile);
         }
     }
 }

@@ -2,21 +2,14 @@
 
 namespace App\Http\Controllers;
 
-use App\Follow;
-use App\Follower;
 use App\Friend;
 use App\Helpers\ApiHelper;
 use App\Jobs\ScheduledTweetJob;
-use App\Report;
 use App\ScheduledTweet;
-use App\UserProfile;
-use App\Unfollow;
-use App\Unfriend;
-use App\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use Thujohn\Twitter\Facades\Twitter;
+
 class AppController extends Controller {
     public function index($selectedProfileIndex) {
         $startTime = microtime(true);

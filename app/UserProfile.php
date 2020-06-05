@@ -223,7 +223,7 @@ class UserProfile extends Model {
         $all_friends = Friend::where('user_profile_id', $this->id)->get();
         $total_friends_count = $all_friends->count();
 
-        // Si tiene reports se genera el informe normalmente procesando todos los cambios
+        // Si tiene reports se genera el informe normalmente, procesando todos los cambios
         if ($this->hasReports()) {
             $follows_count = Follow::where('user_profile_id', $this->id)->whereDate('created_at', Carbon::today())->count();
             $unfollows_count = Unfollow::where('user_profile_id', $this->id)->whereDate('created_at', Carbon::today())->count();

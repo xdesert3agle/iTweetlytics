@@ -41,7 +41,7 @@
             <div class="col-md col-12">
                 <div class="tab-content" id="pills-tabContent" :class="{'no-profiles': user.user_profiles.length == 0}">
                     <div v-if="user.user_profiles != null" class="tab-pane show" :class="{'active': user.user_profiles != null}" id="pills-home" role="tabpanel" aria-labelledby="pills-home-tab">
-                        <dashboard :user="user" :timeline="timeline" :mentions="mentions" :chats="chats" :lists="lists" :loadtime="loadtime"></dashboard>
+                        <dashboard :user="user" :timeline="timeline" :mentions="mentions" :lists="lists" :loadtime="loadtime"></dashboard>
                     </div>
                     <div v-if="user.user_profiles != null" class="tab-pane" id="pills-stats" role="tabpanel" aria-labelledby="pills-stats-tab">
                         <stats :user="Object.freeze(user)"></stats>
