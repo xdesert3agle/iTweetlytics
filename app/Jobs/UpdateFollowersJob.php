@@ -34,15 +34,10 @@ class UpdateFollowersJob implements ShouldQueue {
     }
 
     public function handle() {
-        $this->writeToLog("Voy a fetchear");
         $this->fetchFollowers(); // El resultado se guarda en el campo fetched_followers de la clase
-        $this->writeToLog("He terminado de fetchear");
 
-        $this->writeToLog("¿Está vacio fetched?: " . !empty($this->fetched_followers_ids));
         if (!empty($this->fetched_followers_ids)) { // Si se han recogido followers se procesan
-            $this->writeToLog("Voy a procesar followers");
             $this->processFollowers();
-            $this->writeToLog("He terminado de procesar followers");
         }
 
         // Si es el último job de la cadena se comienza el procesamiento
@@ -85,61 +80,33 @@ class UpdateFollowersJob implements ShouldQueue {
     protected function processFollowers() {
 
         // El array se divide en partes de 10.000 elementos, ya que MySQL tiene problemas al manejar un array muy grande
-        $this->writeToLog("Antes de chunkear:");
-        $this->writeToLog(json_encode($this->fetched_followers_ids));
-        $this->writeToLog("------------------------------------------------------------------------------------------------------------------------------");
-
         $fetched_count = count($this->fetched_followers_ids);
         $chunk_size = $fetched_count < 10000 ? $fetched_count : 10000;
 
-        $this->writeToLog("Se va a chunkear en trozos $chunk_size elementos cada uno");
-        $this->writeToLog("------------------------------------------------------------------------------------------------------------------------------");
-
         $split_array = array_chunk($this->fetched_followers_ids, $chunk_size);
-        $this->writeToLog("Resultado");
-        $this->writeToLog(json_encode($split_array));
-        $this->writeToLog("------------------------------------------------------------------------------------------------------------------------------");
 
-        foreach ($split_array as $chunk) {
-
-            $this->writeToLog("Chunk:");
-            $this->writeToLog(json_encode($chunk));
-            $this->writeToLog("------------------------------------------------------------------------------------------------------------------------------");
+        foreach ($split_array as $i => $chunk) {
 
             // Se "pasa lista" a los records del array que estén en la base de datos
-            $fast_updated_ids = Follower::where([['user_profile_id', $this->profile->id], ['is_present', false]])
-                ->whereIn('twitter_profile_id', $chunk)
-                ->pluck('twitter_profile_id');
+            $early_updated = Follower::where([['user_profile_id', $this->profile->id], ['is_present', false]])
+                ->whereIn('twitter_profile_id', $chunk);
 
-            $this->writeToLog("Fast updated ids primeras:");
-            $this->writeToLog(json_encode($chunk));
-            $this->writeToLog("------------------------------------------------------------------------------------------------------------------------------");
+            $early_updated_profile_ids =$early_updated->pluck('twitter_profile_id')->all();
 
-            $result = Follower::where('user_profile_id', $this->profile->id)
+            $result = Follower::where([['user_profile_id', $this->profile->id], ['is_present', false]])
+                ->whereIn('twitter_profile_id', $early_updated_profile_ids)
                 ->update(['is_present' => true]);
 
-            $fast_updated_ids = $fast_updated_ids->toArray();
-
-            $this->writeToLog("Resultado: $result");
-
-            $this->writeToLog("Fast updated");
-            $this->writeToLog(json_encode($fast_updated_ids));
-            $this->writeToLog("------------------------------------------------------------------------------------------------------------------------------");
+            $this->writeToLog("Resultado de updatear early el chunk $i: $result updateados");
 
             // Los que no están en la base de datos son seguidores nuevos
-            $this->writeToLog("Updateados early:");
-            $this->writeToLog(json_encode($fast_updated_ids));
-            $this->writeToLog("------------------------------------------------------------------------------------------------------------------------------");
-            $new_followers = array_diff($chunk, $fast_updated_ids);
-            unset($fast_updated_ids);
-
-            $this->writeToLog("Nuevos followers:");
-            $this->writeToLog(json_encode($new_followers));
-            $this->writeToLog("------------------------------------------------------------------------------------------------------------------------------");
+            $new_followers = array_diff($chunk, $early_updated_profile_ids);
+            unset($early_updated);
+            unset($early_updated_ids);
 
             if (!empty($new_followers)) {
 
-                // Se obtienen los nuevos TwitterProfiles desacartando los que no son nuevos
+                // Se obtienen los nuevos TwitterProfiles descartando los que no son nuevos
                 $already_inserted_profiles = TwitterProfile::whereIn('id', $new_followers)->pluck('id')->toArray();
                 $new_twitter_profiles_ids = array_diff($new_followers, $already_inserted_profiles);
                 unset($already_inserted_profiles);
