@@ -10,6 +10,7 @@ use App\Follow;
 use App\Unfollow;
 use App\Helpers\ApiHelper;
 use App\Unfriend;
+use Carbon\Carbon;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
@@ -34,7 +35,7 @@ class UpdateFollowersJob implements ShouldQueue {
     }
 
     public function handle() {
-        $this->fetchFollowers(); // El resultado se guarda en el campo fetched_followers de la clase
+        $this->fetchFollowers(); // El resultado se guarda en $this->fetched_followers_ids
 
         if (!empty($this->fetched_followers_ids)) { // Si se han recogido followers se procesan
             $this->processFollowers();
@@ -47,7 +48,7 @@ class UpdateFollowersJob implements ShouldQueue {
 
             $this->cleanExfollowers();
             $this->resetPresentAttribute();
-            //$this->sendUpdateFriendsJob();
+            $this->sendUpdateFriendsJob();
 
         } else { // Si no es el último job se manda uno más para que siga fetcheando
             $this->sendOneMoreJob();
@@ -85,24 +86,25 @@ class UpdateFollowersJob implements ShouldQueue {
 
         $split_array = array_chunk($this->fetched_followers_ids, $chunk_size);
 
-        foreach ($split_array as $i => $chunk) {
+        foreach ($split_array as $chunk) {
 
             // Se "pasa lista" a los records del array que estén en la base de datos
-            $early_updated = Follower::where([['user_profile_id', $this->profile->id], ['is_present', false]])
-                ->whereIn('twitter_profile_id', $chunk);
+            $early_updated = Follower::where([
+                'user_profile_id' => $this->profile->id,
+                'is_present' => false
+            ])->whereIn('twitter_profile_id', $chunk)
+                ->pluck('twitter_profile_id')
+                ->all();
 
-            $early_updated_profile_ids =$early_updated->pluck('twitter_profile_id')->all();
-
-            $result = Follower::where([['user_profile_id', $this->profile->id], ['is_present', false]])
-                ->whereIn('twitter_profile_id', $early_updated_profile_ids)
+            Follower::where([
+                'user_profile_id' => $this->profile->id,
+                'is_present' => false
+            ])->whereIn('twitter_profile_id', $early_updated)
                 ->update(['is_present' => true]);
 
-            $this->writeToLog("Resultado de updatear early el chunk $i: $result updateados");
-
             // Los que no están en la base de datos son seguidores nuevos
-            $new_followers = array_diff($chunk, $early_updated_profile_ids);
+            $new_followers = array_diff($chunk, $early_updated);
             unset($early_updated);
-            unset($early_updated_ids);
 
             if (!empty($new_followers)) {
 
@@ -114,7 +116,8 @@ class UpdateFollowersJob implements ShouldQueue {
                 if (!empty($new_twitter_profiles_ids)) {
                     foreach ($new_twitter_profiles_ids as $key => $new_twitter_profile_id) {
                         $f_new_profiles[] = [
-                            'id' => $new_twitter_profile_id
+                            'id' => $new_twitter_profile_id,
+                            'created_at' => Carbon::now()
                         ];
                     }
 
@@ -126,53 +129,41 @@ class UpdateFollowersJob implements ShouldQueue {
                 foreach ($new_followers as $key => $new_twitter_profiles_id) {
                     $f_new_followers[] = [
                         'user_profile_id' => $this->profile->id,
-                        'twitter_profile_id' => $new_twitter_profiles_id
+                        'twitter_profile_id' => $new_twitter_profiles_id,
+                        'created_at' => Carbon::now()
                     ];
                 }
 
                 Follow::insert($f_new_followers);
                 Follower::insert($f_new_followers);
+                $this->updateFriendsFollowingState($new_followers, 'follow');
                 unset($f_new_followers);
             }
-
-            /*foreach ($new_followers as $not_present_follower_id) {
-                TwitterProfile::insertReducedIfNew($not_present_follower_id);
-
-                Follow::create([
-                    'user_profile_id' => $this->profile->id,
-                    'twitter_profile_id' => $not_present_follower_id
-                ]);
-
-                Follower::create([
-                    'user_profile_id' => $this->profile->id,
-                    'twitter_profile_id' => $not_present_follower_id,
-                    'is_present' => true
-                ]);
-
-                $this->updateFriendRelationships($not_present_follower_id, 'follow');
-            }*/
         }
     }
 
     protected function cleanExfollowers() {
-        $unfollowers_ids = Follower::where([
-            ['user_profile_id', $this->profile->id],
-            ['is_present', false],
-        ])->get()->pluck('twitter_profile_id');
+        $unfollowers_profile_id = Follower::where([
+            'user_profile_id' => $this->profile->id,
+            'is_present' => false,
+        ])->get()->pluck('twitter_profile_id')->all();
 
-        foreach ($unfollowers_ids as $unfollower_id) {
-            Unfollow::create([
-                'user_profile_id' => $this->profile->id,
-                'twitter_profile_id' => $unfollower_id
-            ]);
+        if (!empty($unfollowers_profile_id)) {
+            foreach ($unfollowers_profile_id as $unfollower_profile_id) {
+                $f_unfollowers[] = [
+                    'user_profile_id' => $this->profile->id,
+                    'twitter_profile_id' => $unfollower_profile_id,
+                    'created_at' => Carbon::now()
+                ];
+            }
 
-            // Se elimina el perfil de la lista de followers
-            Follower::where([
-                ['user_profile_id', $this->profile->id],
-                ['id', $unfollower_id]
-            ])->delete();
+            Unfollow::insert($f_unfollowers);
 
-            $this->updateFriendRelationships($unfollower_id, 'unfollow');
+            Follower::where('user_profile_id', $this->profile->id)
+                ->whereIn('twitter_profile_id', $unfollowers_profile_id)
+                ->delete();
+
+            $this->updateFriendsFollowingState($unfollowers_profile_id, 'unfollow');
         }
     }
 
@@ -183,68 +174,20 @@ class UpdateFollowersJob implements ShouldQueue {
         ])->update(['is_present' => false]);
     }
 
-    /*protected function registerFollows($db_followers) {
-        $new_followers_ids = array_reverse(array_diff($this->fetched_followers_ids, $db_followers));
-
-        foreach ($new_followers_ids as $new_follower_id) {
-            TwitterProfile::insertReducedIfNew($new_follower_id);
-
-            $fields = [
-                'user_profile_id' => $this->profile->id,
-                'twitter_profile_id' => $new_follower_id
-            ];
-
-            // Se inserta el follow
-            Follow::create($fields);
-
-            // Se inserta el follower
-            Follower::create($fields);
-
-            $this->updateFriendRelationships($new_follower_id, 'follow');
-        }
-    }*/
-
-    /*protected function registerUnfollows($db_followers) {
-        $new_unfollowers = array_diff($db_followers, $this->fetched_followers_ids);
-        $new_unfollowers_hydrated = Follower::whereIn('id', $new_unfollowers)->get();
-
-        foreach ($new_unfollowers_hydrated as $unfollower) {
-
-            // Se registra el unfollow
-            Unfollow::create([
-                'user_profile_id' => $this->profile->id,
-                'twitter_profile_id' => $unfollower->id
-            ]);
-
-            // Se elimina el usuario de la lista de followers
-            Follower::where([
-                ['user_profile_id', $this->profile->id],
-                ['id', $unfollower->id]
-            ])->delete();
-
-            $this->updateFriendRelationships($unfollower->id, 'unfollow');
-        }
-    }*/
-
-    protected function updateFriendRelationships($id, $action) {
+    protected function updateFriendsFollowingState($pool, $action) {
         $value = $action == 'follow' ? true : false;
 
-        $updated = Friend::where([
-            'user_profile_id' => $this->profile->id,
-            'twitter_profile_id' => $id
-        ])->update(['is_following_back' => $value]);
+        Friend::where('user_profile_id', $this->profile->id)
+            ->whereIn('twitter_profile_id', $pool)
+            ->update(['is_following_back' => $value]);
 
-        if ($updated) {
-            Befriend::where([
-                'user_profile_id' => $this->profile->id,
-                'twitter_profile_id' => $id
-            ])->update(['is_following_back' => $value]);
+        Befriend::where('user_profile_id', $this->profile->id)
+            ->whereIn('twitter_profile_id', $pool)
+            ->update(['is_following_back' => $value]);
 
-            Unfriend::where([
-                'user_profile_id' => $this->profile->id,
-                'twitter_profile_id' => $id
-            ])->update(['is_following_back' => $value]);
-        }
+        Unfriend::where('user_profile_id', $this->profile->id)
+            ->whereIn('twitter_profile_id', $pool)
+            ->update(['is_following_back' => $value]);
     }
 
     protected function sendOneMoreJob() {
@@ -252,16 +195,8 @@ class UpdateFollowersJob implements ShouldQueue {
         UpdateFollowersJob::dispatch($this->profile)->delay(now()->addSeconds($next_job_delay_seconds));
     }
 
-
     protected function sendUpdateFriendsJob() {
-        $needed_friends_jobs = ceil($this->profile->twitter_profile->friends_count / (self::MAX_CONSECUTIVE_REQUESTS * self::IDS_PER_REQUEST));
-
-        $job_info = [
-            'id' => 0,
-            'last_job_id' => $needed_friends_jobs - 1
-        ];
-
-        UpdateFriendsJob::dispatch($this->profile, [], $job_info);
+        UpdateFriendsJob::dispatch($this->profile);
     }
 
     protected function writeToLog($content) {

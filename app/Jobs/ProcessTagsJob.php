@@ -21,6 +21,7 @@ class ProcessTagsJob implements ShouldQueue {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
     const AMOUNT_PER_ITER = 500;
+    const AMOUNT_PER_TABLE = 500;
 
     protected $profile;
 
@@ -40,12 +41,12 @@ class ProcessTagsJob implements ShouldQueue {
         $needed_iter = ceil($max_amount / self::AMOUNT_PER_ITER);
 
         for ($i = 0; $i < $needed_iter; $i++) {
-            $followers = TwitterProfile::whereIn('id', Follower::where('user_profile_id', $this->profile->id)->pluck('twitter_profile_id'))->take(self::AMOUNT_PER_ITER)->skip($i * self::AMOUNT_PER_ITER);
-            $follows = TwitterProfile::whereIn('id', Follow::where('user_profile_id', $this->profile->id)->pluck('twitter_profile_id'))->take(self::AMOUNT_PER_ITER)->skip($i * self::AMOUNT_PER_ITER);
-            $unfollows = TwitterProfile::whereIn('id', Unfollow::where('user_profile_id', $this->profile->id)->pluck('twitter_profile_id'))->take(self::AMOUNT_PER_ITER)->skip($i * self::AMOUNT_PER_ITER);
-            $friends = TwitterProfile::whereIn('id', Friend::where('user_profile_id', $this->profile->id)->pluck('twitter_profile_id'))->take(self::AMOUNT_PER_ITER)->skip($i * self::AMOUNT_PER_ITER);
-            $unfriends = TwitterProfile::whereIn('id', Unfriend::where('user_profile_id', $this->profile->id)->pluck('twitter_profile_id'))->take(self::AMOUNT_PER_ITER)->skip($i * self::AMOUNT_PER_ITER);
-            $all_profiles = TwitterProfile::whereIn('id', Unfriend::where('user_profile_id', 1)->pluck('twitter_profile_id'))->take(self::AMOUNT_PER_ITER)->skip($i * self::AMOUNT_PER_ITER)
+            $followers = TwitterProfile::whereIn('id', Follower::where('user_profile_id', $this->profile->id)->pluck('twitter_profile_id'))->take(self::AMOUNT_PER_TABLE)->skip($i * self::AMOUNT_PER_TABLE);
+            $follows = TwitterProfile::whereIn('id', Follow::where('user_profile_id', $this->profile->id)->pluck('twitter_profile_id'))->take(self::AMOUNT_PER_TABLE)->skip($i * self::AMOUNT_PER_TABLE);
+            $unfollows = TwitterProfile::whereIn('id', Unfollow::where('user_profile_id', $this->profile->id)->pluck('twitter_profile_id'))->take(self::AMOUNT_PER_TABLE)->skip($i * self::AMOUNT_PER_TABLE);
+            $friends = TwitterProfile::whereIn('id', Friend::where('user_profile_id', $this->profile->id)->pluck('twitter_profile_id'))->take(self::AMOUNT_PER_TABLE)->skip($i * self::AMOUNT_PER_TABLE);
+            $unfriends = TwitterProfile::whereIn('id', Unfriend::where('user_profile_id', $this->profile->id)->pluck('twitter_profile_id'))->take(self::AMOUNT_PER_TABLE)->skip($i * self::AMOUNT_PER_TABLE);
+            $all_profiles = TwitterProfile::whereIn('id', Unfriend::where('user_profile_id', 1)->pluck('twitter_profile_id'))->take(self::AMOUNT_PER_TABLE)->skip($i * self::AMOUNT_PER_TABLE)
                 ->union($followers)
                 ->union($follows)
                 ->union($unfollows)

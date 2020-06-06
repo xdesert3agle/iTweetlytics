@@ -28,7 +28,8 @@ class UserController extends Controller {
                         $query->limit(500);
                     }])
                     ->with(['friends' => function ($query) {
-                        $query->where('hidden', false);
+                        $query->where('hidden', false)
+                            ->limit(500);;
                     }])
                     ->with(['befriends' => function ($query) {
                         $query->limit(500);
@@ -49,19 +50,6 @@ class UserController extends Controller {
         $aux = $user->current_user_profile[0];
         unset($user->current_user_profile);
         $user->current_user_profile = $aux;
-
-        $followers = $user->current_user_profile->followers->mapWithKeys(function ($item) {
-            return [$item['id'] => $item];
-        });
-
-        unset($user->current_user_profile->followers);
-        $user->current_user_profile->followers = $followers;
-
-        $friends = $user->current_user_profile->friends->mapWithKeys(function ($item) {
-            return [$item['id'] => $item];
-        });
-        unset($user->current_user_profile->friends);
-        $user->current_user_profile->friends = $friends;
 
         return $user;
     }

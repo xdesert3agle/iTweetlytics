@@ -49,12 +49,12 @@
                                                         <a :href="'https://twitter.com/' + profile.twitter_profile.screen_name">
                                                             {{ profile.twitter_profile.name }}
                                                         </a>
-                                                        <span @click.prevent v-if="shouldShowFollowingStat && d_user.current_user_profile.followers[profile.twitter_profile.id]" class="badge badge-success">Te sigue</span>
-                                                        <span @click.prevent v-else-if="shouldShowFollowingStat && !d_user.current_user_profile.followers[profile.twitter_profile.id]" class="badge badge-danger">No te sigue</span>
+                                                        <span @click.prevent v-if="(shouldShowFollowingStat && profile.is_following_back) || endpointIncludes('/followers/')" class="badge badge-success">Te sigue</span>
+                                                        <span @click.prevent v-else class="badge badge-danger">No te sigue</span>
                                                     </span>
                                                     <span class="screen-name text-muted">@{{ profile.twitter_profile.screen_name }}</span>
                                                 </div>
-                                                <div v-if="d_user.current_user_profile.friends[profile.twitter_profile.id]" class="col-4">
+                                                <div v-if="profile.is_followed_back || endpointIncludes('/friends/')" class="col-4">
                                                     <button @click="unfollowUser(profile.twitter_profile.screen_name, i)" class="btn btn-sm btn-unfollow">
                                                         Dejar de seguir
                                                     </button>
@@ -102,7 +102,7 @@
                 },
                 profilesList: null,
                 timeInterval: 'weekly',
-                d_user: this.user
+                d_user: this.user,
             }
         },
         computed: {
@@ -119,8 +119,11 @@
                 }
             },
             shouldShowFollowingStat() {
-                return !this.stat_endpoint.toLowerCase().includes('follow');
-            }
+                return this.stat_endpoint.toLowerCase().includes('friend');
+            },
+            shouldShowFollowerStat() {
+                return this.stat_endpoint.toLowerCase().includes('follow');
+            },
         },
         created() {
             this.fetchData();
@@ -179,6 +182,9 @@
                         });
                     }
                 });
+            },
+            endpointIncludes($needle) {
+                return this.stat_endpoint.toLowerCase().includes($needle);
             }
         }
     }
