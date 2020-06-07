@@ -18,9 +18,10 @@ class UserController extends Controller {
         $user = User::where('id', Auth::id())
             ->with('user_profiles.twitter_profile')
             ->with(['current_user_profile' => function ($query) use ($profileIndex) {
-                $query->with(['followers' => function ($query) {
-                    $query->limit(500);
-                }])
+                $query->with('twitter_profile')
+                    ->with(['followers' => function ($query) {
+                        $query->limit(500);
+                    }])
                     ->with(['follows' => function ($query) {
                         $query->limit(500);
                     }])
@@ -50,6 +51,15 @@ class UserController extends Controller {
         $aux = $user->current_user_profile[0];
         unset($user->current_user_profile);
         $user->current_user_profile = $aux;
+
+        if ($user->current_user_profile->scheduled_tweets->count() > 0) {
+            foreach ($user->current_user_profile->scheduled_tweets as $tweet) {
+                $formatted_scheduled_tweets[Carbon::createFromTimestamp($tweet->schedule_time / 1000)->format('d/m/Y')][] = $tweet;
+            }
+
+            unset($user->current_user_profile->scheduled_tweets);
+            $user->current_user_profile->scheduled_tweets = $formatted_scheduled_tweets;
+        }
 
         return $user;
     }

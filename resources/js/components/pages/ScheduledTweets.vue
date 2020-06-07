@@ -8,7 +8,7 @@
                     </div>
                 </div>
 
-                <div v-if="user.current_user_profile.scheduled_tweets.length > 0" class="row no-gutters">
+                <div v-if="user.current_user_profile.scheduled_tweets != null" class="row no-gutters scheduled-tweets-container">
                     <div class="col-3" v-for="(tweetGroup, date) in user.current_user_profile.scheduled_tweets">
                         <h5>{{ date }}</h5>
                         <div v-for="(tweet, j) in tweetGroup" class="row tweet-container">
@@ -17,15 +17,15 @@
                                     <div class="card-body">
                                         <div class="row no-gutters">
                                             <div class="col-2">
-                                                <img :src="user.current_user_profile.profile_image_url" class="tweet-user-avatar" alt="Tu avatar">
+                                                <img :src="user.current_user_profile.twitter_profile.profile_image_url" class="tweet-user-avatar" alt="Tu avatar">
                                             </div>
                                             <div class="col">
                                                 <div class="row">
                                                     <div class="col">
-                                                        <a :href="'https://twitter.com/' + user.current_user_profile.screen_name" class="tweet-author">
-                                                            <span class="name">{{ user.current_user_profile.name }}</span>
+                                                        <a :href="'https://twitter.com/' + user.current_user_profile.twitter_profile.screen_name" class="tweet-author">
+                                                            <span class="name">{{ user.current_user_profile.twitter_profile.name }}</span>
                                                             <span class="screen-name text-muted">
-                                                                @{{ user.current_user_profile.screen_name }}
+                                                                @{{ user.current_user_profile.twitter_profile.screen_name }}
                                                             </span>
                                                         </a>
                                                     </div>
@@ -86,122 +86,128 @@
         text-decoration: none;
     }
 
-    .tweet-container {
-        color: inherit;
+    .scheduled-tweets-container {
+        div[class*="col"]:not(:first-child) {
+            padding-left: 10px;
+        }
 
-        .tweet-wrapper {
-            .tweet-card {
-                border-radius: 0;
-                border-left: 0;
-                border-right: 0;
-                border-top: none;
+        .tweet-container {
+            color: inherit;
 
-                .card-body {
-                    padding: 15px;
+            .tweet-wrapper {
+                .tweet-card {
+                    border-radius: 0;
+                    border-left: 0;
+                    border-right: 0;
+                    border-top: none;
 
-                    .row {
-                        [class*="col"] {
-                            &:not(:first-child) {
-                                margin-left: 15px;
-                            }
+                    .card-body {
+                        padding: 15px;
 
-                            .tweet-user-avatar {
-                                width: 100%;
-                                border-radius: 50%;
-                            }
+                        .row {
+                            [class*="col"] {
+                                &:not(:first-child) {
+                                    margin-left: 15px;
+                                }
 
-                            .tweet-author {
-                                &:hover {
+                                .tweet-user-avatar {
+                                    width: 100%;
+                                    border-radius: 50%;
+                                }
+
+                                .tweet-author {
+                                    &:hover {
+                                        .name {
+                                            text-decoration: underline;
+                                        }
+                                    }
+
                                     .name {
-                                        text-decoration: underline;
+                                        font-weight: bold !important;
+                                        color: $textColor;
+                                    }
+
+                                    .screen-name {
+                                        font-weight: normal;
+                                        color: #a7a2ce;
                                     }
                                 }
 
-                                .name {
-                                    font-weight: bold !important;
-                                    color: $textColor;
+                                .tweet-text {
+                                    &-entity {
+                                        font-weight: bold !important;
+                                    }
                                 }
 
-                                .screen-name {
-                                    font-weight: normal;
-                                    color: #a7a2ce;
+                                .tweet-schedule-hour {
+                                    align-self: flex-end;
                                 }
-                            }
 
-                            .tweet-text {
-                                &-entity {
-                                    font-weight: bold !important;
-                                }
-                            }
+                                .tweet-options {
+                                    margin-top: 10px;
 
-                            .tweet-schedule-hour {
-                                align-self: flex-end;
-                            }
+                                    .tweet-action {
+                                        cursor: pointer;
+                                        color: lighten(black, 65%);
+                                        transition: 200ms;
+                                        font-weight: bold;
 
-                            .tweet-options {
-                                margin-top: 10px;
+                                        &.action-comment {
+                                            &:hover {
+                                                color: lighten($primaryColor, 10%);
+                                            }
+                                        }
 
-                                .tweet-action {
-                                    cursor: pointer;
-                                    color: lighten(black, 65%);
-                                    transition: 200ms;
-                                    font-weight: bold;
+                                        &.action-retweet {
+                                            &.retweeted {
+                                                color: lighten(green, 10%);
+                                            }
 
-                                    &.action-comment {
-                                        &:hover {
-                                            color: lighten($primaryColor, 10%);
+                                            &:hover {
+                                                color: lighten(green, 10%);
+                                            }
+                                        }
+
+                                        &.action-like {
+                                            &.liked {
+                                                color: lighten(red, 10%);
+                                            }
+
+                                            &:hover {
+                                                color: lighten(red, 10%);
+                                            }
+                                        }
+
+                                        &.action-share {
+                                            &:hover {
+                                                color: lighten($primaryColor, 10%);
+                                            }
                                         }
                                     }
 
-                                    &.action-retweet {
-                                        &.retweeted {
+                                    &.retweeted-tweet {
+                                        .action-retweet {
                                             color: lighten(green, 10%);
                                         }
-
-                                        &:hover {
-                                            color: lighten(green, 10%);
-                                        }
                                     }
 
-                                    &.action-like {
-                                        &.liked {
+                                    &.favorited-tweet {
+                                        .action-like {
                                             color: lighten(red, 10%);
                                         }
-
-                                        &:hover {
-                                            color: lighten(red, 10%);
-                                        }
-                                    }
-
-                                    &.action-share {
-                                        &:hover {
-                                            color: lighten($primaryColor, 10%);
-                                        }
-                                    }
-                                }
-
-                                &.retweeted-tweet {
-                                    .action-retweet {
-                                        color: lighten(green, 10%);
-                                    }
-                                }
-
-                                &.favorited-tweet {
-                                    .action-like {
-                                        color: lighten(red, 10%);
                                     }
                                 }
                             }
+
                         }
-
                     }
                 }
             }
-        }
 
-        &:last-child {
-            .tweet-card {
-                border-bottom: 1px solid rgba(0, 0, 0, 0.125);
+            &:last-child {
+                .tweet-card {
+                    border-bottom: 1px solid rgba(0, 0, 0, 0.125);
+                }
             }
         }
     }
