@@ -16,7 +16,7 @@ class UserController extends Controller {
         $startTime = microtime(true);
 
         $user = User::where('id', Auth::id())
-            ->with('user_profiles')
+            ->with('user_profiles.twitter_profile')
             ->with(['current_user_profile' => function ($query) use ($profileIndex) {
                 $query->with(['followers' => function ($query) {
                     $query->limit(500);

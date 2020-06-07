@@ -202,17 +202,6 @@ class UserProfile extends Model {
         return $found_tags;
     }
 
-    public function refreshTags($tables = []) {
-        foreach ($tables as $table) {
-            $records = $table::where('user_profile_id', $this->id)->with('twitter_profile')->get();
-
-            foreach ($records as $record) {
-                $record->tags = self::getTargetMatchingTags($this, $record);
-                $record->save();
-            }
-        }
-    }
-
     public function getExpandedUrls() {
         return Url::where('twitter_profile_id', $this->id)->get()->pluck('expanded_url')->toArray();
     }

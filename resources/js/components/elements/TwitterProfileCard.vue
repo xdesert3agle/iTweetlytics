@@ -2,7 +2,7 @@
     <div :class="cardClasses">
         <div class="card profile-card">
             <div class="banner-container">
-                <img class="card-img-top" :src="twitterProfile.profile_banner_url" :alt="'Banner del perfil ' + twitterProfile.screen_name">
+                <img class="card-img-top" :src="twitterProfile.twitter_profile.profile_banner_url" :alt="'Banner del perfil ' + twitterProfile.twitter_profile.screen_name">
                 <div class="banner-content-container">
                     <button @click="refreshProfile" class="btn btn-primary btn-refresh" data-toggle="tooltip" data-placement="top" title="Actualizar perfil">
                         <i class="fa fa-sync"></i>
@@ -10,7 +10,7 @@
 
                     <div class="row no-gutters">
                         <div class="col offset-3">
-                            <span class="profile-name">{{ twitterProfile.name }}</span>
+                            <span class="profile-name">{{ twitterProfile.twitter_profile.name }}</span>
                         </div>
                     </div>
                 </div>
@@ -19,20 +19,20 @@
             <div class="profile-card-body">
                 <div class="row no-gutters">
                     <div class="col-md-3 col-3 avatar-col">
-                        <img class="profile-card-avatar" :src="twitterProfile.profile_image_url" :alt="'Avatar de ' + twitterProfile.screen_name">
+                        <img class="profile-card-avatar" :src="twitterProfile.twitter_profile.profile_image_url" :alt="'Avatar de ' + twitterProfile.twitter_profile.screen_name">
                     </div>
                     <div class="col">
                         <div class="row no-gutters">
                             <div class="col profile-card-attribute">
-                                <span>{{ twitterProfile.statuses_count }}</span>
+                                <span>{{ twitterProfile.twitter_profile.statuses_count }}</span>
                                 <h5 class="text-muted">Tweets</h5>
                             </div>
                             <div class="col profile-card-attribute">
-                                <span>{{ twitterProfile.friends_count }}</span>
+                                <span>{{ twitterProfile.twitter_profile.friends_count }}</span>
                                 <h5 class="text-muted">Siguiendo</h5>
                             </div>
                             <div class="col profile-card-attribute">
-                                <span>{{ twitterProfile.followers_count }}</span>
+                                <span>{{ twitterProfile.twitter_profile.followers_count }}</span>
                                 <h5 class="text-muted">Seguidores</h5>
                             </div>
                         </div>
