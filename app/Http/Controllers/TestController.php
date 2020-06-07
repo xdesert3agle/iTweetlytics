@@ -28,8 +28,8 @@ class TestController extends Controller {
         //dd(UserProfile::where('id', 1)->first());
 
         ApiHelper::reconfig(UserProfile::where('id', 1)->first());
-        dd(Carbon::today());
-        $test = Unfollow::where('user_profile_id', 1)->where('created_at', Carbon::today())->count();
+
+        $test = ApiHelper::getRateLimit('followers');
 
         dd($test);
 

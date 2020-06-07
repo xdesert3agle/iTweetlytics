@@ -86,33 +86,36 @@ class UpdateFollowersAndFriendsFollowingStatusJob implements ShouldQueue {
 
     protected function updateFriends() {
         $friends_count = Friend::where('user_profile_id', $this->profile->id)->count();
-        $friends_chunk_size = $friends_count < self::MAX_CHUNK_SIZE ? $friends_count : self::MAX_CHUNK_SIZE;
-        $num_friends_queries = ceil($friends_count / $friends_chunk_size);
 
-        for ($i = 0; $i < $num_friends_queries; $i++) {
-            $friends_chunk_profile_ids = Friend::where([
-                'user_profile_id' => $this->profile->id,
-            ])->skip($i * $friends_chunk_size)->take($friends_chunk_size)->pluck('twitter_profile_id')->all();
+        if ($friends_count > 0) {
+            $friends_chunk_size = $friends_count < self::MAX_CHUNK_SIZE ? $friends_count : self::MAX_CHUNK_SIZE;
+            $num_friends_queries = ceil($friends_count / $friends_chunk_size);
 
-            Follower::where('user_profile_id', $this->profile->id)
-                ->whereIn('twitter_profile_id', $friends_chunk_profile_ids)
-                ->update(['is_followed_back' => true]);
+            for ($i = 0; $i < $num_friends_queries; $i++) {
+                $friends_chunk_profile_ids = Friend::where([
+                    'user_profile_id' => $this->profile->id,
+                ])->skip($i * $friends_chunk_size)->take($friends_chunk_size)->pluck('twitter_profile_id')->all();
 
-            Follow::where('user_profile_id', $this->profile->id)
-                ->whereIn('twitter_profile_id', $friends_chunk_profile_ids)
-                ->update(['is_followed_back' => true]);
+                Follower::where('user_profile_id', $this->profile->id)
+                    ->whereIn('twitter_profile_id', $friends_chunk_profile_ids)
+                    ->update(['is_followed_back' => true]);
 
-            Unfollow::where('user_profile_id', $this->profile->id)
-                ->whereIn('twitter_profile_id', $friends_chunk_profile_ids)
-                ->update(['is_followed_back' => true]);
+                Follow::where('user_profile_id', $this->profile->id)
+                    ->whereIn('twitter_profile_id', $friends_chunk_profile_ids)
+                    ->update(['is_followed_back' => true]);
 
-            Befriend::where('user_profile_id', $this->profile->id)
-                ->whereIn('twitter_profile_id', $friends_chunk_profile_ids)
-                ->update(['is_followed_back' => true]);
+                Unfollow::where('user_profile_id', $this->profile->id)
+                    ->whereIn('twitter_profile_id', $friends_chunk_profile_ids)
+                    ->update(['is_followed_back' => true]);
 
-            Unfriend::where('user_profile_id', $this->profile->id)
-                ->whereIn('twitter_profile_id', $friends_chunk_profile_ids)
-                ->update(['is_followed_back' => true]);
+                Befriend::where('user_profile_id', $this->profile->id)
+                    ->whereIn('twitter_profile_id', $friends_chunk_profile_ids)
+                    ->update(['is_followed_back' => true]);
+
+                Unfriend::where('user_profile_id', $this->profile->id)
+                    ->whereIn('twitter_profile_id', $friends_chunk_profile_ids)
+                    ->update(['is_followed_back' => true]);
+            }
         }
     }
 
