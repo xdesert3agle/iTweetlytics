@@ -107,6 +107,7 @@ class UpdateFollowersJob implements ShouldQueue {
             unset($early_updated);
 
             if (!empty($new_followers)) {
+                $new_followers = array_reverse($new_followers);
 
                 // Se obtienen los nuevos TwitterProfiles descartando los que no son nuevos
                 $already_inserted_profiles = TwitterProfile::whereIn('id', $new_followers)->pluck('id')->toArray();
@@ -114,7 +115,7 @@ class UpdateFollowersJob implements ShouldQueue {
                 unset($already_inserted_profiles);
 
                 if (!empty($new_twitter_profiles_ids)) {
-                    foreach ($new_twitter_profiles_ids as $key => $new_twitter_profile_id) {
+                    foreach ($new_twitter_profiles_ids as $new_twitter_profile_id) {
                         $f_new_profiles[] = [
                             'id' => $new_twitter_profile_id,
                             'created_at' => Carbon::now()
@@ -126,7 +127,7 @@ class UpdateFollowersJob implements ShouldQueue {
                 }
 
                 // Se formatea el array para la inserción masiva de Follows y Followers
-                foreach ($new_followers as $key => $new_twitter_profiles_id) {
+                foreach ($new_followers as $new_twitter_profiles_id) {
                     $f_new_followers[] = [
                         'user_profile_id' => $this->profile->id,
                         'twitter_profile_id' => $new_twitter_profiles_id,

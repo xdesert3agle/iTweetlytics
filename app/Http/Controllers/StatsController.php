@@ -142,7 +142,7 @@ class StatsController extends Controller {
                     ->when($is_accum, function ($query) use ($startTime, $now) {
                         $query->whereBetween('created_at', [$startTime, $now]);
                     })
-                    ->orderByDesc('id')
+                    ->orderBy('id', 'desc')
                     ->get();
 
                 $response['users_list'] = $users_list;

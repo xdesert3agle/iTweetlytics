@@ -10,6 +10,7 @@ use App\Helpers\ApiHelper;
 use App\TwitterProfile;
 use App\Unfollow;
 use App\Unfriend;
+use App\User;
 use App\UserProfile;
 use App\UserProfileTaggedProfiles;
 use Carbon\Carbon;
@@ -31,7 +32,11 @@ class TestController extends Controller {
 
         $test = ApiHelper::getRateLimit('followers');
 
-        dd($test);
+        $user = User::where('id', 1)->with(['user_profiles.followers' => function($query) {
+            $query->orderBy('followers.id');
+        }])->first();
+
+        dd($user->user_profiles[0]->followers[0]->screen_name);
 
         $endTime = microtime(true);
         $loadTime = $endTime - $startTime;

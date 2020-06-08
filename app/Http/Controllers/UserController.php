@@ -13,14 +13,12 @@ use Thujohn\Twitter\Facades\Twitter;
 
 class UserController extends Controller {
     public static function get($profileIndex) {
-        $startTime = microtime(true);
-
         $user = User::where('id', Auth::id())
             ->with('user_profiles.twitter_profile')
             ->with(['current_user_profile' => function ($query) use ($profileIndex) {
                 $query->with('twitter_profile')
                     ->with(['followers' => function ($query) {
-                        $query->limit(500);
+                        $query->limit(500)->orderBy('followers.id');;
                     }])
                     ->with(['follows' => function ($query) {
                         $query->limit(500);

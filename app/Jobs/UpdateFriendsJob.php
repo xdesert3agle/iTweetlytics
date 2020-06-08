@@ -109,6 +109,7 @@ class UpdateFriendsJob implements ShouldQueue {
             unset($early_updated);
 
             if (!empty($new_friends)) {
+                $new_friends = array_reverse($new_friends);
 
                 // Se obtienen los nuevos TwitterProfiles descartando los que no son nuevos
                 $already_inserted_profiles = TwitterProfile::whereIn('id', $new_friends)->pluck('id')->toArray();
