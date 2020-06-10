@@ -8,6 +8,7 @@ use App\Jobs\ScheduledTweetJob;
 use App\ScheduledTweet;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Thujohn\Twitter\Facades\Twitter;
 
 class AppController extends Controller {

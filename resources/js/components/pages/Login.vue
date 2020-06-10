@@ -22,7 +22,7 @@
                                 <div class="row">
                                     <div class="col">
                                         <div class="form-group form-check">
-                                            <input class="form-check-input" type="checkbox" name="remember" id="remember">
+                                            <input v-model="user.remember" class="form-check-input" type="checkbox" name="remember" id="remember">
 
                                             <label class="form-check-label" for="remember">
                                                 Mantener la sesión iniciada
@@ -56,7 +56,8 @@
             return {
                 user: {
                     email: null,
-                    password: null
+                    password: null,
+                    remember: null
                 },
                 loginError: false
             }
@@ -64,6 +65,7 @@
         methods: {
             attemptLogin: function () {
                 this.loginError = false;
+
                 axios.post('login', this.user).then((response) => {
                     this.$swal({
                         html: '<span class="welcome-message">¡Bienvenido, ' + response.data + '!</h1>',
