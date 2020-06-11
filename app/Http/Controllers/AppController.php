@@ -9,6 +9,7 @@ use App\ScheduledTweet;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cookie;
 use Thujohn\Twitter\Facades\Twitter;
 
 class AppController extends Controller {

@@ -63,6 +63,11 @@ input ~ label {
     &::placeholder {
         color: rgba(38, 38, 39, 0.40) !important;
     }
+
+    &:disabled, &[readonly] {
+        background-color: #e9ecef !important;
+        opacity: 1;
+    }
 }
 
 .navbar-nav {
