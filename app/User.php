@@ -5,6 +5,7 @@ namespace App;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Facades\Auth;
 use Thujohn\Twitter\Twitter;
 
 class User extends Authenticatable {
@@ -20,7 +21,8 @@ class User extends Authenticatable {
         'name',
         'surname',
         'email',
-        'password'
+        'password',
+        'selected_profile'
     ];
 
     /**
@@ -44,7 +46,7 @@ class User extends Authenticatable {
     }
 
     public function current_user_profile() {
-        return $this->hasMany('App\UserProfile');
+        return $this->hasMany('App\UserProfile')->where('id', Auth::user()->selected_profile);
     }
 
     public function hasSyncProfiles() {

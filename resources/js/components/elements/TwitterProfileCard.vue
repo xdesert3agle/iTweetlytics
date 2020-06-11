@@ -2,15 +2,19 @@
     <div :class="cardClasses">
         <div class="card profile-card">
             <div class="banner-container">
-                <img class="card-img-top" :src="twitterProfile.twitter_profile.profile_banner_url" :alt="'Banner del perfil ' + twitterProfile.twitter_profile.screen_name">
+                <img class="card-img-top" :src="userProfile.twitter_profile.profile_banner_url" :alt="'Banner del perfil ' + userProfile.twitter_profile.screen_name">
                 <div class="banner-content-container">
-                    <button @click="refreshProfile" class="btn btn-primary btn-refresh" data-toggle="tooltip" data-placement="top" title="Actualizar perfil">
-                        <i class="fa fa-sync"></i>
-                    </button>
-
+                    <div class="card-buttons-container">
+                        <button @click="refreshProfile" class="btn btn-primary" data-toggle="tooltip" data-placement="top" title="Actualizar perfil">
+                            <i class="fa fa-sync"></i>
+                        </button>
+                        <button :disabled="isThisTheActiveProfile" @click="changeProfile(userProfile.id)" class="btn btn-primary" data-toggle="tooltip" data-placement="top" title="Acceder a este perfil">
+                            <i class="fas fa-door-open"></i>
+                        </button>
+                    </div>
                     <div class="row no-gutters">
                         <div class="col offset-3">
-                            <span class="profile-name">{{ twitterProfile.twitter_profile.name }}</span>
+                            <span class="profile-name">{{ userProfile.twitter_profile.name }}</span>
                         </div>
                     </div>
                 </div>
@@ -19,20 +23,20 @@
             <div class="profile-card-body">
                 <div class="row no-gutters">
                     <div class="col-md-3 col-3 avatar-col">
-                        <img class="profile-card-avatar" :src="twitterProfile.twitter_profile.profile_image_url" :alt="'Avatar de ' + twitterProfile.twitter_profile.screen_name">
+                        <img class="profile-card-avatar" :src="userProfile.twitter_profile.profile_image_url" :alt="'Avatar de ' + userProfile.twitter_profile.screen_name">
                     </div>
                     <div class="col">
                         <div class="row no-gutters">
                             <div class="col profile-card-attribute">
-                                <span>{{ twitterProfile.twitter_profile.statuses_count }}</span>
+                                <span>{{ userProfile.twitter_profile.statuses_count }}</span>
                                 <h5 class="text-muted">Tweets</h5>
                             </div>
                             <div class="col profile-card-attribute">
-                                <span>{{ twitterProfile.twitter_profile.friends_count }}</span>
+                                <span>{{ userProfile.twitter_profile.friends_count }}</span>
                                 <h5 class="text-muted">Siguiendo</h5>
                             </div>
                             <div class="col profile-card-attribute">
-                                <span>{{ twitterProfile.twitter_profile.followers_count }}</span>
+                                <span>{{ userProfile.twitter_profile.followers_count }}</span>
                                 <h5 class="text-muted">Seguidores</h5>
                             </div>
                         </div>
@@ -46,28 +50,34 @@
 <script>
     export default {
         props: {
-            twitterProfile: Object,
-            colSize: Number
+            user: Object,
+            userProfile: Object,
+            colSize: Number,
+            selectedProfile: String,
         },
         mounted() {
             this.activateTooltips();
         },
         computed: {
-            cardClasses: function() {
+            cardClasses() {
                 return 'col-md-' + (this.colSize ? this.colSize : 4) + ' col-12 twitter-profile-card';
             },
             refreshProfileUrl() {
-                return '/ajax/user/refresh/' + this.twitterProfile.id;
+                return '/ajax/user/refresh/' + this.userProfile.twitter_profile.id;
+            },
+            isThisTheActiveProfile() {
+                console.log(this.userProfile.id == this.user.selected_profile);
+                return this.userProfile.id == this.user.selected_profile;
             }
         },
         methods: {
-            refreshProfile: function() {
+            refreshProfile() {
                 axios.get(this.refreshProfileUrl).then((response) => {
                     let toastType;
 
                     if (response.data.status == 'success') {
                         toastType = 'success';
-                        this.twitterProfile = response.data.data;
+                        this.userProfile = response.data.data;
                     } else {
                         toastType = 'error';
                     }
@@ -82,7 +92,37 @@
                     });
                 });
             },
-            activateTooltips: function() {
+            changeProfile(id) {
+                axios.post('/ajax/user/profile/change', {
+                    'target_profile': id
+                }).then((response) => {
+                    let toastType;
+
+                    if (response.data.status == 'success') {
+                        this.$toastr.Add({
+                            msg: response.data.message,
+                            clickClose: true,
+                            timeout: 1500,
+                            type: response.data.status,
+                            preventDuplicates: true,
+                            classNames: ["animated", "slideInRight", "ms-300"],
+                            onClosed: () => window.location.reload()
+                        });
+                    } else {
+                        toastType = 'error';
+
+                        this.$toastr.Add({
+                            msg: response.data.message,
+                            clickClose: true,
+                            timeout: 3000,
+                            type: response.data.status,
+                            preventDuplicates: true,
+                            classNames: ["animated", "slideInRight", "ms-300"],
+                        });
+                    }
+                });
+            },
+            activateTooltips() {
                 $('[data-toggle="tooltip"]').tooltip();
             }
         }
@@ -123,17 +163,29 @@
                     padding: 10px 0;
                 }
 
-                .btn-refresh {
+                .card-buttons-container {
                     position: absolute;
                     top: 15px;
                     right: 15px;
 
-                    width: 40px;
-                    height: 40px;
+                    button {
+                        display: flex;
+                        justify-content: center;
+                        align-items: center;
+                        border-radius: 50%!important;
+                        width: 40px;
+                        height: 40px;
 
-                    display: flex;
-                    justify-content: center;
-                    border-radius: 50%!important;
+                        &:not(:first-child) {
+                            margin-top: 15px;
+                        }
+
+                        &:disabled {
+                            background: #919597;
+                            opacity: 1;
+                            cursor: not-allowed;
+                        }
+                    }
                 }
 
                 .profile-name {

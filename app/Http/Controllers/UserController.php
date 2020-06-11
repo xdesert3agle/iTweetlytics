@@ -12,13 +12,13 @@ use Illuminate\Support\Facades\Auth;
 use Thujohn\Twitter\Facades\Twitter;
 
 class UserController extends Controller {
-    public static function get($profileIndex) {
+    public static function get() {
         $user = User::where('id', Auth::id())
             ->with('user_profiles.twitter_profile')
-            ->with(['current_user_profile' => function ($query) use ($profileIndex) {
+            ->with(['current_user_profile' => function ($query) {
                 $query->with('twitter_profile')
                     ->with(['followers' => function ($query) {
-                        $query->limit(500)->orderBy('followers.id');;
+                        $query->limit(500)->orderBy('followers.id');
                     }])
                     ->with(['follows' => function ($query) {
                         $query->limit(500);
@@ -41,8 +41,7 @@ class UserController extends Controller {
                         $query->where('status', '!=', 'sent')
                             ->get();
                     }])
-                    ->with('tags')
-                    ->skip($profileIndex)->take(1);
+                    ->with('tags');
             }])
             ->first();
 
@@ -116,5 +115,22 @@ class UserController extends Controller {
         $connection = new TwitterOAuth(config('ttwitter.CONSUMER_KEY'), config('ttwitter.CONSUMER_SECRET'), config('ttwitter.ACCESS_TOKEN'), config('ttwitter.ACCESS_TOKEN_SECRET'));
         $result = $connection->post('direct_messages/events/new', $data, true);
         return json_encode($result);
+    }
+
+    public function changeSelectedProfile(Request $r) {
+        $updated_rows = User::where('id', Auth::id())->update(['selected_profile' => $r->target_profile]);
+
+        if ($updated_rows > 0) {
+            $status = 'success';
+            $message = 'Cambiando de perfil de Twitter';
+        } else {
+            $status = 'error';
+            $message = 'No se ha podido cambiar de perfil';
+        }
+
+        return [
+            'status' => $status,
+            'message' => $message
+        ];
     }
 }

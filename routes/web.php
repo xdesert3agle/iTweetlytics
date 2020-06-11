@@ -25,6 +25,7 @@ Route::group(['middleware' => 'auth'], function () {
         Route::prefix('ajax')->group(function () {
             Route::prefix('user')->group(function () {
                 Route::get('refresh/{profileId}', 'UserController@refresh');
+                Route::post('profile/change', 'UserController@changeSelectedProfile');
 
                 Route::get('get', 'UserController@getFromRequest');
             });
@@ -80,10 +81,7 @@ Route::group(['middleware' => 'auth'], function () {
             });
         });
 
-        Route::get('app/{selectedProfileIndex}', 'AppController@index')->middleware('auth')->name('app');
-        Route::get('app', function () {
-            return redirect('app/0');
-        });
+        Route::get('app', 'AppController@index')->middleware('auth')->name('app');
     });
 
     Route::get('sync', 'SyncController@index')->name('profile.sync')->middleware('sync.incomplete');

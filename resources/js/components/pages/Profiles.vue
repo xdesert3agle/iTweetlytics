@@ -9,11 +9,11 @@
                         </div>
                     </div>
                     <div class="row">
-                        <twitter-profile-card v-for="(tw_profile, i) in user.user_profiles" :key="tw_profile.id" :twitterProfile="tw_profile" :colSize="3"></twitter-profile-card>
+                        <twitter-profile-card v-for="(user_profile, i) in user.user_profiles" :key="user_profile.id" :user="user" :userProfile="user_profile" :colSize="3"></twitter-profile-card>
                     </div>
                 </div>
                 <div v-else class="first-profile-container">
-                    <h5>No has agregado ningún perfil de Twitter a tu cuenta de iTweetlytics. Agrega uno para comenzar</h5>
+                    <h5>No has agriegado ningún perfil de Twitter a tu cuenta de iTweetlytics. Agrega uno para comenzar</h5>
                 </div>
 
                 <div class="row">

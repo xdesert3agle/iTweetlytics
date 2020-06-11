@@ -15,7 +15,7 @@ class RedirectIfSynced {
      */
     public function handle($request, Closure $next) {
         if (Auth::user()->hasSyncProfiles()) {
-            return redirect('/app/0');
+            return redirect('/app/');
         }
 
         return $next($request);

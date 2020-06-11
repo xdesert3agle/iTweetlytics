@@ -13,11 +13,10 @@ use Illuminate\Support\Facades\Cookie;
 use Thujohn\Twitter\Facades\Twitter;
 
 class AppController extends Controller {
-    public function index($selectedProfileIndex) {
+    public function index() {
         $startTime = microtime(true);
 
-        $user = UserController::get($selectedProfileIndex);
-        $user->profile_index = $selectedProfileIndex;
+        $user = UserController::get();
 
         // Se reconfigura la API para realizar las peticiones con el perfil activo
         ApiHelper::reconfig($user->current_user_profile);
