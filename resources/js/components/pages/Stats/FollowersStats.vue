@@ -102,4 +102,18 @@
         padding: 0;
         margin: 0;
     }
+
+    @media (max-width: 1280px) {
+        .card:not(.small-card) {
+            height: 435px!important;
+        }
+
+        .card-title {
+            font-size: 14pt!important;
+        }
+
+        .stat-amount {
+            font-size: 26pt!important;
+        }
+    }
 </style>
