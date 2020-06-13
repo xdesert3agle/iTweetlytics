@@ -3,19 +3,19 @@
         <div class="col-md-12 tweet-wrapper">
             <div class="card tweet-card">
                 <div class="card-body">
-                    <div v-if="updatedTweet.retweeted_status" class="row text-muted">
-                        <div class="col-2 text-right">
+                    <div v-if="updatedTweet.retweeted_status" class="row no-gutters text-muted">
+                        <div class="col-2 rt-icon-container">
                             <i class="fa fa-retweet"></i>
                         </div>
-                        <div class="col">
+                        <div class="col rt-author">
                             <span>{{ updatedTweet.user.name }} retwitteó</span>
                         </div>
                     </div>
-                    <div class="row">
-                        <div class="col-2">
+                    <div class="row no-gutters">
+                        <div class="col-2 tweet-user-avatar-container">
                             <img :src="!updatedTweet.retweeted_status ? updatedTweet.user.profile_image_url : updatedTweet.retweeted_status.user.profile_image_url" class="tweet-user-avatar" :alt="'Imagen de perfil de @' + updatedTweet.user.screen_name">
                         </div>
-                        <div class="col-10">
+                        <div class="col-10 tweet-content-container">
                             <div class="row">
                                 <div class="col">
                                     <a v-if="!updatedTweet.retweeted_status" :href="'https://twitter.com/' + updatedTweet.user.screen_name" class="tweet-author">
@@ -300,85 +300,108 @@
                 .card-body {
                     padding: 15px;
 
-                    .tweet-user-avatar {
-                        border-radius: 50%;
+                    .row.text-muted {
+                        margin-bottom: 5px;
+
+                        .rt-icon-container {
+                            display: flex;
+                            justify-content: center;
+                            align-items: center;
+
+                            margin-right: 7.5px;
+                            padding-right: 10px;
+                        }
                     }
 
-                    .tweet-author {
-                        &:hover {
+                    .tweet-user-avatar-container {
+                        padding-right: 7.5px;
+
+                        .tweet-user-avatar {
+                            width: 100%;
+                            border-radius: 50%;
+                        }
+                    }
+
+
+                    .tweet-content-container {
+                        padding-left: 7.5px;
+
+                        .tweet-author {
+                            &:hover {
+                                .name {
+                                    text-decoration: underline;
+                                }
+                            }
+
                             .name {
-                                text-decoration: underline;
+                                font-weight: bold !important;
+                                color: $textColor;
+                            }
+
+                            .screen-name {
+                                font-weight: normal;
+                                color: #a7a2ce;
                             }
                         }
 
-                        .name {
-                            font-weight: bold !important;
-                            color: $textColor;
+                        .tweet-text {
+                            &-entity {
+                                font-weight: bold !important;
+                            }
                         }
 
-                        .screen-name {
-                            font-weight: normal;
-                            color: #a7a2ce;
-                        }
-                    }
+                        .tweet-options {
+                            margin-top: 10px;
 
-                    .tweet-text {
-                        &-entity {
-                            font-weight: bold !important;
-                        }
-                    }
+                            .tweet-action {
+                                cursor: pointer;
+                                color: lighten(black, 65%);
+                                transition: 200ms;
+                                font-weight: bold;
 
-                    .tweet-options {
-                        margin-top: 10px;
+                                &.action-comment {
+                                    &:hover {
+                                        color: lighten($primaryColor, 10%);
+                                    }
+                                }
 
-                        .tweet-action {
-                            cursor: pointer;
-                            color: lighten(black, 65%);
-                            transition: 200ms;
-                            font-weight: bold;
+                                &.action-retweet {
+                                    &.retweeted {
+                                        color: lighten(green, 10%);
+                                    }
 
-                            &.action-comment {
-                                &:hover {
-                                    color: lighten($primaryColor, 10%);
+                                    &:hover {
+                                        color: lighten(green, 10%);
+                                    }
+                                }
+
+                                &.action-like {
+                                    &.liked {
+                                        color: lighten(red, 10%);
+                                    }
+
+                                    &:hover {
+                                        color: lighten(red, 10%);
+                                    }
+                                }
+
+                                &.action-share {
+                                    &:hover {
+                                        color: lighten($primaryColor, 10%);
+                                    }
                                 }
                             }
 
-                            &.action-retweet {
-                                &.retweeted {
+                            &.retweeted-tweet {
+                                .action-retweet {
                                     color: lighten(green, 10%);
                                 }
-
-                                &:hover {
-                                    color: lighten(green, 10%);
-                                }
                             }
 
-                            &.action-like {
-                                &.liked {
+                            &.favorited-tweet {
+                                .action-like {
                                     color: lighten(red, 10%);
                                 }
-
-                                &:hover {
-                                    color: lighten(red, 10%);
-                                }
-                            }
-
-                            &.action-share {
-                                &:hover {
-                                    color: lighten($primaryColor, 10%);
-                                }
-                            }
-                        }
-
-                        &.retweeted-tweet {
-                            .action-retweet {
-                                color: lighten(green, 10%);
-                            }
-                        }
-
-                        &.favorited-tweet {
-                            .action-like {
-                                color: lighten(red, 10%);
                             }
                         }
                     }
@@ -389,6 +412,47 @@
         &:last-child {
             .tweet-card {
                 border-bottom: 1px solid rgba(0, 0, 0, 0.125);
+            }
+        }
+    }
+
+    @media (max-width: 576px) {
+        .rt-author {
+            font-size: 12pt!important;
+        }
+
+        .name, .screen-name {
+            font-size: 12pt!important;
+        }
+
+        .tweet-text {
+            font-size: 12pt!important;
+
+            &-entity {
+                font-weight: bold !important;
+            }
+        }
+    }
+
+    @media (max-width: 1280px) {
+        .rt-author {
+            font-size: 11pt;
+        }
+
+        .tweet-user-avatar {
+            margin-top: 5px;
+            max-width: 60px;
+        }
+
+        .name, .screen-name {
+            font-size: 11pt;
+        }
+
+        .tweet-text {
+            font-size: 11pt;
+
+            &-entity {
+                font-weight: bold !important;
             }
         }
     }
