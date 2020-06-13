@@ -106,3 +106,43 @@ h1 {
 .welcome-message {
     font-size: 27pt!important;
 }
+
+.navbar-toggler {
+    margin-top: 0!important;
+    margin-right: 5px;
+}
+
+@media (max-width: 576px) {
+    .navbar-brand {
+        margin-left: 10px;
+
+        h3 {
+            margin: 0!important;
+        }
+    }
+
+    .navbar-nav {
+        .nav-item {
+            justify-content: center;
+            padding: 10px 0;
+
+            .nav-link {
+                font-size: 14pt;
+            }
+        }
+    }
+
+    .btn-login {
+        border: none!important;
+    }
+
+    .bg-circle {
+        display: inline!important;
+    }
+
+    .bg-shape {
+        display: inline!important;
+        right: -42px!important;
+        opacity: 0.7!important;
+    }
+}

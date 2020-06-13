@@ -57,7 +57,7 @@
                         </li>
 
                         <li class="nav-item text-center">
-                            <a href="login" class="btn align-middle btn-outline-primary">Iniciar sesión</a>
+                            <a href="login" class="btn align-middle btn-outline-primary btn-login">Iniciar sesión</a>
                         </li>
                     </ul>
                 </div>

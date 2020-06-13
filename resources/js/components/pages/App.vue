@@ -2,7 +2,7 @@
     <div class="container-fluid app-container">
         <div class="row no-gutters app-wrapper">
             <aside id="sidebar" class="col-md-auto col-12">
-                <ul class="nav flex-column nav-pills" id="pills-tab" role="tablist">
+                <ul class="nav nav-pills" id="pills-tab" role="tablist">
                     <li v-if="user.user_profiles != null" class="nav-item">
                         <a :class="{'active': user.user_profiles != null}" class="nav-link" id="pills-home-tab" data-toggle="pill" href="#pills-home" role="tab" aria-controls="pills-home" aria-selected="true">
                             <i class="fas fa-lg fa-columns"></i>
@@ -111,6 +111,8 @@
         background-color: #0f233c;
 
         .nav {
+            flex-direction: column;
+
             .nav-item {
                 display: flex;
                 justify-content: center;
@@ -135,6 +137,27 @@
 
                 &:hover {
                     color: #e4e7ea;
+                }
+            }
+        }
+    }
+
+    @media (max-width: 576px) {
+        .app-wrapper {
+            margin-bottom: 86px!important;
+
+            #sidebar {
+                position: fixed;
+                bottom: 0;
+                z-index: 1;
+
+                .nav {
+                    flex-direction: row;
+
+                    .nav-item {
+                        display: flex;
+                        flex: 1;
+                    }
                 }
             }
         }

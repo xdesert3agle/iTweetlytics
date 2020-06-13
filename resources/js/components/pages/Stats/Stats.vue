@@ -118,4 +118,35 @@
         background: lighten($primaryColor, 8%);
         margin-left: 10px;
     }
+
+    @media (max-width: 576px) {
+        .nav-item {
+            width: 100%;
+
+            button {
+                display: flex;
+                justify-content: center;
+                width: 100%;
+            }
+        }
+
+        .stat-list-container {
+            padding-bottom: 1em;
+
+            .stat-list {
+                border: 0;
+
+                li {
+                    &:not(:first-child) {
+                        margin-top: 15px !important;
+                        margin-left: 0!important;
+                    }
+
+                    button {
+                        padding: 15px 20px !important;
+                    }
+                }
+            }
+        }
+    }
 </style>

@@ -9,7 +9,7 @@
                         </div>
                     </div>
                     <div class="row">
-                        <twitter-profile-card v-for="(user_profile, i) in user.user_profiles" :key="user_profile.id" :user="user" :userProfile="user_profile" :colSize="3"></twitter-profile-card>
+                        <twitter-profile-card v-for="(user_profile, i) in user.user_profiles" :key="user_profile.id" :user="user" :userProfile="user_profile"></twitter-profile-card>
                     </div>
                 </div>
                 <div v-else class="first-profile-container">
@@ -42,7 +42,7 @@
             currentYear() {
                 return new Date().getFullYear();
             },
-        },
+        }
     }
 </script>
 

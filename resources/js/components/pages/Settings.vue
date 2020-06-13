@@ -4,7 +4,7 @@
             <div class="col-12">
                 <div class="row">
                     <div class="col">
-                        <h3 class="page-title">Ajustes</h3>
+                        <h3 class="page-title">Tags</h3>
                     </div>
                 </div>
                 <div class="row">
@@ -12,34 +12,59 @@
                         <div class="card">
                             <div class="card-body">
                                 <div class="row step">
-                                    <div class="col-5">
-                                        <h4>1. Crea tus tags</h4>
-                                        <vue-tags-input v-model="tag" :add-on-key="[13, ':', ';', ',']" :tags="tags" @before-adding-tag="addTag" @before-deleting-tag="deleteTag" @tags-changed="newTags => tags = newTags" placeholder="" class="tag-input"/>
+                                    <div class="col">
+                                        <div class="form_title">
+                                            <h3>
+                                                1
+                                            </h3>
+                                        </div>
+                                        <div class="middle-element">
+                                            <div class="row">
+                                                <div class="col">
+                                                    <h4>Crea tus tags</h4>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col">
+                                                    <vue-tags-input v-model="tag" :add-on-key="[13, ':', ';', ',']" :tags="tags" @before-adding-tag="addTag" @before-deleting-tag="deleteTag"
+                                                                    @tags-changed="newTags => tags = newTags" placeholder="" class="tag-input"/>
+                                                </div>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
 
                                 <div class="row step">
-                                    <div class="col-5">
-                                        <h4>2. Asigna palabras o expresiones regulares a tus tags</h4>
-                                        <div class="row">
-                                            <div class="col">
-                                                <select class="form-control" @change="selectedTagChanged()" v-model="selectedTag">
-                                                    <option value="1" :selected="!selectedTag" disabled>Selecciona un
-                                                        tag
-                                                    </option>
-                                                    <option v-for="(tag, i) in tags" :value="tag" :key="i">{{ tag.text
-                                                        }}
-                                                    </option>
-                                                </select>
+                                    <div class="col">
+                                        <div class="form_title">
+                                            <h3>
+                                                2
+                                            </h3>
+                                        </div>
+                                        <div class="last-element">
+                                            <div class="row">
+                                                <div class="col">
+                                                    <h4>Asigna palabras o expresiones regulares a tus tags</h4>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col">
+                                                    <select class="form-control" @change="selectedTagChanged()" v-model="selectedTag">
+                                                        <option value="1" :selected="!selectedTag" disabled>Selecciona un tag</option>
+                                                        <option v-for="(tag, i) in tags" :value="tag" :key="i">{{ tag.text }}</option>
+                                                    </select>
 
-                                                <div v-show="selectedTag" class="row words-row">
-                                                    <div class="col">
-                                                        <h5>Palabras</h5>
-                                                        <vue-tags-input v-model="word" :add-on-key="[13, ':', ';', ',']" :tags="words" @tags-changed="newWords => updateWords(newWords)" placeholder="" class="tag-input"/>
-                                                    </div>
-                                                    <div class="col">
-                                                        <h5>Expresiones regulares</h5>
-                                                        <vue-tags-input v-model="regex" :add-on-key="[13, ':', ';', ',']" :tags="regexes" @tags-changed="newRegexes => updateRegexes(newRegexes)" placeholder="" class="tag-input"/>
+                                                    <div v-show="selectedTag" class="row words-row">
+                                                        <div class="col">
+                                                            <h5>Palabras</h5>
+                                                            <vue-tags-input v-model="word" :add-on-key="[13, ':', ';', ',']" :tags="words"
+                                                                            @tags-changed="newWords => updateWords(newWords)" placeholder="" class="tag-input"/>
+                                                        </div>
+                                                        <div class="col">
+                                                            <h5>Expresiones regulares</h5>
+                                                            <vue-tags-input v-model="regex" :add-on-key="[13, ':', ';', ',']" :tags="regexes"
+                                                                            @tags-changed="newRegexes => updateRegexes(newRegexes)" placeholder="" class="tag-input"/>
+                                                        </div>
                                                     </div>
                                                 </div>
                                             </div>
@@ -171,12 +196,77 @@
     }
 
     .step {
-        &:not(:first-child) {
-            margin-top: 2em;
-        }
-
         .words-row {
             margin-top: 1em;
+        }
+    }
+
+    .form_title {
+        position: relative!important;
+
+        h3 {
+            margin: 0!important;
+            padding: 0!important;
+
+            background-color: $primaryColor!important;
+            text-align: center!important;
+            width: 40px!important;
+            height: 40px!important;
+            display: inline-block!important;
+            -webkit-border-radius: 50%!important;
+            -moz-border-radius: 50%!important;
+            border-radius: 50%!important;
+            color: #fff!important;
+            font-size: 18px!important;
+            line-height: 40px!important;
+            position: absolute!important;
+            left: 0!important;
+            top: 0!important;
+        }
+    }
+
+    .middle-element {
+        border-left: 3px solid $primaryColor!important;
+        padding-left: 40px;
+        margin-left: 1.2rem;
+
+        > .row:last-child {
+            padding-bottom: 2.5em;
+        }
+    }
+
+    .last-element {
+        border: none!important;
+        padding-left: 40px;
+        margin-left: 1.2rem;
+    }
+
+    h4 {
+        display: flex;
+        align-items: center;
+
+        .step-number {
+            background-color: #7642FF;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            color: white;
+            margin-right: 10px;
+        }
+    }
+
+    @media (max-width: 576px) {
+        .step {
+            .words-row {
+                > .col {
+                    &:not(:first-child) {
+                        margin-top: 15px;
+                    }
+                }
+            }
         }
     }
 </style>

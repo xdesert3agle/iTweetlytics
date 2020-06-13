@@ -20,20 +20,22 @@
                                     <div class="col form-register-container">
                                         <input type="hidden" name="_token" :value="csrf">
                                         <div class="form-row">
-                                            <div class="col">
+                                            <div class="col-md col-12">
                                                 <div class="form-group">
                                                     <label for="name" class="required">Nombre</label>
-                                                    <input id="name" type="text" class="form-control" :class="{ 'animated shake has-errors': checkForErrors('name') }" v-model="newUser.name" placeholder="Nombre" required autocomplete="name">
+                                                    <input id="name" type="text" class="form-control" :class="{ 'animated shake has-errors': checkForErrors('name') }"
+                                                           v-model="newUser.name" placeholder="Nombre" required autocomplete="name">
                                                     <div v-if="errors && errors.name && errors.name.length > 0" class="field-error-container animated fadeIn faster">
                                                         <small class="form-error" v-for="(error, i) in errors.name">{{
                                                             error }}</small>
                                                     </div>
                                                 </div>
                                             </div>
-                                            <div class="col">
+                                            <div class="col-md col-12">
                                                 <div class="form-group">
                                                     <label for="surname" class="required">Apellidos</label>
-                                                    <input id="surname" type="text" class="form-control" :class="{ 'animated shake has-errors': checkForErrors('surname') }" v-model="newUser.surname" placeholder="Apellidos" required autocomplete="surname">
+                                                    <input id="surname" type="text" class="form-control" :class="{ 'animated shake has-errors': checkForErrors('surname') }"
+                                                           v-model="newUser.surname" placeholder="Apellidos" required autocomplete="surname">
                                                     <div v-if="errors && errors.surname && errors.surname.length > 0" class="field-error-container animated fadeIn faster">
                                                         <small class="form-error" v-for="(error, i) in errors.surname">{{
                                                             error
@@ -44,28 +46,31 @@
                                         </div>
                                         <div class="form-group">
                                             <label for="email" class="required">Email</label>
-                                            <input id="email" type="email" class="form-control" :class="{ 'animated shake has-errors': checkForErrors('email') }" v-model="newUser.email" placeholder="Dirección de correo electrónico" required autocomplete="email">
+                                            <input id="email" type="email" class="form-control" :class="{ 'animated shake has-errors': checkForErrors('email') }"
+                                                   v-model="newUser.email" placeholder="Dirección de correo electrónico" required autocomplete="email">
                                             <div v-if="errors && errors.email && errors.email.length > 0" class="field-error-container animated fadeIn faster">
                                                 <small class="form-error" v-for="(error, i) in errors.email">{{ error
                                                     }}</small>
                                             </div>
                                         </div>
                                         <div class="form-row">
-                                            <div class="col">
+                                            <div class="col-md col-12">
                                                 <div class="form-group">
                                                     <label for="password" class="required">Contraseña</label>
-                                                    <input id="password" type="password" class="form-control" :class="{ 'animated shake has-errors': checkForErrors('password') }" v-model="newUser.password" placeholder="Contraseña" required autocomplete="new-password">
+                                                    <input id="password" type="password" class="form-control" :class="{ 'animated shake has-errors': checkForErrors('password') }"
+                                                           v-model="newUser.password" placeholder="Contraseña" required autocomplete="new-password">
                                                     <div v-if="errors && errors.password && errors.password.length > 0" class="field-error-container animated fadeIn faster">
                                                         <small class="form-error" v-for="(error, i) in errors.password">{{
                                                             error }}</small>
                                                     </div>
                                                 </div>
                                             </div>
-                                            <div class="col">
+                                            <div class="col-md col-12">
                                                 <div class="form-group">
                                                     <label for="password-confirm" class="required">Confirmar
                                                         contraseña</label>
-                                                    <input id="password-confirm" type="password" class="form-control" v-model="newUser.password_confirmation" placeholder="Confirmar contraseña" required autocomplete="new-password">
+                                                    <input id="password-confirm" type="password" class="form-control" v-model="newUser.password_confirmation"
+                                                           placeholder="Confirmar contraseña" required autocomplete="new-password">
                                                 </div>
                                             </div>
                                         </div>
@@ -468,6 +473,25 @@
                     display: block;
                     color: red;
                 }
+            }
+        }
+    }
+
+    @media (max-width: 576px) {
+        section.jumbotron-two {
+            h1 {
+                font-size: 26pt;
+                text-align: center;
+            }
+
+            h4 {
+                text-align: center;
+                font-size: 16pt;
+                line-height: 1.6em!important;
+            }
+
+            p {
+                text-align: center;
             }
         }
     }

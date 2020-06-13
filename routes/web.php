@@ -82,6 +82,9 @@ Route::group(['middleware' => 'auth'], function () {
         });
 
         Route::get('app', 'AppController@index')->middleware('auth')->name('app');
+        Route::get('app/{extra}', function () {
+            return redirect('app');
+        });
     });
 
     Route::get('sync', 'SyncController@index')->name('profile.sync')->middleware('sync.incomplete');
