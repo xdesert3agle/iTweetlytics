@@ -5,7 +5,8 @@
                 <img class="card-img-top" :src="userProfile.twitter_profile.profile_banner_url" :alt="'Banner del perfil ' + userProfile.twitter_profile.screen_name">
                 <div class="banner-content-container">
                     <div class="card-buttons-container">
-                        <button @click="deleteProfile" class="btn btn-danger" data-toggle="tooltip" data-placement="top" title="Eliminar perfil">
+                        <button @click="deleteProfile
+" class="btn btn-danger" data-toggle="tooltip" data-placement="top" title="Eliminar perfil">
                             <i class="fa fa-lg fa-times"></i>
                         </button>
                         <button :disabled="isThisTheActiveProfile" @click="changeProfile(userProfile.id)" class="btn btn-primary" data-toggle="tooltip" data-placement="top"

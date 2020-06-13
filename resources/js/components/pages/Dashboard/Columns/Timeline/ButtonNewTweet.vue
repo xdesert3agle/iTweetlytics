@@ -18,7 +18,7 @@
                     <div class="modal-body">
                         <div class="row no-gutters">
                             <div class="col-2 user-profile-img-container">
-                                <img :src="user.current_user_profile.profile_image_url" class="user-profile-img" alt="Tu imagen de perfil">
+                                <img :src="user.current_user_profile.twitter_profile.profile_image_url" class="user-profile-img" alt="Tu imagen de perfil">
                             </div>
                             <div class="col">
                                 <textarea class="js-autoresize" v-model="newTweetText" maxlength="280" placeholder="¿Qué está pasando?"></textarea>
