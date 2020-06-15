@@ -1,58 +1,37 @@
 <template>
     <div class="new-tweet-button-container">
-        <button type="button" class="col tweet-action action-comment" data-toggle="modal" data-target="#reply-modal">
-            <i class="fa fa-comment"></i>
-        </button>
+        <i class="fa fa-comment" data-toggle="modal" :data-target="'#new-reply-modal' + tweet.id"></i>
 
         <!-- Modal -->
-        <div class="modal fade" id="reply-modal" tabindex="-1" role="dialog" aria-labelledby="label-reply-modal" aria-hidden="true">
+        <div @dragstart="disableDrag" class="modal fade" :id="'new-reply-modal' + tweet.id" tabindex="-1" role="dialog" :aria-labelledby="'label-new-reply-modal' + tweet.id" aria-hidden="true">
             <div class="modal-dialog" role="document">
-                <div v-if="!isScheduling" class="modal-content">
+                <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title" id="label-reply-modal">Responder al tweet</h5>
-                        <button type="button" id="close-reply-modal" class="close" aria-label="Close" data-dismiss="modal">
+                        <h5 class="modal-title" :id="'label-new-reply-modal' + tweet.id">Respondiendo a @{{ !tweet.retweeted_status ? tweet.user.screen_name : tweet.retweeted_status.user.screen_name }}</h5>
+                        <button type="button" :id="'close-new-reply-modal' + tweet.id" class="close" aria-label="Close" data-dismiss="modal">
                             <span aria-hidden="true">&times;</span>
                         </button>
                     </div>
                     <div class="modal-body">
                         <div class="row no-gutters">
+                            <div class="col-2 tweet-user-avatar-container">
+                                <img :src="!tweet.retweeted_status ? tweet.user.profile_image_url : tweet.retweeted_status.user.profile_image_url" class="tweet-user-avatar" :alt="'Imagen de perfil de @' + tweet.user.screen_name">
+                            </div>
+                            <div class="col-10 tweet-content-container">
+                                <div class="tweet-text" v-html="formatted_tweet"></div>
+                            </div>
+                        </div>
+                        <div class="row no-gutters reply-container">
                             <div class="col-2 user-profile-img-container">
-                                <img :src="user.current_user_profile.profile_image_url" class="user-profile-img" alt="Tu imagen de perfil">
+                                <img :src="user_avatar" class="user-profile-img" alt="Tu imagen de perfil">
                             </div>
-                            <div class="col">
-                                <textarea class="js-autoresize" v-model="newTweetText" maxlength="280" placeholder="¿Qué está pasando?"></textarea>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="modal-footer">
-                        <span class="scheduled-date" v-if="scheduleTime">
-                            <i class="fas fa-calendar-day"></i>
-                            {{ formattedScheduleTime }}
-                        </span>
-                        <button @click="isScheduling = true" type="button" class="btn btn-info btn-round">Programar</button>
-                        <button @click="sendTweet" type="button" class="btn btn-primary btn-round">{{ scheduleTime == null ? 'Twittear' : 'Enviar tweet programado' }}</button>
-                    </div>
-                </div>
-                <div v-else class="modal-content">
-                    <div class="modal-header">
-                        <i @click="isScheduling = false" class="fa fa-lg fa-chevron-left"></i>
-                        <h5 class="modal-title">Programar tweet</h5>
-                        <button type="button" class="close" aria-label="Close" data-dismiss="modal">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                    </div>
-                    <div class="modal-body">
-                        <div class="row no-gutters">
-                            <div class="col-12">
-                                <h6>Fecha y hora a la que se publicará el tweet</h6>
-                                <date-picker v-model="scheduleTime" type="datetime" valueType="timestamp"></date-picker>
+                            <div class="col-10 tweet-content-container">
+                                <textarea class="js-autoresize" v-model="replyText" maxlength="280" :placeholder="'Respondiendo a @' + !tweet.retweeted_status ? tweet.user.screen_name : tweet.retweeted_status.user.screen_name"></textarea>
                             </div>
                         </div>
                     </div>
                     <div class="modal-footer">
-                        <button @click="isScheduling = false" type="button" class="btn btn-primary btn-round">
-                            Confirmar
-                        </button>
+                        <button @click="sendReply" type="button" class="btn btn-primary btn-round">Enviar respuesta</button>
                     </div>
                 </div>
             </div>
@@ -67,60 +46,44 @@
 
     export default {
         props: [
-            'user',
-            'tweet'
+            'tweet',
+            'formatted_tweet',
+            'user_avatar'
         ],
-        components: {
-            DatePicker
-        },
-        data() {
-            return {
-                newTweetText: "",
-                isScheduling: false,
-                scheduleTime: null,
-            }
-        },
-        computed: {
-            formattedScheduleTime() {
-                let a = new Date(this.scheduleTime);
-                let months = ['Ene.', 'Feb.', 'Mar.', 'Abr.', 'May.', 'Jun.', 'Jul.', 'Ago.', 'Sep.', 'Oct.', 'Nov.', 'Dic.'];
-                let year = a.getFullYear();
-                let month = months[a.getMonth()];
-                let date = a.getDate();
-                let hour = a.getHours();
-                let min = a.getMinutes() < 10 ? '0' + a.getMinutes() : a.getMinutes();
-                let sec = a.getSeconds() < 10 ? '0' + a.getSeconds() : a.getSeconds();
-
-                return date + ' ' + month + ' ' + year + ' ' + hour + ':' + min + ':' + sec;
-            }
-        },
         mounted() {
             setResizeListeners(this.$el, ".js-autoresize");
         },
-        methods: {
-            sendTweet() {
-                axios.post('/ajax/tweets/new', {
-                    'user_profile_id': this.user.current_user_profile.id,
-                    'text': this.newTweetText,
-                    'scheduleTime': this.scheduleTime,
-                    'now': Date.now()
-                }).then((response) => {
-                    if (response.data.status == 'success') {
-                        this.$toast.success(response.data.message);
-                        this.newTweetText = "";
-                    }
-                });
-            }
-        }
     }
 </script>
 
 <style lang="scss" scoped>
     $primaryColor: #7642FF;
     $textColor: #3E396B;
+    $tweetColor: #212529;
 
-    .btn-tweet {
-        padding: 2px 10px!important;
+    .tweet-user-avatar-container {
+        padding-right: 7.5px;
+
+        .tweet-user-avatar {
+            width: 100%;
+            border-radius: 50%;
+        }
+    }
+
+    .tweet-content-container {
+        padding-left: 7.5px;
+
+        .tweet-text {
+            font-size: 14pt!important;
+            font-weight: normal;
+            color: $tweetColor;
+        }
+    }
+
+    .reply-container {
+        padding-top: 2em;
+        margin-top: 2em;
+        border-top: 1px solid rgba(0, 0, 0, 0.1);
     }
 
     .modal {
@@ -133,7 +96,7 @@
                 cursor: pointer;
             }
 
-            .label-reply-modal {
+            .label-new-tweet-modal {
                 color: $textColor;
             }
 
@@ -146,7 +109,7 @@
 
         .modal-body {
             .user-profile-img-container {
-                padding-right: 15px;
+                padding-right: 7.5px;
 
                 .user-profile-img {
                     width: 100%;

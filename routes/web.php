@@ -46,6 +46,8 @@ Route::group(['middleware' => 'auth'], function () {
                     Route::post('/', 'AppController@favoriteTweet');
                     Route::post('remove', 'AppController@removeFavorite');
                 });
+
+                Route::post('sendReply', 'AppController@sendReply');
             });
 
             Route::prefix('list')->group(function () {

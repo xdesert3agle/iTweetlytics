@@ -189,4 +189,25 @@ class AppController extends Controller {
             ];
         }
     }
+
+    public function sendReply(Request $r) {
+        if (strpos($r->tweet_content, '@' . $r->target_screen_name) !== true) {
+            $r->tweet_content = $r->tweet_content . ' @' . $r->target_screen_name;
+        }
+
+        $result = Twitter::postTweet(['status' => $r->tweet_content, 'in_reply_to_status_id' => $r->target_id]);
+
+        if ($result) {
+            return [
+                'status' => 'success',
+                'message' => 'Tu respuesta ha sido enviada.'
+            ];
+        }
+        else {
+            return [
+                'status' => 'error',
+                'message' => 'Ha ocurrido un error al intentar enviar tu respuesta.'
+            ];
+        }
+    }
 }

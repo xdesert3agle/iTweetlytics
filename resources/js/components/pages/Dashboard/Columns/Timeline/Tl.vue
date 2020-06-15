@@ -10,7 +10,7 @@
 
             <div class="row no-gutters tweet-list-row">
                 <div class="col tweet-list-container">
-                    <tweet v-for="(tweet, i) in timeline" :tweet="tweet" :key="tweet.id"></tweet>
+                    <tweet v-for="(tweet, i) in timeline" :tweet="tweet" :key="tweet.id" :user="user"></tweet>
                 </div>
             </div>
         </div>

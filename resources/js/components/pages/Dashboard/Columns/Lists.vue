@@ -51,7 +51,7 @@
                     </div>
                     <div v-else class="row no-gutters animated slideInRight fastest tweet-list-row">
                         <div class="col tweet-list-container">
-                            <tweet v-for="(tweet, i) in lists[clickedList].tweets" :tweet="tweet" :key="tweet.id"></tweet>
+                            <tweet v-for="(tweet, i) in lists[clickedList].tweets" :tweet="tweet" :key="tweet.id" :user="user"></tweet>
                         </div>
                     </div>
                 </div>
@@ -68,7 +68,8 @@
 <script>
     export default {
         props: [
-            'lists'
+            'lists',
+            'user'
         ],
         data() {
             return {

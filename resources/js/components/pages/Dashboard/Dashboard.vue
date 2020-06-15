@@ -5,10 +5,10 @@
                 <tl :timeline="timeline" :user="user"></tl>
             </div>
             <div class="col-md-3 col-12 twitter-column">
-                <mentions :mentions="mentions"></mentions>
+                <mentions :mentions="mentions" :user="user"></mentions>
             </div>
             <div class="col-md-3 col-12 twitter-column">
-                <lists :lists="lists"></lists>
+                <lists :lists="lists" :user="user"></lists>
             </div>
             <div class="col-md-3 col-12 twitter-column">
                 <dms :chats="chats" :user="user"></dms>
