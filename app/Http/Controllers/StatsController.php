@@ -24,9 +24,9 @@ class StatsController extends Controller {
         $startTime = "";
         $now = Carbon::now();
         $yesterday = Carbon::now()->startOfDay();
-        $weekAgo = Carbon::now()->subWeek()->startOfDay();
-        $monthAgo = Carbon::now()->subMonth()->startOfDay();
-        $yearAgo = Carbon::now()->subYear()->startOfDay();
+        $weekAgo = Carbon::now()->subWeek()->addDay()->startOfDay();
+        $monthAgo = Carbon::now()->subMonth()->addDay()->startOfDay();
+        $yearAgo = Carbon::now()->subYear()->addDay()->startOfDay();
 
         $is_user_owner_of_profile = UserProfile::find($profileId)->belongsToUser(Auth::id());
 
@@ -79,7 +79,7 @@ class StatsController extends Controller {
                     break;
             }
 
-            $group_by_format = ""; // ¿Cömo se agrupan los datos de la gráfica?
+            $group_by_format = ""; // ¿Cómo se agrupan los datos de la gráfica?
 
             switch ($timeInterval) {
                 case 'yesterday':
@@ -94,7 +94,7 @@ class StatsController extends Controller {
 
                 case 'monthly':
                     $startTime = $monthAgo;
-                    $group_by_format = "%d";
+                    $group_by_format = "%d/%m";
                     break;
 
                 case 'yearly':
