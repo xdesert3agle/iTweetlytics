@@ -12,7 +12,7 @@
     <!-- CSRF Token -->
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <title>Laravel</title>
+    <title>@yield('title')</title>
 
     <!-- Scripts -->
     <script src="{{ asset('js/app.js') }}" defer></script>
@@ -21,6 +21,8 @@
     <link rel="dns-prefetch" href="//fonts.gstatic.com">
     <link href="https://fonts.googleapis.com/css2?family=Raleway:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600;1,700&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css?family=Product+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600;1,700&display=swap" rel="stylesheet">
+    <link rel="icon" type="image/png" href="/images/favicon-32x32.png" sizes="32x32" />
+    <link rel="icon" type="image/png" href="/images/favicon-16x16.png" sizes="16x16" />
 
     <!-- Styles -->
     <link href="{{ asset('/css/app.css') }}" rel="stylesheet">
@@ -37,6 +39,7 @@
         <nav class="navbar navbar-expand-lg navbar-light bg-light">
             <div class="container">
                 <a class="navbar-brand" href="/">
+                    <img src="/images/logo.png" class="logo" alt="iTweetlytics logo">
                     <h3 class="gradient-mask">iTweetlytics</h3>
                 </a>
                 <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#site-nav" aria-controls="site-nav" aria-expanded="false" aria-label="Toggle navigation">
@@ -49,12 +52,8 @@
                             <a class="nav-link" href="/#features">Características</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="/#pricing">Planes</a>
+                            <a class="nav-link" href="/#features">Contacto</a>
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="/#">Contacto</a>
-                        </li>
-
                         <li class="nav-item text-center">
                             <a href="/login" class="btn align-middle btn-outline-primary">Iniciar sesión</a>
                         </li>

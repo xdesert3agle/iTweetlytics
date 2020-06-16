@@ -20,20 +20,20 @@
                                 <div class="row">
                                     <div class="col">
                                         <a v-if="!updatedTweet.retweeted_status" :href="'https://twitter.com/' + updatedTweet.user.screen_name" class="tweet-author">
-                                        <span class="name">
-                                            {{ updatedTweet.user.name }}
-                                        </span>
-                                            <span class="screen-name text-muted">
-                                            @{{ updatedTweet.user.screen_name }}
-                                        </span>
-                                        </a>
-                                        <a v-else :href="'https://twitter.com/' + updatedTweet.retweeted_status.user.screen_name" class="tweet-author">
-                                        <span class="name">
-                                            {{ updatedTweet.retweeted_status.user.name }}
+                                            <span class="name">
+                                                {{ updatedTweet.user.name }}
                                             </span>
                                             <span class="screen-name text-muted">
-                                            @{{ updatedTweet.retweeted_status.user.screen_name }}
-                                        </span>
+                                                @{{ updatedTweet.user.screen_name }}
+                                            </span>
+                                        </a>
+                                        <a v-else :href="'https://twitter.com/' + updatedTweet.retweeted_status.user.screen_name" class="tweet-author">
+                                            <span class="name">
+                                                {{ updatedTweet.retweeted_status.user.name }}
+                                                </span>
+                                                <span class="screen-name text-muted">
+                                                @{{ updatedTweet.retweeted_status.user.screen_name }}
+                                            </span>
                                         </a>
                                     </div>
                                 </div>
@@ -82,9 +82,7 @@
             <div class="modal-dialog" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title" :id="'label-new-reply-modal' + tweet.id">Respondiendo a @{{
-                            !tweet.retweeted_status ? tweet.user.screen_name : tweet.retweeted_status.user.screen_name
-                            }}</h5>
+                        <h5 class="modal-title" :id="'label-new-reply-modal' + tweet.id">Enviar una respuesta</h5>
                         <button type="button" :id="'close-new-reply-modal' + tweet.id" class="close" aria-label="Close" data-dismiss="modal">
                             <span aria-hidden="true">&times;</span>
                         </button>
@@ -95,16 +93,48 @@
                                 <img :src="!tweet.retweeted_status ? tweet.user.profile_image_url : tweet.retweeted_status.user.profile_image_url" class="tweet-user-avatar" :alt="'Imagen de perfil de @' + tweet.user.screen_name">
                             </div>
                             <div class="col-10 reply-tweet-content-container">
+                                <div class="row">
+                                    <div class="col">
+                                        <a v-if="!tweet.retweeted_status" :href="'https://twitter.com/' + tweet.user.screen_name" class="tweet-author">
+                                            <span class="name">
+                                                {{ tweet.user.name }}
+                                            </span>
+                                            <span class="screen-name text-muted">
+                                                @{{ tweet.user.screen_name }}
+                                            </span>
+                                        </a>
+                                        <a v-else :href="'https://twitter.com/' + tweet.retweeted_status.user.screen_name" class="tweet-author">
+                                            <span class="name">
+                                                {{ tweet.retweeted_status.user.name }}
+                                            </span>
+                                            <span class="screen-name text-muted">
+                                                @{{ tweet.retweeted_status.user.screen_name }}
+                                            </span>
+                                        </a>
+                                    </div>
+                                </div>
                                 <div class="tweet-text" v-html="linkifiedTweet"></div>
                                 <expandable-image @click.native.prevent class="tweet-media-image" v-if="updatedTweet.entities.media && !hasVideo" :src="updatedTweet.entities.media[0].media_url_https" closeOnBackgroundClick></expandable-image>
                             </div>
                         </div>
+
                         <div class="row no-gutters reply-container">
-                            <div class="col-2 reply-user-profile-img-container">
-                                <img :src="user.current_user_profile.twitter_profile.profile_image_url" class="reply-user-profile-img" alt="Tu imagen de perfil">
+                            <div class="col">
+                                <div class="row">
+                                    <div class="col">
+                                        <h5 class="replying-to" :id="'label-new-reply-modal' + tweet.id">Respondiendo a @{{
+                                            !tweet.retweeted_status ? tweet.user.screen_name : tweet.retweeted_status.user.screen_name
+                                            }}</h5>
+                                    </div>
+                                </div>
                             </div>
-                            <div class="col-10 reply-tweet-content-container">
-                                <textarea class="js-autoresize" v-model="replyText" maxlength="280" :placeholder="'Respondiendo a ' + !tweet.retweeted_status ? tweet.user.screen_name : tweet.retweeted_status.user.screen_name"></textarea>
+                            <div class="row">
+                                <div class="col-2 reply-user-profile-img-container">
+                                    <img :src="user.current_user_profile.twitter_profile.profile_image_url" class="reply-user-profile-img" alt="Tu imagen de perfil">
+                                </div>
+                                <div class="col-10 reply-tweet-content-container">
+                                    <textarea class="js-autoresize" v-model="replyText" maxlength="280" :placeholder="'Respondiendo a ' + !tweet.retweeted_status ? tweet.user.screen_name : tweet.retweeted_status.user.screen_name"></textarea>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -382,9 +412,13 @@
 
         .modal-body {
             .reply-container {
-                padding-top: 2em;
+                padding-top: 1em;
                 margin-top: 2em;
                 border-top: 1px solid rgba(0, 0, 0, 0.1);
+
+                .replying-to {
+                    margin-bottom: 1em;
+                }
 
                 .reply-user-profile-img-container {
                     padding-right: 7.5px !important;
@@ -413,6 +447,15 @@
             .reply-tweet-content-container {
                 padding-left: 7.5px !important;
 
+                .name, .screen-name {
+                    color: $textColor;
+                    margin-bottom: 15px;
+                }
+
+                .name {
+                    font-weight: bold;
+                }
+
                 .tweet-text {
                     font-size: 14pt !important;
                     font-weight: normal;
@@ -423,9 +466,13 @@
                     width: 100%;
                     height: 100px;
                     border: none;
-                    font-size: 15pt;
+                    font-size: 14pt;
                     resize: none;
                     color: rgb(33, 37, 41);
+
+                    background: rgba(0, 0, 0, 0.05);
+                    border-radius: 12px;
+                    padding: 7px 15px;
 
                     &::placeholder {
                         font-size: 15pt;
@@ -442,6 +489,10 @@
                 font-size: 15pt;
                 resize: none;
                 color: rgb(33, 37, 41);
+
+                background: rgba(0, 0, 0, 0.05);
+                border-radius: 12px;
+                padding: 5px 10px;
 
                 &::placeholder {
                     font-size: 15pt;

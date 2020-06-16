@@ -6,6 +6,26 @@
 // Bootstrap
 @import '~bootstrap/scss/bootstrap';
 
+.gradient-mask {
+    margin-bottom: 0!important;
+}
+
+.navbar-brand {
+    display: flex;
+    flex-direction: row;
+}
+
+.logo {
+    width: 40px;
+    height: 40px;
+    margin-right: 10px;
+}
+
+.footer-logo {
+    width: 300px;
+}
+
+
 body {
     font-family: "Product Sans", Helvetica, Arial, serif;
     background-color: #f5f5f5 !important;

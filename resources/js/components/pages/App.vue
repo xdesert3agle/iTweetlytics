@@ -3,27 +3,27 @@
         <div class="row no-gutters app-wrapper">
             <aside id="sidebar" class="col-md-auto col-12">
                 <ul class="nav nav-pills" id="pills-tab" role="tablist">
-                    <li v-if="user.user_profiles != null" class="nav-item">
+                    <li @click="changeTitle('Dashboard')" v-if="user.user_profiles != null" class="nav-item">
                         <a :class="{'active': user.user_profiles != null}" class="nav-link" id="pills-home-tab" data-toggle="pill" href="#pills-home" role="tab" aria-controls="pills-home" aria-selected="true">
                             <i class="fas fa-lg fa-columns"></i>
                         </a>
                     </li>
-                    <li v-if="user.user_profiles != null" class="nav-item">
+                    <li @click="changeTitle('Estadísticas del perfil')" v-if="user.user_profiles != null" class="nav-item">
                         <a class="nav-link" id="pills-stats-tab" data-toggle="pill" href="#pills-stats" role="tab" aria-controls="pills-home" aria-selected="false">
                             <i class="fas fa-lg fa-chart-line"></i>
                         </a>
                     </li>
-                    <li class="nav-item">
+                    <li @click="changeTitle('Tweets programados')" class="nav-item">
                         <a class="nav-link" id="pills-scheduled-tweets-tab" data-toggle="pill" href="#pills-scheduled-tweets" role="tab" aria-controls="pills-scheduled-tweets" aria-selected="false">
                             <i class="fas fa-lg fa-calendar-alt"></i>
                         </a>
                     </li>
-                    <li class="nav-item">
+                    <li @click="changeTitle('Tags')" class="nav-item">
                         <a class="nav-link" id="pills-settings-tab" data-toggle="pill" href="#pills-settings" role="tab" aria-controls="pills-settings" aria-selected="false">
                             <i class="fas fa-lg fa-sliders-h"></i>
                         </a>
                     </li>
-                    <li class="nav-item">
+                    <li @click="changeTitle('Perfiles sincronizados')" class="nav-item">
                         <a :class="{'active': user.user_profiles.length == 0}" class="nav-link" id="pills-profiles-tab" data-toggle="pill" href="#pills-profiles" role="tab" aria-controls="pills-profiles" aria-selected="false">
                             <i class="fas fa-lg fa-address-card"></i>
                         </a>
@@ -90,6 +90,9 @@
                         this.$refs.logoutForm.submit();
                     }
                 });
+            },
+            changeTitle(title) {
+                document.title = title + ' - iTweetlytics';
             }
         }
     }

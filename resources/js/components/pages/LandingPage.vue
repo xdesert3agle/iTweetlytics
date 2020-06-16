@@ -92,89 +92,38 @@
             <div class="bg-circle"></div>
             <div class="bg-circle-two"></div>
         </section>
-        <div class="section" id="intro">
-            <div class="container">
-                <div class="client-logos text-center">
-                    <p class="text-muted">TRUSTED BY MOST POPULAR BRANDS</p>
-                    <img src="images/client_logo_1.png" alt="client logo"/>
-                    <img src="images/client_logo_2.png" alt="client logo"/>
-                    <img src="images/client_logo_3.png" alt="client logo"/>
-                    <img src="images/client_logo_4.png" alt="client logo"/>
-                    <img src="images/client_logo_5.png" alt="client logo"/>
-                    <img src="images/client_logo_6.png" alt="client logo"/>
-                    <img src="images/client_logo_7.png" alt="client logo"/>
-                    <img src="images/client_logo_8.png" alt="client logo"/>
-                    <img src="images/client_logo_9.png" alt="client logo"/>
-                    <img src="images/client_logo_10.png" alt="client logo"/>
-                </div>
-                <!-- // end .client-logos -->
-
-            </div>
-            <!-- // end .container -->
-        </div>
-        <!-- // end #services.section -->
 
         <div class="section bg-light pt-lg">
             <div class="container">
-
                 <div class="row">
                     <div class="col-md-6 col-lg-4">
-                        <div class="media-icon d-flex mr-3"><i class="pe-7s-paint-bucket pe-3x"></i></div>
-                        <!-- // end .di -->
-                        <div class="media-body">
-                            <h5 class="mt-0">Easy Customization</h5> Cras sit amet nibh libero, in gravida nulla. Nulla
-                            vel
-                        </div>
-                    </div>
-                    <div class="col-md-6 col-lg-4">
-                        <div class="media mb-5">
+                        <div class="media">
                             <div class="media-icon d-flex mr-3"><i class="pe-7s-rocket pe-3x"></i></div>
                             <!-- // end .di -->
                             <div class="media-body">
-                                <h5 class="mt-0">Super Fast</h5> Cras sit amet nibh libero, in gravida nulla. Nulla vel
-                                metus scelerisque ante.
+                                <h5 class="mt-0">Información rápida</h5> Recibe la información del perfil al momento
                             </div>
                         </div>
                     </div>
                     <div class="col-md-6 col-lg-4">
-                        <div class="media mb-5">
+                        <div class="media">
                             <div class="media-icon d-flex mr-3"><i class="pe-7s-piggy pe-3x"></i></div>
                             <div class="media mb-5">
                                 <!-- // end .di -->
                                 <div class="media-body">
-                                    <h5 class="mt-0">Save Money</h5>in gravida nulla. Nulla vel metus scelerisque ante
-                                    sollicitudin.
+                                    <h5 class="mt-0">Totalmente gratuita</h5> Ahorra grandes cantidades de dinero en otras
+                                    aplicaciones de pago
                                 </div>
                             </div>
                         </div>
                     </div>
                     <div class="col-md-6 col-lg-4">
-                        <div class="media mb-5">
-                            <div class="media-icon d-flex mr-3"><i class="pe-7s-cloud-upload pe-3x"></i></div>
+                        <div class="media">
+                            <div class="media-icon d-flex mr-3"><i class="pe-7s-door-lock pe-3x"></i></div>
                             <!-- // end .di -->
                             <div class="media-body">
-                                <h5 class="mt-0">Cloud Upload</h5> sit amet nibh libero, in gravida nulla. vel metus
-                                scelerisque ante sollicitudin.
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-6 col-lg-4">
-                        <div class="media mb-5">
-                            <div class="media-icon d-flex mr-3"><i class="pe-7s-science pe-3x"></i></div>
-                            <!-- // end .di -->
-                            <div class="media-body">
-                                <h5 class="mt-0">Proven Technology</h5> Cras sit amet nibh libero, in gravida nulla.
-                                Nulla vel metus ante .
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-6 col-lg-4">
-                        <div class="media mb-5">
-                            <div class="media-icon d-flex mr-3"><i class="pe-7s-like2 pe-3x"></i></div>
-                            <!-- // end .di -->
-                            <div class="media-body">
-                                <h5 class="mt-0">100% Satisfaction</h5>Amet nibh libero, in gravida nulla. Nulla vel
-                                metus ante sollicitudin.
+                                <h5 class="mt-0">Información segura</h5> La información sensible se almacena de una forma
+                                totalmente segura
                             </div>
                         </div>
                     </div>
@@ -190,13 +139,6 @@
                 <div class="row align-items-center">
                     <div class="col-sm-8">
                         <div class="browser-window limit-height my-5 mr-0 mr-sm-5">
-                            <div class="top-bar">
-                                <div class="circles">
-                                    <div class="circle circle-red"></div>
-                                    <div class="circle circle-yellow"></div>
-                                    <div class="circle circle-blue"></div>
-                                </div>
-                            </div>
                             <div class="content">
                                 <img src="images/dashboard.png" alt="image">
                             </div>
@@ -206,198 +148,53 @@
                         <div class="media">
                             <div class="media-body">
                                 <div class="media-icon mb-3"><i class="pe-7s-like2 pe-3x"></i></div>
-                                <h3 class="mt-0">Perfect Dashboard</h3>
-                                <p> Reprehenderit nemo quod tempore doloribus ratione distinctio quis quidem vitae sunt
-                                    reiciendis, molestias omnis soluta?</p>
+                                <h3 class="mt-0">Cliente de Twitter integrado</h3>
+                                <p>Administra tu timeline, menciones, listas y mensajes privados en una cómoda disposición en columnas</p>
                             </div>
                         </div>
                     </div>
-
                 </div>
 
-
                 <div class="row align-items-center mt-5">
-
                     <div class="col-sm-4">
                         <div class="media">
                             <div class="media-body">
                                 <div class="media-icon mb-3"><i class="pe-7s-graph1 pe-3x"></i></div>
-                                <h3 class="mt-0">Charts, Diagrams & more</h3>
-                                <p> Reprehenderit nemo quod tempore doloribus ratione distinctio quis quidem vitae sunt
-                                    reiciendis, molestias omnis soluta?</p>
+                                <h3 class="mt-0">Estadísticas, gráficas y más</h3>
+                                <p>Recibe información de utilidad sobre tus perfiles de Twitter y compara los resultados en múltiples intervalos de tiempo</p>
                             </div>
                         </div>
                     </div>
-
-
                     <div class="col-sm-8">
                         <img src="images/screen.jpg" alt="image" class="img-fluid cast-shadow my-5">
                     </div>
-
-
                 </div>
-            </div>
-        </div>
-        <!-- features -->
 
-        <div class="section bg-light py-lg">
-            <div class="container">
-
-                <div class="row">
-                    <div class="col-md-6 col-lg-4">
+                <div class="row align-items-center mt-5">
+                    <div class="col-sm-8">
+                        <div class="browser-window limit-height my-5 mr-0 mr-sm-5">
+                            <div class="content">
+                                <img src="images/dashboard.png" alt="image">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-4">
                         <div class="media">
-
-                            <!-- // end .di -->
-                            <div class="media-body text-center">
-                                <div class="color-icon mb-3"><i class="pe-7s-medal pe-3x"></i></div>
-                                <h5 class="mt-0">Award Winning Design</h5> Monotonectally envisioneer e-business niche
-                                markets vis-a-vis cost effective information. objectively promote worldwide.
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-6 col-lg-4">
-                        <div class="media">
-                            <!-- // end .di -->
-                            <div class="media-body text-center">
-                                <div class="color-icon mb-3"><i class="pe-7s-diamond pe-3x"></i></div>
-                                <h5 class="mt-0">Carefully Crafted</h5> Authoritatively streamline strategic markets
-                                without user-centric potentialities. Credibly integrate progressive technologies
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-6 col-lg-4">
-                        <div class="media">
-                            <!-- // end .di -->
-                            <div class="media-body text-center">
-                                <div class="color-icon mb-3"><i class="pe-7s-cloud-upload pe-3x"></i></div>
-                                <h5 class="mt-0">Cloud Sync</h5>Objectively underwhelm e-business leadership skills
-                                after cross-unit best practices. Continually innovate robust action items
+                            <div class="media-body">
+                                <div class="media-icon mb-3"><i class="pe-7s-edit pe-3x"></i></div>
+                                <h3 class="mt-0">Etiquetado de perfiles</h3>
+                                <p>Clasifica tus seguidores y seguidos con tus propios filtros personalizados</p>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-        <!-- // end features -->
-
-
-        <!-- Testimonials -->
-        <div class="section">
-            <div class="container">
-                <div class="section-title text-center">
-                    <h3>What our users say</h3>
-                    <p>They love it. Read what our customers had to say!</p>
-                </div>
-
-                <div class="row">
-                    <div class="col-md-4">
-                        <div class="embed-tweet-item">
-                            <blockquote class="twitter-tweet" data-cards="hidden" lang="en" data-width="550" data-link-color="#7642FF" data-align="center">
-                                <a href="https://twitter.com/kmin/status/943914224329347072"></a>
-                            </blockquote>
-                        </div>
-                        <!-- end .embed-tweet-item -->
-                    </div>
-                    <!-- end .col -->
-                    <div class="col-md-4">
-                        <div class="embed-tweet-item">
-                            <blockquote class="twitter-tweet" data-cards="hidden" lang="en" data-width="550" data-link-color="#7642FF" data-align="center">
-                                <a href="https://twitter.com/halarewich/status/954224121784688640"></a>
-                            </blockquote>
-                        </div>
-                        <!-- end .embed-tweet-item -->
-                    </div>
-                    <!-- end .col -->
-                    <div class="col-md-4">
-                        <div class="embed-tweet-item">
-                            <blockquote class="twitter-tweet" data-cards="hidden" lang="en" data-width="550" data-link-color="#7642FF" data-align="center">
-                                <a href="https://twitter.com/scottbelsky/status/921417663859052544"></a>
-                            </blockquote>
-                        </div>
-                        <!-- end .embed-tweet-item -->
-                    </div>
-                    <!-- end .col -->
-                </div>
-                <!-- end .row -->
-            </div>
-        </div>
-        <!-- // end Testimonials -->
-
-
-        <!-- Pricing -->
-        <div class="section bg-light py-lg" id="pricing">
-            <div class="container">
-
-                <div class="section-title text-center mt-0 mb-5">
-                    <h3>Elige tu plan</h3>
-                    <p>Pago sencillos. Sin tasas ocultas. Escoge el plan que mejor se adapte a tus necesidades</p>
-                </div>
-
-                <div class="row">
-                    <div class="col-lg-4">
-                        <div class="card pricing">
-                            <div class="card-body">
-                                <small class="text-muted">PERSONAL</small>
-                                <h5 class="card-title">$9</h5>
-                                <p class="card-text">
-                                <ul class="list-unstyled">
-                                    <li>3 Projects</li>
-                                    <li class="plan-muted">Team Collaboration</li>
-                                    <li class="plan-muted">Analytics &amp; Reports</li>
-                                    <li>One user</li>
-                                </ul>
-                                </p>
-                                <a href="#" class="btn btn-round btn-outline-primary">Choose this plan</a>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-lg-4">
-                        <div class="card pricing">
-                            <div class="card-body">
-                                <small class="text-muted">STARTUP</small>
-                                <h5 class="card-title">$29</h5>
-                                <p class="card-text">
-                                <ul class="list-unstyled">
-                                    <li>20 Projects</li>
-                                    <li>Team Collaboration</li>
-                                    <li>Analytics &amp; Reports</li>
-                                    <li>10 Active users</li>
-                                </ul>
-                                </p>
-                                <a href="#" class="btn btn-round btn-primary">Choose this plan</a>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-lg-4">
-                        <div class="card pricing">
-                            <div class="card-body">
-                                <small class="text-muted">ENTERPRISE</small>
-                                <h5 class="card-title">$149</h5>
-                                <p class="card-text">
-                                <ul class="list-unstyled">
-                                    <li>Unlimited Projects</li>
-                                    <li>Team Collaboration</li>
-                                    <li>Analytics &amp; Reports</li>
-                                    <li>Priority Support</li>
-                                </ul>
-                                </p>
-                                <a href="#" class="btn btn-round btn-outline-primary">Choose this plan</a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-            </div>
-        </div>
-        <!-- // end Pricing -->
     </div>
 </template>
 
 <script>
     export default {
-        props: [
-            'reports'
-        ],
         data() {
             return {
                 csrf: document.querySelector('meta[name="csrf-token"]').getAttribute('content'),

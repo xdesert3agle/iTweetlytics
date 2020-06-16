@@ -48,7 +48,7 @@
 
         .background {
             position: fixed;
-            top: 72px;
+            top: 64px;
             right: 0;
             left: 0;
             bottom: 0;

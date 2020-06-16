@@ -12,7 +12,7 @@
     <!-- CSRF Token -->
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <title>Laravel</title>
+    <title>@yield('title')</title>
 
     <!-- Scripts -->
     <script src="{{ asset('js/app.js') }}" defer></script>
@@ -21,6 +21,8 @@
     <link rel="dns-prefetch" href="//fonts.gstatic.com">
     <link href="https://fonts.googleapis.com/css2?family=Raleway:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600;1,700&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css?family=Product+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600;1,700&display=swap" rel="stylesheet">
+    <link rel="icon" type="image/png" href="/images/favicon-32x32.png" sizes="32x32" />
+    <link rel="icon" type="image/png" href="/images/favicon-16x16.png" sizes="16x16" />
 
     <!-- Styles -->
     <link href="{{ asset('/css/app.css') }}" rel="stylesheet">
@@ -37,6 +39,7 @@
         <nav class="navbar navbar-expand-lg navbar-light bg-light">
             <div class="container">
                 <a class="navbar-brand" href="/">
+                    <img src="/images/logo.png" class="logo" alt="iTweetlytics logo">
                     <h3 class="gradient-mask">iTweetlytics</h3>
                 </a>
                 <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#site-nav" aria-controls="site-nav" aria-expanded="false" aria-label="Toggle navigation">
@@ -50,10 +53,7 @@
                         </li>
 
                         <li class="nav-item">
-                            <a class="nav-link" href="/#pricing">Planes</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="/#">Contacto</a>
+                            <a class="nav-link" href="/#features">Contacto</a>
                         </li>
 
                         <li class="nav-item text-center">
@@ -74,39 +74,27 @@
     <div class="section bg-light mt-4" id="footer">
         <div class="container">
             <div class="row">
-                <div class="col-sm-4"> <img src="images/global/logo-dark.svg" class="logo-dark" alt="iTweetlytics Logo" />
-                    <p class="ml-1">
-                        <a href="https://themeforest.net/user/surjithctly/portfolio?ref=surjithctly&utm_source=footer_content" target="_blank">Purchase now →</a>
-                    </p>
+                <div class="col-sm-4">
+                    <img src="/images/logo.png" class="footer-logo" alt="iTweetlytics Logo" />
                     <!-- // end .lead -->
                 </div>
                 <!-- // end .col-sm-3 -->
                 <div class="col-sm-2">
                     <ul class="list-unstyled footer-links ml-1">
-                        <li><a href="#portfolio">Portfolio</a></li>
-                        <li><a href="#about">About us</a></li>
-                        <li><a href="#services">Services</a></li>
-                        <li><a href="#contact">Contact</a></li>
+                        <li>
+                            <a href="#contact">Contacto</a>
+                        </li>
+                        <li>
+                            <a href="#about">Sobre nosotros</a>
+                        </li>
+                        <li>
+                            <a href="#contact">Privacidad</a>
+                        </li>
                     </ul>
                 </div>
                 <!-- // end .col-sm-3 -->
-                <div class="col-sm-2">
-                    <ul class="list-unstyled footer-links ml-1">
-                        <li><a href="#">Terms</a></li>
-                        <li><a href="#about">Privacy</a></li>
-                    </ul>
-                </div>
-                <!-- // end .col-sm-3 -->
-                <div class="col-sm-2">
-                    <ul class="list-unstyled footer-links ml-1">
-                        <li><a href="#">Facebook</a></li>
-                        <li><a href="#">Twitter</a></li>
-                        <li><a href="#">Linkedin</a></li>
-                    </ul>
-                </div>
-                <!-- // end .col-sm-3 -->
-                <div class="col-sm-2">
-                    <a href="#home" class="btn btn-sm btn-outline-primary ml-1">Go to Top</a>
+                <div class="col-sm-2 offset-2">
+                    <a href="#home" class="btn btn-sm btn-outline-primary ml-1">Volver al inicio</a>
                 </div>
                 <!-- // end .col-sm-3 -->
             </div>
