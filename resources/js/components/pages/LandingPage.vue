@@ -140,7 +140,7 @@
                     <div class="col-sm-8">
                         <div class="browser-window limit-height my-5 mr-0 mr-sm-5">
                             <div class="content">
-                                <img src="images/dashboard.png" alt="image">
+                                <img src="/images/dashboard-preview.png" alt="image">
                             </div>
                         </div>
                     </div>
@@ -166,7 +166,7 @@
                         </div>
                     </div>
                     <div class="col-sm-8">
-                        <img src="images/screen.jpg" alt="image" class="img-fluid cast-shadow my-5">
+                        <img src="/images/stats-preview.png" alt="image" class="img-fluid my-5">
                     </div>
                 </div>
 
@@ -174,7 +174,7 @@
                     <div class="col-sm-8">
                         <div class="browser-window limit-height my-5 mr-0 mr-sm-5">
                             <div class="content">
-                                <img src="images/dashboard.png" alt="image">
+                                <img src="/images/tags-preview.png" alt="image">
                             </div>
                         </div>
                     </div>

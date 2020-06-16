@@ -25,144 +25,153 @@
     width: 300px;
 }
 
+.browser-window {
+    background-color: none!important;
+    -webkit-box-shadow: unset!important;
+    box-shadow: unset!important;
+
+    .content {
+        background-color: transparent!important;
+    }
+}
 
 body {
-    font-family: "Product Sans", Helvetica, Arial, serif;
-    background-color: #f5f5f5 !important;
-    overflow-x: hidden;
+font-family: "Product Sans", Helvetica, Arial, serif;
+background-color: #f5f5f5 !important;
+overflow-x: hidden;
 }
 
 .bold {
-    font-weight: bold;
+font-weight: bold;
 }
 
 .app-container {
-    overflow: hidden;
-    padding: 0;
+overflow: hidden;
+padding: 0;
 }
 
 .tab-content {
-    padding: 0;
+padding: 0;
 }
 
 .expandable-image img {
-    width: 100% !important;
-    margin-top: 0.5em !important;
-    border-radius: 4px !important;
+width: 100% !important;
+margin-top: 0.5em !important;
+border-radius: 4px !important;
 }
 
 .page-title {
-    margin-top: 1em;
-    margin-bottom: 0.75em;
-    font-size: 18pt;
+margin-top: 1em;
+margin-bottom: 0.75em;
+font-size: 18pt;
 }
 
 label {
-    font-size: 12pt;
-    font-weight: 500;
+font-size: 12pt;
+font-weight: 500;
 
-    &.required:after {
-        content: "*";
-        color: red;
-        line-height: initial;
-    }
+&.required:after {
+    content: "*";
+    color: red;
+    line-height: initial;
+}
 }
 
 input ~ label {
-    font-weight: normal !important;
+font-weight: normal !important;
 }
 
 *:not(input):not(button):focus {
-    outline: 0!important;
+outline: 0!important;
 }
 
 .form-control {
-    border-radius: 3px !important;
-    border-color: #aeaeaf !important;
+border-radius: 3px !important;
+border-color: #aeaeaf !important;
 
-    &::placeholder {
-        color: rgba(38, 38, 39, 0.40) !important;
+&::placeholder {
+    color: rgba(38, 38, 39, 0.40) !important;
+}
+
+&:disabled, &[readonly] {
+    background-color: #e9ecef !important;
+    opacity: 1;
+}
+}
+
+.navbar-nav {
+.nav-item {
+    display: flex;
+    align-items: center;
+
+    .nav-link {
+        font-size: 12pt !important;
+        font-weight: bold !important;
+        color: #1b1b37 !important;
+        line-height: initial;
+        transition: 200ms;
+
+        &:hover {
+            color: rgba(98, 56, 195, 0.85) !important;
+        }
     }
+}
+}
 
-    &:disabled, &[readonly] {
-        background-color: #e9ecef !important;
-        opacity: 1;
+h1 {
+font-weight: bold;
+}
+
+.ms-300 {
+-webkit-animation-duration: 300ms;
+animation-duration: 300ms;
+}
+
+.ms-200 {
+-webkit-animation-duration: 200ms;
+animation-duration: 200ms;
+}
+
+.welcome-message {
+font-size: 27pt!important;
+}
+
+.navbar-toggler {
+margin-top: 0!important;
+margin-right: 5px;
+}
+
+@media (max-width: 576px) {
+.navbar-brand {
+    margin-left: 10px;
+
+    h3 {
+        margin: 0!important;
     }
 }
 
 .navbar-nav {
     .nav-item {
-        display: flex;
-        align-items: center;
+        justify-content: center;
+        padding: 10px 0;
 
         .nav-link {
-            font-size: 12pt !important;
-            font-weight: bold !important;
-            color: #1b1b37 !important;
-            line-height: initial;
-            transition: 200ms;
-
-            &:hover {
-                color: rgba(98, 56, 195, 0.85) !important;
-            }
+            font-size: 14pt;
         }
     }
 }
 
-h1 {
-    font-weight: bold;
+.btn-login {
+    border: none!important;
 }
 
-.ms-300 {
-    -webkit-animation-duration: 300ms;
-    animation-duration: 300ms;
+.bg-circle {
+    display: inline!important;
 }
 
-.ms-200 {
-    -webkit-animation-duration: 200ms;
-    animation-duration: 200ms;
+.bg-shape {
+    display: inline!important;
+    right: -42px!important;
+    opacity: 0.7!important;
 }
-
-.welcome-message {
-    font-size: 27pt!important;
-}
-
-.navbar-toggler {
-    margin-top: 0!important;
-    margin-right: 5px;
-}
-
-@media (max-width: 576px) {
-    .navbar-brand {
-        margin-left: 10px;
-
-        h3 {
-            margin: 0!important;
-        }
-    }
-
-    .navbar-nav {
-        .nav-item {
-            justify-content: center;
-            padding: 10px 0;
-
-            .nav-link {
-                font-size: 14pt;
-            }
-        }
-    }
-
-    .btn-login {
-        border: none!important;
-    }
-
-    .bg-circle {
-        display: inline!important;
-    }
-
-    .bg-shape {
-        display: inline!important;
-        right: -42px!important;
-        opacity: 0.7!important;
-    }
 }
