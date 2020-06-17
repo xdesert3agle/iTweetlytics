@@ -117,6 +117,13 @@ class UserProfile extends Model {
             'oauth_token' => encrypt($tokens['oauth_token']),
             'oauth_token_secret' => encrypt($tokens['oauth_token_secret']),
         ]);
+
+        $new_user_profile = UserProfile::where([
+            'user_id' => Auth::id(),
+            'twitter_profile_id' => $twitter_profile->id,
+        ])->get()->first();
+
+        Auth::user()->update(['selected_profile' => $new_user_profile->id]);
     }
 
     public function belongsToUser($userId) {

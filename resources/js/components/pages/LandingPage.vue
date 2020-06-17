@@ -7,9 +7,6 @@
                         <h1>Analíticas de calidad</h1>
                         <h4 class="text-muted mb-3">Gestiona tus perfiles de Twitter y recibe información
                             imprescindible.</h4>
-                        <p class="font-styled">
-                            <a href="#pricing">Comparar los planes disponibles</a>
-                        </p>
                     </div>
 
                     <div class="col-12 col-md-6 my-3 my-md-lg">
@@ -138,7 +135,7 @@
             <div class="container">
                 <div class="row align-items-center">
                     <div class="col-sm-8">
-                        <div class="browser-window limit-height my-5 mr-0 mr-sm-5">
+                        <div class="browser-window limit-height my-5 mr-0">
                             <div class="content">
                                 <img src="/images/dashboard-preview.png" alt="image">
                             </div>
@@ -172,7 +169,7 @@
 
                 <div class="row align-items-center mt-5">
                     <div class="col-sm-8">
-                        <div class="browser-window limit-height my-5 mr-0 mr-sm-5">
+                        <div class="browser-window limit-height my-5 mr-0">
                             <div class="content">
                                 <img src="/images/tags-preview.png" alt="image">
                             </div>

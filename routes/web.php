@@ -64,6 +64,8 @@ Route::group(['middleware' => 'auth'], function () {
                     });
                 });
 
+                Route::post('unsync', 'AppController@unsyncProfile');
+
                 Route::post('scheduled_tweet/delete', 'AppController@deleteScheduledTweet');
 
                 Route::prefix('tags')->group(function () {

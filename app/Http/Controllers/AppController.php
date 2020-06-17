@@ -5,7 +5,9 @@ namespace App\Http\Controllers;
 use App\Friend;
 use App\Helpers\ApiHelper;
 use App\Jobs\ScheduledTweetJob;
+use App\Report;
 use App\ScheduledTweet;
+use App\UserProfile;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -164,8 +166,7 @@ class AppController extends Controller {
                 'status' => 'success',
                 'message' => 'Has dejado de seguir a @' . $r->screen_name . '.'
             ];
-        }
-        else {
+        } else {
             return [
                 'status' => 'error',
                 'message' => 'Ha ocurrido un error al intentar dejar de seguir a @' . $r->screen_name . '.'
@@ -181,8 +182,7 @@ class AppController extends Controller {
                 'status' => 'success',
                 'message' => 'Has comenzado a seguir a @' . $r->screen_name . '.'
             ];
-        }
-        else {
+        } else {
             return [
                 'status' => 'error',
                 'message' => 'Ha ocurrido un error al intentar seguir a @' . $r->screen_name . '.'
@@ -202,11 +202,50 @@ class AppController extends Controller {
                 'status' => 'success',
                 'message' => 'Tu respuesta ha sido enviada.'
             ];
-        }
-        else {
+        } else {
             return [
                 'status' => 'error',
                 'message' => 'Ha ocurrido un error al intentar enviar tu respuesta.'
+            ];
+        }
+    }
+
+    public function unsyncProfile(Request $r) {
+        $target_profile = UserProfile::where('id', $r->user_profile_id)
+            ->with('twitter_profile')->first();
+
+        if (Auth::user()->selected_profile == $target_profile->id) {
+            $prev_profile = UserProfile::where('id', '!=', $target_profile->id)
+                ->orderBy('id', 'desc')
+                ->first();
+
+            if ($prev_profile)
+                Auth::user()->update(['selected_profile' => $prev_profile->id]);
+            else
+                Auth::user()->update(['selected_profile' => null]);
+        }
+
+        $target_screen_name = $target_profile->twitter_profile->screen_name;
+
+        $target_profile->befriends()->detach();
+        $target_profile->unfriends()->detach();
+        $target_profile->friends()->detach();
+        $target_profile->follows()->detach();
+        $target_profile->unfollows()->detach();
+        $target_profile->followers()->detach();
+
+        Report::where('user_profile_id', $r->user_profile_id)->delete();
+        $success = $target_profile->delete();
+
+        if ($success) {
+            return [
+                'status' => 'success',
+                'message' => "El perfil @$target_screen_name ha sido eliminado"
+            ];
+        } else {
+            return [
+                'status' => 'error',
+                'message' => "Ha ocurrido un error al intentar eliminar el perfil @$target_screen_name."
             ];
         }
     }

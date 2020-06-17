@@ -14,9 +14,9 @@ use App\User;
 use App\UserProfile;
 use App\UserProfileTaggedProfiles;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Thujohn\Twitter\Facades\Twitter;
-
 
 class TestController extends Controller {
     const REQUEST_WINDOW = 15;
@@ -26,17 +26,11 @@ class TestController extends Controller {
 
     public function test() {
         $startTime = microtime(true);
-        //dd(UserProfile::where('id', 1)->first());
 
         ApiHelper::reconfig(UserProfile::where('id', 1)->first());
 
-        $test = ApiHelper::getRateLimit('followers');
+        $user = User::create();
 
-        $user = User::where('id', 1)->with(['user_profiles.followers' => function($query) {
-            $query->orderBy('followers.id');
-        }])->first();
-
-        dd($user->user_profiles[0]->followers[0]->screen_name);
 
         $endTime = microtime(true);
         $loadTime = $endTime - $startTime;

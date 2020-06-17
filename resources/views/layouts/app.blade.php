@@ -53,7 +53,7 @@
                         </li>
 
                         <li class="nav-item">
-                            <a class="nav-link" href="/#features">Contacto</a>
+                            <a class="nav-link" href="/#footer">Ayuda</a>
                         </li>
 
                         <li class="nav-item text-center">
