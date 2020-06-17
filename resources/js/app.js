@@ -48,6 +48,7 @@ Vue.component('Stats', require('./components/pages/Stats/Stats.vue').default);
 Vue.component('Login', require('./components/pages/Login.vue').default);
 Vue.component('PasswordReset', require('./components/pages/PasswordReset.vue').default);
 Vue.component('NewPassword', require('./components/pages/NewPassword.vue').default);
+Vue.component('SyncError', require('./components/pages/SyncError.vue').default);
 
 // Elements
 Vue.component('TwitterProfileCard', require('./components/elements/TwitterProfileCard.vue').default);

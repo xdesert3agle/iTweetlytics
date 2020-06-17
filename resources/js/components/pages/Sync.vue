@@ -47,7 +47,8 @@
 <script>
     export default {
         props: [
-            'user'
+            'user',
+            'syncError'
         ],
         methods: {
             logout() {

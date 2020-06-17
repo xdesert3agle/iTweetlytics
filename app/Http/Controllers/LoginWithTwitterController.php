@@ -89,7 +89,7 @@ class LoginWithTwitterController extends Controller {
     }
 
     public function error() {
-        // Something went wrong, add your own error handling here
+        return view('sync_error');
     }
 
     public function logout() {

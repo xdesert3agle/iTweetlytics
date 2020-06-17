@@ -7,7 +7,9 @@ use App\Helpers\ApiHelper;
 use App\Jobs\ScheduledTweetJob;
 use App\Report;
 use App\ScheduledTweet;
+use App\Tag;
 use App\UserProfile;
+use App\UserProfileTaggedProfiles;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -214,6 +216,21 @@ class AppController extends Controller {
         $target_profile = UserProfile::where('id', $r->user_profile_id)
             ->with('twitter_profile')->first();
 
+        $target_screen_name = $target_profile->twitter_profile->screen_name;
+
+        $target_profile->befriends()->detach();
+        $target_profile->unfriends()->detach();
+        $target_profile->friends()->detach();
+        $target_profile->follows()->detach();
+        $target_profile->unfollows()->detach();
+        $target_profile->followers()->detach();
+
+        UserProfileTaggedProfiles::where('user_profile_id', $r->user_profile_id)->delete();
+        Report::where('user_profile_id', $r->user_profile_id)->delete();
+        ScheduledTweet::where('user_profile_id', $r->user_profile_id)->delete();
+        Tag::where('user_profile_id', $r->user_profile_id)->delete();
+        ScheduledTweet::where('user_profile_id', $r->user_profile_id)->delete();
+
         if (Auth::user()->selected_profile == $target_profile->id) {
             $prev_profile = UserProfile::where('id', '!=', $target_profile->id)
                 ->orderBy('id', 'desc')
@@ -225,16 +242,6 @@ class AppController extends Controller {
                 Auth::user()->update(['selected_profile' => null]);
         }
 
-        $target_screen_name = $target_profile->twitter_profile->screen_name;
-
-        $target_profile->befriends()->detach();
-        $target_profile->unfriends()->detach();
-        $target_profile->friends()->detach();
-        $target_profile->follows()->detach();
-        $target_profile->unfollows()->detach();
-        $target_profile->followers()->detach();
-
-        Report::where('user_profile_id', $r->user_profile_id)->delete();
         $success = $target_profile->delete();
 
         if ($success) {
