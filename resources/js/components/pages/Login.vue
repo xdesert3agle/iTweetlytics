@@ -76,7 +76,7 @@
                         allowOutsideClick: false,
                         allowEscapeKey: false,
                         onClose: function () {
-                            window.location.href = '/app/';
+                            window.location.href = '/app';
                         }
                     });
                 }).catch((error) => {
