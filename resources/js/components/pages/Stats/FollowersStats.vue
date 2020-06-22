@@ -3,7 +3,7 @@
         <div class="col-12 profile-stats-container">
             <div class="row no-gutters card-row">
                 <div class="col-md-4 col-12">
-                    <graph-card id="followers" :user="user" :stat_endpoint="'/ajax/profile/' + user.current_user_profile.id + '/stats/followers/'" card_title="Seguidores" modal_title="Seguidores">
+                    <graph-card id="followers" :user="user" :stat_endpoint="'/ajax/profile/' + user.current_user_profile.id + '/stats/followers'" card_title="Seguidores" modal_title="Seguidores">
                         <template slot="modal-trigger">
                             <button class="btn-text">Detalles</button>
                         </template>
@@ -40,14 +40,14 @@
                     </graph-card>
                 </div>
                 <div class="col-md-4 col-12">
-                    <graph-card id="follows" :user="user" :stat_endpoint="'/ajax/profile/' + user.current_user_profile.id + '/stats/follows/'" card_title="Nuevos seguidores" modal_title="Nuevos seguidores">
+                    <graph-card id="follows" :user="user" :stat_endpoint="'/ajax/profile/' + user.current_user_profile.id + '/stats/follows'" card_title="Nuevos seguidores" modal_title="Nuevos seguidores">
                         <template slot="modal-trigger">
                             <button class="btn-text">Detalles</button>
                         </template>
                     </graph-card>
                 </div>
                 <div class="col-md-4 col-12">
-                    <graph-card id="unfollows" :user="user" :stat_endpoint="'/ajax/profile/' + user.current_user_profile.id + '/stats/unfollows/'" card_title="Unfollowers" modal_title="Unfollowers">
+                    <graph-card id="unfollows" :user="user" :stat_endpoint="'/ajax/profile/' + user.current_user_profile.id + '/stats/unfollows'" card_title="Unfollowers" modal_title="Unfollowers">
                         <template slot="modal-trigger">
                             <button class="btn-text">Detalles</button>
                         </template>

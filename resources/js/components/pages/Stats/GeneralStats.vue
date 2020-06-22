@@ -3,7 +3,7 @@
         <div class="col-12">
             <div class="row no-gutters card-row">
                 <div class="col-md-4 col-12">
-                    <graph-card id="followers" :user="user" :stat_endpoint="'/ajax/profile/' + d_user.current_user_profile.id + '/stats/f2f_ratio/'" card_title="Ratio seguidores/seguidos"></graph-card>
+                    <graph-card id="followers" :user="user" :stat_endpoint="'/ajax/profile/' + d_user.current_user_profile.id + '/stats/f2f_ratio'" card_title="Ratio seguidores/seguidos"></graph-card>
                 </div>
                 <div class="col-md-4 col-12 small-cards-container">
                     <div class="row no-gutters">

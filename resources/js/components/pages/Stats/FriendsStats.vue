@@ -4,7 +4,7 @@
             <div class="row no-gutters card-row">
                 <div class="col-md-4 col-12">
                     <graph-card id="friends"
-                                :user="user" :stat_endpoint="'/ajax/profile/' + user.current_user_profile.id + '/stats/friends/'"
+                                :user="user" :stat_endpoint="'/ajax/profile/' + user.current_user_profile.id + '/stats/friends'"
                                 card_title="Seguidos"
                                 modal_title="Seguidos">
 
@@ -15,7 +15,7 @@
                 </div>
                 <div class="col-md-4 col-12">
                     <graph-card id="befriends"
-                                :user="user" :stat_endpoint="'/ajax/profile/' + user.current_user_profile.id + '/stats/befriends/'"
+                                :user="user" :stat_endpoint="'/ajax/profile/' + user.current_user_profile.id + '/stats/befriends'"
                                 card_title="Seguidos"
                                 modal_title="Seguidos">
 
@@ -26,7 +26,7 @@
                 </div>
                 <div class="col-md-4 col-12">
                     <graph-card id="unfriends"
-                                :user="user" :stat_endpoint="'/ajax/profile/' + user.current_user_profile.id + '/stats/unfriends/'"
+                                :user="user" :stat_endpoint="'/ajax/profile/' + user.current_user_profile.id + '/stats/unfriends'"
                                 card_title="Dejados de seguir"
                                 modal_title="Dejados de seguir">
 
