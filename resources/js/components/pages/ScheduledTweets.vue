@@ -8,7 +8,7 @@
                     </div>
                 </div>
 
-                <div v-if="user.current_user_profile.scheduled_tweets != null" class="row no-gutters scheduled-tweets-container">
+                <div v-if="user.current_user_profile.scheduled_tweets.length > 0" class="row no-gutters scheduled-tweets-container">
                     <div class="col-md-3 col-12" v-for="(tweetGroup, date) in user.current_user_profile.scheduled_tweets">
                         <h5>{{ date }}</h5>
                         <div v-for="(tweet, j) in tweetGroup" class="row tweet-container">
