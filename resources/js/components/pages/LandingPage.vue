@@ -90,9 +90,9 @@
             <div class="bg-circle-two"></div>
         </section>
 
-        <div class="section bg-light pt-lg">
+        <div class="section bg-light">
             <div class="container">
-                <div class="row">
+                <div class="row features-row">
                     <div class="col-md-6 col-lg-4">
                         <div class="media">
                             <div class="media-icon d-flex mr-3"><i class="pe-7s-rocket pe-3x"></i></div>
@@ -105,7 +105,7 @@
                     <div class="col-md-6 col-lg-4">
                         <div class="media">
                             <div class="media-icon d-flex mr-3"><i class="pe-7s-piggy pe-3x"></i></div>
-                            <div class="media mb-5">
+                            <div class="media">
                                 <!-- // end .di -->
                                 <div class="media-body">
                                     <h5 class="mt-0">Totalmente gratuita</h5> Ahorra grandes cantidades de dinero en otras
@@ -134,14 +134,14 @@
 
             <div class="container">
                 <div class="row align-items-center">
-                    <div class="col-sm-8">
+                    <div class="col-sm-8 order-md-0 order-1">
                         <div class="browser-window limit-height my-5 mr-0">
                             <div class="content">
                                 <img src="/images/dashboard-preview.png" alt="image">
                             </div>
                         </div>
                     </div>
-                    <div class="col-sm-4">
+                    <div class="col-sm-4 order-md-1 order-0">
                         <div class="media">
                             <div class="media-body">
                                 <div class="media-icon mb-3"><i class="pe-7s-like2 pe-3x"></i></div>
@@ -157,8 +157,8 @@
                         <div class="media">
                             <div class="media-body">
                                 <div class="media-icon mb-3"><i class="pe-7s-graph1 pe-3x"></i></div>
-                                <h3 class="mt-0">Estadísticas, gráficas y más</h3>
-                                <p>Recibe información de utilidad sobre tus perfiles de Twitter y compara los resultados en múltiples intervalos de tiempo</p>
+                                <h3 class="mt-0">Analíticas, gráficas y más</h3>
+                                <p>Recibe información de utilidad sobre tus perfiles de Twitter y compara los resultados en distintos intervalos de tiempo</p>
                             </div>
                         </div>
                     </div>
@@ -168,14 +168,14 @@
                 </div>
 
                 <div class="row align-items-center mt-5">
-                    <div class="col-sm-8">
+                    <div class="col-sm-8 order-md-0 order-1">
                         <div class="browser-window limit-height my-5 mr-0">
                             <div class="content">
                                 <img src="/images/tags-preview.png" alt="image">
                             </div>
                         </div>
                     </div>
-                    <div class="col-sm-4">
+                    <div class="col-sm-4 order-md-1 order-0">
                         <div class="media">
                             <div class="media-body">
                                 <div class="media-icon mb-3"><i class="pe-7s-edit pe-3x"></i></div>
@@ -272,7 +272,16 @@
     }
 
     @media (max-width: 576px) {
+        .features-row {
+            div[class*="col"]:not(:last-child) {
+                margin-bottom: 3em;
+            }
+        }
+
         section.jumbotron-two {
+            position: relative;
+            overflow-x: hidden!important;
+
             h1 {
                 font-size: 26pt;
                 text-align: center;

@@ -74,12 +74,12 @@
     <div class="section bg-light mt-4" id="footer">
         <div class="container">
             <div class="row">
-                <div class="col-sm-4">
+                <div class="col-md-4 col-5">
                     <img src="/images/logo.png" class="footer-logo" alt="iTweetlytics Logo" />
                     <!-- // end .lead -->
                 </div>
                 <!-- // end .col-sm-3 -->
-                <div class="col-sm-2">
+                <div class="col-md-2 col-7">
                     <ul class="list-unstyled footer-links ml-1">
                         <li>
                             <a href="#contact">Contacto</a>
@@ -93,7 +93,7 @@
                     </ul>
                 </div>
                 <!-- // end .col-sm-3 -->
-                <div class="col-sm-2 offset-2">
+                <div class="col-md-2 offset-md-2 col-12 text-center btn-go-up-container">
                     <a href="#home" class="btn btn-sm btn-outline-primary ml-1">Volver al inicio</a>
                 </div>
                 <!-- // end .col-sm-3 -->
