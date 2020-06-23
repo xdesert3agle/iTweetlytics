@@ -137,7 +137,7 @@
                     <div class="col-sm-8 order-md-0 order-1">
                         <div class="browser-window limit-height my-5 mr-0">
                             <div class="content">
-                                <img src="/images/dashboard-preview.png" alt="image">
+                                <expandable-image src="/images/dashboard-preview.png" closeOnBackgroundClick></expandable-image>
                             </div>
                         </div>
                     </div>
@@ -163,7 +163,7 @@
                         </div>
                     </div>
                     <div class="col-sm-8">
-                        <img src="/images/stats-preview.png" alt="image" class="img-fluid my-5">
+                        <expandable-image src="/images/stats-preview.png" alt="image" class="img-fluid" closeOnBackgroundClick></expandable-image>
                     </div>
                 </div>
 
@@ -171,7 +171,7 @@
                     <div class="col-sm-8 order-md-0 order-1">
                         <div class="browser-window limit-height my-5 mr-0">
                             <div class="content">
-                                <img src="/images/tags-preview.png" alt="image">
+                                <expandable-image src="/images/tags-preview.png" closeOnBackgroundClick></expandable-image>
                             </div>
                         </div>
                     </div>
