@@ -49,12 +49,12 @@
                                                         <a :href="'https://twitter.com/' + profile.twitter_profile.screen_name">
                                                             {{ profile.twitter_profile.name }}
                                                         </a>
-                                                        <span @click.prevent v-if="profile.is_following_back || endpointIncludes('/followers/')" class="badge badge-success">Te sigue</span>
+                                                        <span @click.prevent v-if="profile.is_following_back || endpointIncludes('/followers')" class="badge badge-success">Te sigue</span>
                                                         <span @click.prevent v-else class="badge badge-danger">No te sigue</span>
                                                     </span>
                                                     <span class="screen-name text-muted">@{{ profile.twitter_profile.screen_name }}</span>
                                                 </div>
-                                                <div v-if="profile.is_followed_back || endpointIncludes('/friends/')" class="col-4">
+                                                <div v-if="profile.is_followed_back || endpointIncludes('/friends')" class="col-4">
                                                     <button @click="unfollowUser(profile.twitter_profile.screen_name, i)" class="btn btn-sm btn-unfollow">
                                                         Dejar de seguir
                                                     </button>
