@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
     <!-- Meta Share -->
-    <meta property="og:title" content="iTweetlytics — Agency One Page Parallax Template" />
+    <meta property="og:title" content="iTweetlytics — Gestiona tus perfiles de Twitter y recibe información imprescindible." />
     <meta property="og:type" content="website" />
     <meta property="og:image" content="images/screen.jpg" />
 
