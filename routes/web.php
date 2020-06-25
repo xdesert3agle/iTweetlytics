@@ -101,4 +101,12 @@ Route::group(['middleware' => 'auth'], function () {
     });
 });
 
+Route::get('about', function () {
+    return view('about');
+})->name('about');
+
+Route::get('privacy', function () {
+    return view('privacy');
+})->name('privacy');
+
 Auth::routes();

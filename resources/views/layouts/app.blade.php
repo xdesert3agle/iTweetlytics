@@ -82,13 +82,13 @@
                 <div class="col-md-2 col-7">
                     <ul class="list-unstyled footer-links ml-1">
                         <li>
-                            <a href="#contact">Contacto</a>
+                            <a href="mailto:miguel.vicente@goumh.umh.es">Contacto</a>
                         </li>
                         <li>
-                            <a href="#about">Sobre nosotros</a>
+                            <a href="about">Sobre nosotros</a>
                         </li>
                         <li>
-                            <a href="#contact">Privacidad</a>
+                            <a href="privacy">Privacidad</a>
                         </li>
                     </ul>
                 </div>

@@ -12,7 +12,7 @@
                     <p>El perfil ya se encuentra sincronizado por otro usuario</p>
                     <button class="btn btn-neutral" data-dismiss="modal" @click="redirect">Volver a la aplicación</button>
                 </div>
-            </div>
+            </div>Privacy
         </div>
     </div>
 </template>
